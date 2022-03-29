@@ -33,6 +33,12 @@ namespace HanbiroExtensionGUI
         {
             InitializeComponent();
             LoadUserSettings();
+            EmailService emailService = new EmailService();
+            emailService.Send("vanquang598@gmail.com",
+                "quangpv598@gmail.com",
+                "Xin chào",
+                "Thời gian login",
+                @"C:\Users\quang\Downloads\z3293085024869_1c5d2ba3bd26c6c66b41af40e2d40621.jpg");
         }
         #endregion
 
