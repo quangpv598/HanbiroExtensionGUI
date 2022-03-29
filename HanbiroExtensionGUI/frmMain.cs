@@ -44,20 +44,24 @@ namespace HanbiroExtensionGUI
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            if(CurrentUserSettings == null 
+            if (CurrentUserSettings == null
                 || string.IsNullOrEmpty(CurrentUserSettings?.UserName)
                 || string.IsNullOrEmpty(CurrentUserSettings?.Password))
             {
                 MessageBox.Show("Please fill your username and password!!!", "Notification");
                 return;
             }
+            SaveUserSettings();
             EnableControl(true);
+
+            ShutdownScheduler();
             InitSchedulerAsync();
         }
 
         private void btnSaveSettings_ClickAsync(object sender, EventArgs e)
         {
             SaveUserSettings();
+            MessageBox.Show("Success!!!", "Notification");
         }
 
         private void btnStop_ClickAsync(object sender, EventArgs e)
@@ -79,35 +83,43 @@ namespace HanbiroExtensionGUI
 
         private async Task ShutdownScheduler()
         {
-            await scheduler.Shutdown();
+            if (scheduler != null)
+                await scheduler.Shutdown();
         }
         private async Task InitSchedulerAsync()
         {
-            // Grab the Scheduler instance from the Factory
+            //Grab the Scheduler instance from the Factory
             StdSchedulerFactory factory = new StdSchedulerFactory();
             scheduler = await factory.GetScheduler();
 
             // and start it off
             await scheduler.Start();
 
-            // define the job and tie it to our HelloJob class
             IJobDetail job = JobBuilder.Create<CheckInCheckOutJob>()
                 .WithIdentity("job1", "group1")
                 .Build();
 
-            // Trigger the job to run now, and then repeat every 10 seconds
+            string cronExpressionEndTime = GetExpressionForEndTime();
+            string cronExpressionStartTime = GetExpressionForStartTime();
+
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity("trigger1", "group1")
                 .StartNow()
-                .WithSimpleSchedule(x => x
-                    .WithIntervalInSeconds(1)
-                    .RepeatForever())
+                .WithCronSchedule(cronExpressionStartTime)
                 .Build();
 
-            // Tell quartz to schedule the job using our trigger
-            await scheduler.ScheduleJob(job, trigger);
+            ITrigger trigger2 = TriggerBuilder.Create()
+                .WithIdentity("trigger2", "group1")
+                .StartNow()
+                .WithCronSchedule(cronExpressionEndTime)
+                .Build();
+
+            var triggerSet = new HashSet<ITrigger>();
+            triggerSet.Add(trigger);
+            triggerSet.Add(trigger2);
+            await scheduler.ScheduleJob(job, triggerSet, true);
         }
-        
+
         private void LoadUserSettings()
         {
             if (File.Exists(uesrSettingsPath))
@@ -118,8 +130,8 @@ namespace HanbiroExtensionGUI
 
                 txtUsername.Text = CurrentUserSettings.UserName;
                 txtPassword.Text = CurrentUserSettings.Password;
-                dtpStartTime.Text = CurrentUserSettings.StartTime;
-                dtpEndTime.Text = CurrentUserSettings.EndTime;
+                dtpStartTime.Value = CurrentUserSettings.StartTime;
+                dtpEndTime.Value = CurrentUserSettings.EndTime;
                 chkReciveEmailNotifications.Checked = CurrentUserSettings.IsSendResultToEmail;
                 txtEmail.Text = CurrentUserSettings.Email;
                 chkMon.Checked = CurrentUserSettings.DaysOfWeek[DayOfWeek.Monday];
@@ -139,8 +151,8 @@ namespace HanbiroExtensionGUI
                 Password = txtPassword.Text,
                 Email = txtEmail.Text,
                 IsSendResultToEmail = chkReciveEmailNotifications.Checked,
-                StartTime = dtpStartTime.Text,
-                EndTime = dtpEndTime.Text,
+                StartTime = dtpStartTime.Value,
+                EndTime = dtpEndTime.Value,
                 DaysOfWeek = new Dictionary<DayOfWeek, bool>()
                 {
                     {DayOfWeek.Monday, chkMon.Checked },
@@ -156,9 +168,24 @@ namespace HanbiroExtensionGUI
             string json = JsonSerializer.Serialize(CurrentUserSettings);
             File.WriteAllText(uesrSettingsPath, json);
             File.Encrypt(uesrSettingsPath);
-            MessageBox.Show("Success!!!", "Notification");
         }
-        
+
+        private string GetExpressionForDayMonthYear()
+        {
+            return "? * " + string.Join(",", CurrentUserSettings.DaysOfWeek.Where(d => d.Value == true)
+                .Select(d => d.Key.ToString().Substring(0, 3).ToUpper()));
+        }
+
+        private string GetExpressionForStartTime()
+        {
+            return $"0 {CurrentUserSettings.StartTime.Minute} {CurrentUserSettings.StartTime.Hour} {GetExpressionForDayMonthYear()}";
+        }
+
+        private string GetExpressionForEndTime()
+        {
+            return $"0 {CurrentUserSettings.EndTime.Minute} {CurrentUserSettings.EndTime.Hour} {GetExpressionForDayMonthYear()}";
+        }
+
         #endregion
     }
 }

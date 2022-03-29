@@ -267,9 +267,9 @@ namespace HanbiroExtensionGUI
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(305, 114);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(54, 15);
+            this.label4.Size = new System.Drawing.Size(60, 15);
             this.label4.TabIndex = 24;
-            this.label4.Text = "End time";
+            this.label4.Text = "Clock Out";
             // 
             // dtpEndTime
             // 
@@ -287,9 +287,9 @@ namespace HanbiroExtensionGUI
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(10, 114);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(58, 15);
+            this.label3.Size = new System.Drawing.Size(50, 15);
             this.label3.TabIndex = 22;
-            this.label3.Text = "Start time";
+            this.label3.Text = "Clock In";
             // 
             // dtpStartTime
             // 

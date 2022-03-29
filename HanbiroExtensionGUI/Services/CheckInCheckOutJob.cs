@@ -12,7 +12,7 @@ namespace HanbiroExtensionGUI.Services
     {
         public Task Execute(IJobExecutionContext context)
         {
-            Debug.WriteLine("Test");
+            Debug.WriteLine("Test " + DateTime.Now.ToString());
             return null;
         }
     }

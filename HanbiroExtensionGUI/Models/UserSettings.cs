@@ -10,8 +10,8 @@ namespace HanbiroExtensionGUI.Models
     {
         public string UserName { get; set; }
         public string Password { get; set; }
-        public string StartTime { get; set; }
-        public string EndTime { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
         public bool IsSendResultToEmail { get; set; }
         public string Email { get; set; }
         public Dictionary<DayOfWeek, bool> DaysOfWeek { get; set; } = new Dictionary<DayOfWeek, bool>();
