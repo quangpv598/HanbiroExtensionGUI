@@ -14,5 +14,6 @@ namespace HanbiroExtensionGUI.Models
         public string EndTime { get; set; }
         public bool IsSendResultToEmail { get; set; }
         public string Email { get; set; }
+        public Dictionary<DayOfWeek, bool> DaysOfWeek { get; set; } = new Dictionary<DayOfWeek, bool>();
     }
 }
