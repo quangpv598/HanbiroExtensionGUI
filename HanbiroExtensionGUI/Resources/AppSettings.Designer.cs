@@ -61,6 +61,15 @@ namespace HanbiroExtensionGUI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to pvquang598@gmail.com.
+        /// </summary>
+        internal static string From {
+            get {
+                return ResourceManager.GetString("From", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to smtp.gmail.com.
         /// </summary>
         internal static string SmtpHost {

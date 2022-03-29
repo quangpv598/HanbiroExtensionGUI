@@ -1,8 +1,11 @@
 ﻿using CefSharp;
 using CefSharp.OffScreen;
 using HanbiroExtensionGUI.Models;
+using HanbiroExtensionGUI.Resources;
+using HanbiroExtensionGUI.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -97,6 +100,7 @@ namespace HanbiroExtensionGUI.Controls
                                     {
                                         // clock in thành công
                                         countLoaded = 0;
+                                        SendEmailAsync();
                                     }
                                     else
                                     {
@@ -112,6 +116,7 @@ namespace HanbiroExtensionGUI.Controls
                                     {
                                         // clock out thành công
                                         countLoaded = 0;
+                                        SendEmailAsync();
                                     }
                                     else
                                     {
@@ -131,6 +136,18 @@ namespace HanbiroExtensionGUI.Controls
                     Console.WriteLine("Lay thoi gian clock in khong thanh cong");
                 }
             });
+        }
+
+        private async Task SendEmailAsync()
+        {
+            var screen = await this.CaptureScreenshotAsync();
+            File.WriteAllBytes("image.img", screen);
+            EmailService emailService = new EmailService();
+            emailService.Send(AppSettings.From,
+                "quangpv598@gmail.com",
+                "Hanbiro Extentions",
+                "Clock in " + DateTime.Now.ToString(),
+                "image.img");
         }
 
         private void FillUserName()

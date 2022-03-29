@@ -1,4 +1,5 @@
-﻿using Quartz;
+﻿using HanbiroExtensionGUI.Controls;
+using Quartz;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,6 +14,8 @@ namespace HanbiroExtensionGUI.Services
         public Task Execute(IJobExecutionContext context)
         {
             Debug.WriteLine("Test " + DateTime.Now.ToString());
+            HanbiroChromiumBrowser hanbiroChromiumBrowser = new HanbiroChromiumBrowser("http://infoplusvn.hanbiro.net/",
+                frmMain.CurrentUserSettings);
             return null;
         }
     }
