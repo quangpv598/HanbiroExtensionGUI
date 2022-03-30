@@ -1,0 +1,5 @@
+1. Write check health feature
+
+2. Event when error, finish of Chromium Browser
+If finish => send success email to user
+If error => send email Check Health to administrator
