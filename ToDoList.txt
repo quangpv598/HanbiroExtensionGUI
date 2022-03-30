@@ -3,3 +3,14 @@
 2. Event when error, finish of Chromium Browser
 If finish => send success email to user
 If error => send email Check Health to administrator
+
+3. Support Multi User (build from google form & c# read google sheet)
+
+3.1. Optimize memory & perfomance
+
+3.2. Send demo to beta user
+
+4. Support Database => Entity framework
+Save user info, check in out history of user
+
+5. Optimize memory & perfomance
