@@ -1,4 +1,6 @@
-1. Write check health feature
+1. Write check health feature (done)
+
+1.1. Check if element appear
 
 2. Event when error, finish of Chromium Browser
 If finish => send success email to user
