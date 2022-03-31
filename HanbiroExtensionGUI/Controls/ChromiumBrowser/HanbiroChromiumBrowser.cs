@@ -23,19 +23,43 @@ namespace HanbiroExtensionGUI.Controls
         #region Fields
         int countLoaded = 0;
         private UserSettings userSettings;
+        private readonly LoginUserAction loginAction;
+        private readonly ClockInOutAction clockInOutAction;
+        public event EventHandler Disposed;
         #endregion
 
         #region Properties
         public bool IsCheckHealth { get; set; }
         public UserSettings UserSettings => userSettings;
-        public StringBuilder CheckHealthResult { get; protected set; } = new StringBuilder();
+        public StringBuilder CheckHealthResult { get; protected set; }
         #endregion
 
         #region Constructors
         public HanbiroChromiumBrowser(string address, UserSettings userSettings) : base(address)
         {
             this.userSettings = userSettings;
+            this.loginAction = new LoginUserAction(this);
+            this.clockInOutAction = new ClockInOutAction(this);
+            this.CheckHealthResult = new StringBuilder();
+
+            #region Init Events
+            this.loginAction.OnSuccessEvent += LoginAction_OnSuccessEvent;
+            this.loginAction.OnErrorEvent += LoginAction_OnErrorEvent;
+            this.clockInOutAction.OnSuccessEvent += LoginAction_OnSuccessEvent;
+            this.clockInOutAction.OnErrorEvent += LoginAction_OnErrorEvent;
             this.FrameLoadEnd += HanbiroChromiumBrowser_FrameLoadEnd;
+            #endregion
+        }
+
+        private void LoginAction_OnErrorEvent(object sender)
+        {
+            Disposed?.Invoke(this, new EventArgs());
+        }
+
+        private void LoginAction_OnSuccessEvent(object sender)
+        {
+            this.CheckHealthResult.AppendLine("Success!!!");
+            Disposed?.Invoke(this, new EventArgs());
         }
         #endregion
 
@@ -43,17 +67,17 @@ namespace HanbiroExtensionGUI.Controls
 
         private void HanbiroChromiumBrowser_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
         {
-            CheckHealthResult.AppendLineWithShortTime(nameof(HanbiroChromiumBrowser_FrameLoadEnd), 
+            CheckHealthResult.AppendLineWithShortTime(
+                nameof(HanbiroChromiumBrowser_FrameLoadEnd), 
                 true,
                 $"Frame Loaded With Count = {countLoaded}");
             if (countLoaded == 2)
             {
-                var loginAction = new LoginUserAction(this);
+                CheckHealthResult.Clear();
                 loginAction.DoWork();
             }
             if (countLoaded == 3)
             {
-                var clockInOutAction = new ClockInOutAction(this);
                 clockInOutAction.DoWork();
             }
 

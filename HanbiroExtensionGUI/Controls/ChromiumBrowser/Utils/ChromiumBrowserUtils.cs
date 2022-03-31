@@ -19,6 +19,12 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
             return browser.GetBrowser().GetFrame(identifiers[indexs]);
         }
 
+        public static int GetFramesCount(ChromiumWebBrowser browser)
+        {
+            var identifiers = browser.GetBrowser().GetFrameIdentifiers();
+            return browser.GetBrowser().GetFrameCount();
+        }
+
         [DllImport("user32.dll")]
         public static extern int ToUnicode(uint virtualKeyCode, uint scanCode,
             byte[] keyboardState,
@@ -59,7 +65,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
 
             foreach (KeyEvent ev in events)
             {
-                Thread.Sleep(200);
+                Thread.Sleep(500);
                 browser.GetBrowser().GetHost().SendKeyEvent(ev);
             }
         }

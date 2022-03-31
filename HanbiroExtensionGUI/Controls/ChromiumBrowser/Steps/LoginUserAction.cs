@@ -1,4 +1,5 @@
-﻿using HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils;
+﻿using CefSharp;
+using HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils;
 using HanbiroExtensionGUI.Extensions;
 using System;
 using System.Collections.Generic;
@@ -26,16 +27,32 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
             task.Start();
         }
 
-        private void FillUserName()
+        private async void FillUserName()
         {
-            Thread.Sleep(2000);
+            try
+            {
+                await TaskWaiter.WaitUntil(async () =>
+                {
+                    bool isSuccess = false;
+                    await Browser.EvaluateScriptAsync("document.getElementById('log-userid').value;").ContinueWith(x =>
+                    {
+                        isSuccess = x.Result.Success;
+                    });
+                    return isSuccess;
+                }, 1000, 5000);
+            }
+            catch (Exception ex)
+            {
+                RaiseErrorEvent();
+            }
+            
+            Thread.Sleep(1000);
 
             Utils.ChromiumBrowserUtils.SendKeys(Browser, UserSettings.UserName);
 
             Thread.Sleep(1000);
 
-            var frame = Utils.ChromiumBrowserUtils.GetFrame(Browser, 0);
-            frame.EvaluateScriptAsync("document.getElementById('log-userid').value;").ContinueWith(x =>
+            await Browser.EvaluateScriptAsync("document.getElementById('log-userid').value;").ContinueWith(x =>
             {
                 var response = x.Result;
 
@@ -47,7 +64,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                             nameof(FillUserName),
                             true,
                             $"Fill Username Completed");
-                        var task = new Task(FillPassword);
+                        var task = new Task(FillPasswordAsync);
                         task.Start();
                     }
                     else
@@ -56,6 +73,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                             nameof(FillUserName),
                             false,
                             $"Username is not match with input");
+                        RaiseErrorEvent();
                     }
                 }
                 else
@@ -64,16 +82,17 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                         nameof(FillUserName),
                         false,
                         $"Can't access element with id 'log-userid'");
+                    RaiseErrorEvent();
                 }
             });
         }
 
-        private void FillPassword()
+        private async void FillPasswordAsync()
         {
-            Thread.Sleep(200);
+            await TaskWaiter.WaitUntil(() => Task.FromResult(ChromiumBrowserUtils.GetFramesCount(Browser) > 1), 1000, 5000);
 
             var frame = Utils.ChromiumBrowserUtils.GetFrame(Browser, 1);
-            frame.EvaluateScriptAsync(string.Format("document.getElementsByClassName('form-control key')[0].value = '{0}';", UserSettings.Password)).ContinueWith(x =>
+            await frame.EvaluateScriptAsync(string.Format("document.getElementsByClassName('form-control key')[0].value = '{0}';", UserSettings.Password)).ContinueWith(x =>
             {
                 var response = x.Result;
 
@@ -88,7 +107,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                             if (response.Result.ToString() == UserSettings.Password)
                             {
                                 Browser.CheckHealthResult.AppendLineWithShortTime(
-                                        nameof(FillUserName),
+                                        nameof(FillPasswordAsync),
                                         true,
                                         $"Fill Password Completed");
                                 var task = new Task(PressLogin);
@@ -97,9 +116,10 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                             else
                             {
                                 Browser.CheckHealthResult.AppendLineWithShortTime(
-                            nameof(FillUserName),
-                            false,
-                            $"Password is not match with input");
+                                        nameof(FillPasswordAsync),
+                                        false,
+                                        $"Password is not match with input");
+                                RaiseErrorEvent();
                             }
                         }
                     });
@@ -107,9 +127,10 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                 else
                 {
                     Browser.CheckHealthResult.AppendLineWithShortTime(
-                        nameof(FillUserName),
+                        nameof(FillPasswordAsync),
                         false,
                         $"Can't access Password element");
+                    RaiseErrorEvent();
                 }
             });
         }
@@ -133,9 +154,10 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                 else
                 {
                     Browser.CheckHealthResult.AppendLineWithShortTime(
-                        nameof(FillUserName),
+                        nameof(PressLogin),
                         false,
                         $"Can't access element with id 'btn-log'");
+                    RaiseErrorEvent();
                 }
             });
         }

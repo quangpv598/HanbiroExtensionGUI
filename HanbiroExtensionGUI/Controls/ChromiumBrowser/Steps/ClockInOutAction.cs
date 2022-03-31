@@ -50,6 +50,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                         nameof(ClickUserInfoPanel),
                         false,
                         $"Can't access element 'user-info'");
+                    RaiseErrorEvent();
                 }
             });
         }
@@ -71,80 +72,146 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                     string clockInLabel = string.Empty;
                     clockInLabel = response.Result.ToString();
 
-                    Browser.EvaluateScriptAsync("document.getElementsByClassName('tertiary-info text-center')[1].innerText;").ContinueWith(x =>
-                    {
-                        var response = x.Result;
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                                    nameof(GetClockInLabel),
+                                    true,
+                                    $"Get Clock In Label Successfully");
 
-                        if (response.Success && response.Result != null)
-                        {
-                            string clockOutLabel = string.Empty;
-                            clockOutLabel = response.Result.ToString();
-
-                            if ((string.IsNullOrEmpty(clockInLabel) && !string.IsNullOrEmpty(clockOutLabel))
-                            || (string.IsNullOrEmpty(clockInLabel) && string.IsNullOrEmpty(clockOutLabel)))
-                            {
-                                //Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0].click();").ContinueWith(x =>
-                                //{
-                                //    var response = x.Result;
-                                //    if (response.Success)
-                                //    {
-                                //        // clock in thành công
-
-                                //    }
-                                //    else
-                                //    {
-                                //        // clock in không thành công
-                                //    }
-                                //});
-                            }
-                            else if (!string.IsNullOrEmpty(clockInLabel) && string.IsNullOrEmpty(clockOutLabel))
-                            {
-                                //Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0].click();").ContinueWith(x =>
-                                //{
-                                //    var response = x.Result;
-                                //    if (response.Success)
-                                //    {
-                                //        // clock out thành công
-
-                                //    }
-                                //    else
-                                //    {
-                                //        // clock out không thành công
-                                //    }
-                                //});
-                            }
-                        }
-                        else
-                        {
-                            Debug.WriteLine("Lay thoi gian clock out khong thanh cong");
-                        }
-                    });
+                    GetClockOutLabel(clockInLabel);
                 }
                 else
                 {
-                    Debug.WriteLine("Lay thoi gian clock in khong thanh cong");
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                                    nameof(GetClockInLabel),
+                                    false,
+                                    $"Can Not Get Clock In Label");
+                    RaiseErrorEvent();
                 }
             });
         }
 
-        private void GetClockOutLabel(string clockIn)
+        private void GetClockOutLabel(string clockInLabel)
         {
+            Browser.EvaluateScriptAsync("document.getElementsByClassName('tertiary-info text-center')[1].innerText;").ContinueWith(x =>
+            {
+                var response = x.Result;
 
+                if (response.Success && response.Result != null)
+                {
+                    string clockOutLabel = string.Empty;
+                    clockOutLabel = response.Result.ToString();
+
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                                    nameof(GetClockOutLabel),
+                                    true,
+                                    $"Get Clock Out Label Successfully");
+
+                    ClockInClockOut(clockInLabel, clockOutLabel);
+                }
+                else
+                {
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                                    nameof(GetClockOutLabel),
+                                    false,
+                                    $"Can Not Get Clock Out Label");
+                    RaiseErrorEvent();
+                }
+            });
         }
 
         private void ClockInClockOut(string clockInLabel,string clockOutLabel)
         {
+            if (Browser.IsCheckHealth)
+            {
+                CheckClockIn();
+                CheckClockOut();
+            }
+            else
+            {
+                if ((string.IsNullOrEmpty(clockInLabel) && !string.IsNullOrEmpty(clockOutLabel))
+                   || (string.IsNullOrEmpty(clockInLabel) && string.IsNullOrEmpty(clockOutLabel)))
+                {
+                    ClockIn();
+                }
+                else if (!string.IsNullOrEmpty(clockInLabel) && string.IsNullOrEmpty(clockOutLabel))
+                {
+                    ClockOut();
+                }
+            }
+        }
 
+        private void CheckClockIn()
+        {
+            Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0].innerText;").ContinueWith(x =>
+            {
+                var response = x.Result;
+                if (response.Success && !string.IsNullOrEmpty(response.Result.ToString()))
+                {
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                                    nameof(ClockIn),
+                                    true,
+                                    $"Clock In Successfully");
+                    RaiseSuccessEvent();
+                }
+            });
         }
 
         private void ClockIn()
         {
-
+            Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0].click();").ContinueWith(x =>
+            {
+                var response = x.Result;
+                if (response.Success)
+                {
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                                    nameof(ClockIn),
+                                    true,
+                                    $"Clock In Successfully");
+                    RaiseSuccessEvent();
+                }
+                else
+                {
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                                    nameof(ClockIn),
+                                    false,
+                                    $"Can not access element to Clock In");
+                    RaiseErrorEvent();
+                }
+            });
         }
-
+        private void CheckClockOut()
+        {
+            Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0].innerText;").ContinueWith(x =>
+            {
+                var response = x.Result;
+                if (response.Success && !string.IsNullOrEmpty(response.Result.ToString()))
+                {
+                    RaiseSuccessEvent();
+                }
+            });
+        }
         private void ClockOut()
         {
-
+            Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0].click();").ContinueWith(x =>
+            {
+                var response = x.Result;
+                if (response.Success)
+                {
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                                    nameof(ClockIn),
+                                    true,
+                                    $"Clock Out Successfully");
+                    RaiseSuccessEvent();
+                }
+                else
+                {
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                                    nameof(ClockIn),
+                                    false,
+                                    $"Can not access element to Clock Out");
+                    RaiseErrorEvent();
+                }
+            });
         }
     }
 }

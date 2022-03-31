@@ -1,4 +1,5 @@
-﻿using HanbiroExtensionGUI.Models;
+﻿using HanbiroExtensionGUI.Controls;
+using HanbiroExtensionGUI.Models;
 using HanbiroExtensionGUI.Services;
 using Quartz;
 using Quartz.Impl;
@@ -22,6 +23,7 @@ namespace HanbiroExtensionGUI
         private IScheduler scheduler;
         public static UserSettings CurrentUserSettings = null;
         private string uesrSettingsPath = @"UserSettings.json";
+        private HanbiroChromiumBrowser hanbiroChromiumBrowser;
         #endregion
 
         #region Properties
@@ -51,11 +53,25 @@ namespace HanbiroExtensionGUI
                 MessageBox.Show("Please fill your username and password!!!", "Notification");
                 return;
             }
-            SaveUserSettings();
-            EnableControl(true);
 
-            ShutdownScheduler();
-            InitSchedulerAsync();
+            SaveUserSettings();
+            //EnableControl(true);
+
+            //ShutdownScheduler();
+            //InitSchedulerAsync();
+
+            HanbiroChromiumBrowser hanbiroChromiumBrowser = new HanbiroChromiumBrowser("http://infoplusvn.hanbiro.net/", CurrentUserSettings);
+            hanbiroChromiumBrowser.IsCheckHealth = true;
+            hanbiroChromiumBrowser.Disposed += HanbiroChromiumBrowser_Disposed;
+        }
+
+        private void HanbiroChromiumBrowser_Disposed(object sender, EventArgs e)
+        {
+            MessageBox.Show((sender as HanbiroChromiumBrowser).CheckHealthResult.ToString());
+            //hanbiroChromiumBrowser.Dispose();
+            //hanbiroChromiumBrowser = null;
+            ////CefSharp.Cef.Shutdown();
+            //GC.Collect();
         }
 
         private void btnSaveSettings_ClickAsync(object sender, EventArgs e)
