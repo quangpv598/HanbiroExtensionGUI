@@ -1,6 +1,7 @@
 ﻿using CefSharp;
 using CefSharp.OffScreen;
 using HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps;
+using HanbiroExtensionGUI.Extensions;
 using HanbiroExtensionGUI.Models;
 using HanbiroExtensionGUI.Resources;
 using HanbiroExtensionGUI.Services;
@@ -42,6 +43,9 @@ namespace HanbiroExtensionGUI.Controls
 
         private void HanbiroChromiumBrowser_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
         {
+            CheckHealthResult.AppendLineWithShortTime(nameof(HanbiroChromiumBrowser_FrameLoadEnd), 
+                true,
+                $"Frame Loaded With Count = {countLoaded}");
             if (countLoaded == 2)
             {
                 var loginAction = new LoginUserAction(this);

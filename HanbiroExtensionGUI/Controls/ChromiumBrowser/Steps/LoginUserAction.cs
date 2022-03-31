@@ -1,4 +1,5 @@
 ﻿using HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils;
+using HanbiroExtensionGUI.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,10 +14,14 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
     {
         public LoginUserAction(HanbiroChromiumBrowser hanbiroChromiumBrowser) : base(hanbiroChromiumBrowser)
         {
-            
+
         }
         public override void DoWork()
         {
+            Browser.CheckHealthResult.AppendLineWithShortTime(
+                nameof(DoWork),
+                true,
+                $"Enter to Login Action");
             var task = new Task(FillUserName);
             task.Start();
         }
@@ -38,14 +43,27 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                 {
                     if (response.Result.ToString() == UserSettings.UserName)
                     {
+                        Browser.CheckHealthResult.AppendLineWithShortTime(
+                            nameof(FillUserName),
+                            true,
+                            $"Fill Username Completed");
                         var task = new Task(FillPassword);
                         task.Start();
                     }
                     else
                     {
-                        // chưa nhập được tên người dùng
-                        Debug.WriteLine("Chua nhap dung ten nguoi dung");
+                        Browser.CheckHealthResult.AppendLineWithShortTime(
+                            nameof(FillUserName),
+                            false,
+                            $"Username is not match with input");
                     }
+                }
+                else
+                {
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                        nameof(FillUserName),
+                        false,
+                        $"Can't access element with id 'log-userid'");
                 }
             });
         }
@@ -69,20 +87,29 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                         {
                             if (response.Result.ToString() == UserSettings.Password)
                             {
+                                Browser.CheckHealthResult.AppendLineWithShortTime(
+                                        nameof(FillUserName),
+                                        true,
+                                        $"Fill Password Completed");
                                 var task = new Task(PressLogin);
                                 task.Start();
                             }
                             else
                             {
-                                // chưa nhập được mật khẩu
-                                Debug.WriteLine("Chua nhap dung mat khau");
+                                Browser.CheckHealthResult.AppendLineWithShortTime(
+                            nameof(FillUserName),
+                            false,
+                            $"Password is not match with input");
                             }
                         }
                     });
                 }
                 else
                 {
-                    Debug.WriteLine("Gan mat khau vao o text khong thanh cong");
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                        nameof(FillUserName),
+                        false,
+                        $"Can't access Password element");
                 }
             });
         }
@@ -92,18 +119,23 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
             Thread.Sleep(200);
 
             var frame = Utils.ChromiumBrowserUtils.GetFrame(Browser, 0);
-            frame.EvaluateScriptAsync("document.getElementById('btn-log').click();").ContinueWith(x => {
-
+            frame.EvaluateScriptAsync("document.getElementById('btn-log').click();").ContinueWith(x =>
+            {
                 var response = x.Result;
 
                 if (response.Success)
                 {
-                    // bấm nút đăng nhập thành công
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                            nameof(PressLogin),
+                            true,
+                            $"Press Login button successfuly");
                 }
                 else
                 {
-                    // bấm nút đăng nhập không thành công
-                    Debug.WriteLine("Bam nut dang nhap khong thanh cong");
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                        nameof(FillUserName),
+                        false,
+                        $"Can't access element with id 'btn-log'");
                 }
             });
         }

@@ -1,4 +1,5 @@
 ﻿using CefSharp;
+using HanbiroExtensionGUI.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,6 +19,10 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
 
         public override void DoWork()
         {
+            Browser.CheckHealthResult.AppendLineWithShortTime(
+                nameof(DoWork),
+                true,
+                $"Enter to Clock In Clock Out Action");
             var task = new Task(ClickUserInfoPanel);
             task.Start();
         }
@@ -32,17 +37,29 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
 
                 if (response.Success)
                 {
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                                    nameof(ClickUserInfoPanel),
+                                    true,
+                                    $"Press User Info Panel Successfully");
                     var task = new Task(CheckInCheckOut);
                     task.Start();
                 }
                 else
                 {
-                    Debug.WriteLine("Click vao User Info Panel khong thanh cong");
+                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                        nameof(ClickUserInfoPanel),
+                        false,
+                        $"Can't access element 'user-info'");
                 }
             });
         }
 
         private void CheckInCheckOut()
+        {
+            GetClockInLabel();
+        }
+
+        private void GetClockInLabel()
         {
             Thread.Sleep(5000);
             Browser.EvaluateScriptAsync("document.getElementsByClassName('tertiary-info text-center')[0].innerText;").ContinueWith(x =>
@@ -72,7 +89,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                                 //    if (response.Success)
                                 //    {
                                 //        // clock in thành công
-                                        
+
                                 //    }
                                 //    else
                                 //    {
@@ -88,7 +105,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                                 //    if (response.Success)
                                 //    {
                                 //        // clock out thành công
-                                        
+
                                 //    }
                                 //    else
                                 //    {
@@ -108,6 +125,26 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                     Debug.WriteLine("Lay thoi gian clock in khong thanh cong");
                 }
             });
+        }
+
+        private void GetClockOutLabel(string clockIn)
+        {
+
+        }
+
+        private void ClockInClockOut(string clockInLabel,string clockOutLabel)
+        {
+
+        }
+
+        private void ClockIn()
+        {
+
+        }
+
+        private void ClockOut()
+        {
+
         }
     }
 }
