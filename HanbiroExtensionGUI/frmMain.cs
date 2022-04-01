@@ -1,4 +1,6 @@
-﻿using HanbiroExtensionGUI.Controls;
+﻿using CefSharp;
+using CefSharp.OffScreen;
+using HanbiroExtensionGUI.Controls;
 using HanbiroExtensionGUI.Models;
 using HanbiroExtensionGUI.Services;
 using Quartz;
@@ -23,7 +25,6 @@ namespace HanbiroExtensionGUI
         private IScheduler scheduler;
         public static UserSettings CurrentUserSettings = null;
         private string uesrSettingsPath = @"UserSettings.json";
-        private HanbiroChromiumBrowser hanbiroChromiumBrowser;
         #endregion
 
         #region Properties
@@ -35,6 +36,11 @@ namespace HanbiroExtensionGUI
         {
             InitializeComponent();
             LoadUserSettings();
+
+            var settings = new CefSettings();
+            settings.DisableGpuAcceleration();
+            settings.SetOffScreenRenderingBestPerformanceArgs();
+            Cef.Initialize(settings);
         }
         #endregion
 
@@ -59,7 +65,6 @@ namespace HanbiroExtensionGUI
 
             //ShutdownScheduler();
             //InitSchedulerAsync();
-
             HanbiroChromiumBrowser hanbiroChromiumBrowser = new HanbiroChromiumBrowser("http://infoplusvn.hanbiro.net/", CurrentUserSettings);
             hanbiroChromiumBrowser.IsCheckHealth = true;
             hanbiroChromiumBrowser.Disposed += HanbiroChromiumBrowser_Disposed;

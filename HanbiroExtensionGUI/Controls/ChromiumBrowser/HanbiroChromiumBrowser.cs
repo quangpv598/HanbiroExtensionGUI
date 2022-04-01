@@ -43,16 +43,19 @@ namespace HanbiroExtensionGUI.Controls
             this.CheckHealthResult = new StringBuilder();
 
             #region Init Events
-            this.loginAction.OnSuccessEvent += LoginAction_OnSuccessEvent;
-            this.loginAction.OnErrorEvent += LoginAction_OnErrorEvent;
+            //this.loginAction.OnSuccessEvent += LoginAction_OnSuccessEvent;
+            //this.loginAction.OnErrorEvent += LoginAction_OnErrorEvent;
+
             this.clockInOutAction.OnSuccessEvent += LoginAction_OnSuccessEvent;
             this.clockInOutAction.OnErrorEvent += LoginAction_OnErrorEvent;
+
             this.FrameLoadEnd += HanbiroChromiumBrowser_FrameLoadEnd;
             #endregion
         }
 
         private void LoginAction_OnErrorEvent(object sender)
         {
+            this.CheckHealthResult.AppendLine("Error!!!");
             Disposed?.Invoke(this, new EventArgs());
         }
 
