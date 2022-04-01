@@ -140,7 +140,6 @@ namespace HanbiroExtensionGUI
         {
             if (File.Exists(uesrSettingsPath))
             {
-                File.Decrypt(uesrSettingsPath);
                 var json = File.ReadAllText(uesrSettingsPath);
                 CurrentUserSettings = JsonSerializer.Deserialize<UserSettings>(json);
 
@@ -183,7 +182,6 @@ namespace HanbiroExtensionGUI
 
             string json = JsonSerializer.Serialize(CurrentUserSettings);
             File.WriteAllText(uesrSettingsPath, json);
-            File.Encrypt(uesrSettingsPath);
         }
 
         private string GetExpressionForDayMonthYear()
