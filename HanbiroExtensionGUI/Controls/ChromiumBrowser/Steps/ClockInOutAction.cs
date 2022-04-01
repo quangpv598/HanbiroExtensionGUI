@@ -31,6 +31,9 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
 
         private async void ClickUserInfoPanel()
         {
+            await Browser.WaitElement("document.getElementsByClassName('user-info')[0].value;",
+                () => RaiseErrorEvent());
+
             await Browser.EvaluateScriptAsync("document.getElementsByClassName('user-info')[0].click();").ContinueWith(x =>
             {
                 var response = x.Result;
@@ -60,10 +63,12 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
             GetClockInLabel();
         }
 
-        private void GetClockInLabel()
+        private async void GetClockInLabel()
         {
-            Thread.Sleep(5000);
-            Browser.EvaluateScriptAsync("document.getElementsByClassName('tertiary-info text-center')[0].innerText;").ContinueWith(x =>
+            await Browser.WaitElement("document.getElementsByClassName('tertiary-info text-center')[0].innerText;",
+                () => RaiseErrorEvent());
+
+            await Browser.EvaluateScriptAsync("document.getElementsByClassName('tertiary-info text-center')[0].innerText;").ContinueWith(x =>
             {
                 var response = x.Result;
 
@@ -90,9 +95,12 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
             });
         }
 
-        private void GetClockOutLabel(string clockInLabel)
+        private async void GetClockOutLabel(string clockInLabel)
         {
-            Browser.EvaluateScriptAsync("document.getElementsByClassName('tertiary-info text-center')[1].innerText;").ContinueWith(x =>
+            await Browser.WaitElement("document.getElementsByClassName('tertiary-info text-center')[1].innerText;",
+                () => RaiseErrorEvent());
+
+            await Browser.EvaluateScriptAsync("document.getElementsByClassName('tertiary-info text-center')[1].innerText;").ContinueWith(x =>
             {
                 var response = x.Result;
 
@@ -140,9 +148,12 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
             }
         }
 
-        private void CheckClockIn()
+        private async void CheckClockIn()
         {
-            Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0].innerText;").ContinueWith(x =>
+            await Browser.WaitElement("document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0].innerText;",
+                () => RaiseErrorEvent());
+
+            await Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0].innerText;").ContinueWith(x =>
             {
                 var response = x.Result;
                 if (response.Success && !string.IsNullOrEmpty(response.Result.ToString()))
@@ -156,9 +167,12 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
             });
         }
 
-        private void ClockIn()
+        private async void ClockIn()
         {
-            Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0].click();").ContinueWith(x =>
+            await Browser.WaitElement("document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0].value;",
+                () => RaiseErrorEvent());
+
+            await Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0].click();").ContinueWith(x =>
             {
                 var response = x.Result;
                 if (response.Success)
@@ -179,9 +193,12 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                 }
             });
         }
-        private void CheckClockOut()
+        private async void CheckClockOut()
         {
-            Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0].innerText;").ContinueWith(x =>
+            await Browser.WaitElement("document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0].innerText;",
+                () => RaiseErrorEvent());
+
+            await Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0].innerText;").ContinueWith(x =>
             {
                 var response = x.Result;
                 if (response.Success && !string.IsNullOrEmpty(response.Result.ToString()))
@@ -190,9 +207,12 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                 }
             });
         }
-        private void ClockOut()
+        private async void ClockOut()
         {
-            Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0].click();").ContinueWith(x =>
+            await Browser.WaitElement("document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0].value;",
+                () => RaiseErrorEvent());
+
+            await Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0].click();").ContinueWith(x =>
             {
                 var response = x.Result;
                 if (response.Success)

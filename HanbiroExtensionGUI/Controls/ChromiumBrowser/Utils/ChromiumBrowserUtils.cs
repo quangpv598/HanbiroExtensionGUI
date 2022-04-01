@@ -61,18 +61,6 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
             }
         }
 
-        public static async Task<JavascriptResponse> EvaluateScriptAsync(this ChromiumWebBrowser browser, 
-            string element,
-            string attribute,
-            string action,
-            Action timeOutAction,
-            int sequence = 1000,
-            int timeout = 5000)
-        {
-            await browser.WaitElement(string.Format("{0}.{1}", element, attribute), timeOutAction, sequence, timeout);
-            return browser.EvaluateScriptAsync(string.Format("{0}.{1}", element, attribute));
-        }
-
         public static IFrame GetFrame(ChromiumWebBrowser browser, int indexs)
         {
             var identifiers = browser.GetBrowser().GetFrameIdentifiers().OrderBy(id => id).ToList();
@@ -125,7 +113,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
 
             foreach (KeyEvent ev in events)
             {
-                Thread.Sleep(500);
+                Thread.Sleep(200);
                 browser.GetBrowser().GetHost().SendKeyEvent(ev);
             }
         }

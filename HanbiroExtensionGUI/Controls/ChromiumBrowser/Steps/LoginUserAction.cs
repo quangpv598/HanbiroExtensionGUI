@@ -32,11 +32,11 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
             await Browser.WaitElement("document.getElementById('log-userid').value;",
                 () => RaiseErrorEvent());
             
-            Thread.Sleep(1000);
+            Thread.Sleep(100);
 
             Utils.ChromiumBrowserUtils.SendKeys(Browser, UserSettings.UserName);
 
-            Thread.Sleep(1000);
+            Thread.Sleep(100);
 
             await Browser.EvaluateScriptAsync("document.getElementById('log-userid').value;").ContinueWith(x =>
             {
@@ -78,6 +78,10 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
             await TaskWaiter.WaitUntil(() => Task.FromResult(ChromiumBrowserUtils.GetFramesCount(Browser) > 1), 1000, 5000);
 
             var frame = Utils.ChromiumBrowserUtils.GetFrame(Browser, 1);
+
+            await frame.WaitElement("document.getElementsByClassName('form-control key')[0].value;",
+                () => RaiseErrorEvent());
+
             await frame.EvaluateScriptAsync(string.Format("document.getElementsByClassName('form-control key')[0].value = '{0}';", UserSettings.Password)).ContinueWith(x =>
             {
                 var response = x.Result;
@@ -121,12 +125,16 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
             });
         }
 
-        private void PressLogin()
+        private async void PressLogin()
         {
-            Thread.Sleep(200);
+            await TaskWaiter.WaitUntil(() => Task.FromResult(ChromiumBrowserUtils.GetFramesCount(Browser) > 1), 1000, 5000);
 
             var frame = Utils.ChromiumBrowserUtils.GetFrame(Browser, 0);
-            frame.EvaluateScriptAsync("document.getElementById('btn-log').click();").ContinueWith(x =>
+
+            await frame.WaitElement("document.getElementById('btn-log').value;",
+                () => RaiseErrorEvent());
+
+            await frame.EvaluateScriptAsync("document.getElementById('btn-log').click();").ContinueWith(x =>
             {
                 var response = x.Result;
 
