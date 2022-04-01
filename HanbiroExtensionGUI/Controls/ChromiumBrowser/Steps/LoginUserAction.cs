@@ -29,22 +29,8 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
 
         private async void FillUserName()
         {
-            try
-            {
-                await TaskWaiter.WaitUntil(async () =>
-                {
-                    bool isSuccess = false;
-                    await Browser.EvaluateScriptAsync("document.getElementById('log-userid').value;").ContinueWith(x =>
-                    {
-                        isSuccess = x.Result.Success;
-                    });
-                    return isSuccess;
-                }, 1000, 5000);
-            }
-            catch (Exception ex)
-            {
-                RaiseErrorEvent();
-            }
+            await Browser.WaitElement("document.getElementById('log-userid').value;",
+                () => RaiseErrorEvent());
             
             Thread.Sleep(1000);
 

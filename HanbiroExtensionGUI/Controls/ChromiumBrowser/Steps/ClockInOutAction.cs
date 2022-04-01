@@ -1,4 +1,5 @@
 ﻿using CefSharp;
+using HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils;
 using HanbiroExtensionGUI.Extensions;
 using System;
 using System.Collections.Generic;
@@ -28,10 +29,9 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
         }
 
 
-        private void ClickUserInfoPanel()
+        private async void ClickUserInfoPanel()
         {
-            Thread.Sleep(2000);
-            Browser.EvaluateScriptAsync("document.getElementsByClassName('user-info')[0].click();").ContinueWith(x =>
+            await Browser.EvaluateScriptAsync("document.getElementsByClassName('user-info')[0].click();").ContinueWith(x =>
             {
                 var response = x.Result;
 

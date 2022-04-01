@@ -13,9 +13,69 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
 {
     public static class ChromiumBrowserUtils
     {
+        public async static Task WaitElement(this ChromiumWebBrowser browser, 
+            string element,
+            Action timeOutAction, 
+            int sequence = 1000,
+            int timeout = 5000)
+        {
+            try
+            {
+                await TaskWaiter.WaitUntil(async () =>
+                {
+                    bool isSuccess = false;
+                    await browser.EvaluateScriptAsync(element).ContinueWith(x =>
+                    {
+                        isSuccess = x.Result.Success;
+                    });
+                    return isSuccess;
+                }, sequence, timeout);
+            }
+            catch (Exception ex)
+            {
+                timeOutAction?.Invoke();
+            }
+        }
+
+        public async static Task WaitElement(this IFrame frame,
+            string element,
+            Action timeOutAction,
+            int sequence = 1000,
+            int timeout = 5000)
+        {
+            try
+            {
+                await TaskWaiter.WaitUntil(async () =>
+                {
+                    bool isSuccess = false;
+                    await frame.EvaluateScriptAsync(element).ContinueWith(x =>
+                    {
+                        isSuccess = x.Result.Success;
+                    });
+                    return isSuccess;
+                }, sequence, timeout);
+            }
+            catch (Exception ex)
+            {
+                timeOutAction?.Invoke();
+            }
+        }
+
+        public static async Task<JavascriptResponse> EvaluateScriptAsync(this ChromiumWebBrowser browser, 
+            string element,
+            string attribute,
+            string action,
+            Action timeOutAction,
+            int sequence = 1000,
+            int timeout = 5000)
+        {
+            await browser.WaitElement(string.Format("{0}.{1}", element, attribute), timeOutAction, sequence, timeout);
+            return browser.EvaluateScriptAsync(string.Format("{0}.{1}", element, attribute));
+        }
+
         public static IFrame GetFrame(ChromiumWebBrowser browser, int indexs)
         {
-            var identifiers = browser.GetBrowser().GetFrameIdentifiers();
+            var identifiers = browser.GetBrowser().GetFrameIdentifiers().OrderBy(id => id).ToList();
             return browser.GetBrowser().GetFrame(identifiers[indexs]);
         }
 
