@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace HanbiroExtensionGUI
 {
-    public class Application
+    public class App
     {
         #region Fields
         public static CurrentUserSettings CurrentUserSettings = new CurrentUserSettings();
@@ -25,7 +25,7 @@ namespace HanbiroExtensionGUI
         #endregion
 
         #region Constructors
-        public Application()
+        public App()
         {
             LoadUserSettings();
             InitCefSharp();
