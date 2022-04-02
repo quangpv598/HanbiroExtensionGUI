@@ -1,6 +1,8 @@
 ﻿using CefSharp;
 using HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils;
+using HanbiroExtensionGUI.Enums;
 using HanbiroExtensionGUI.Extensions;
+using HanbiroExtensionGUI.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,17 +26,28 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                 nameof(DoWork),
                 true,
                 $"Enter to Clock In Clock Out Action");
-            var task = new Task(ClickUserInfoPanel);
-            task.Start();
+
+            CurrentUser.IsLoginSuccess = true;
+
+            if (Browser.IsCheckAccountValid)
+            {
+                RaiseSuccessEvent();
+            }
+            else
+            {
+                var task = new Task(ClickUserInfoPanel);
+                task.Start();
+            }
         }
 
 
         private async void ClickUserInfoPanel()
         {
-            await Browser.WaitElement("document.getElementsByClassName('user-info')[0].value;",
-                () => RaiseErrorEvent());
+            string element = "document.getElementsByClassName('user-info')[0]";
+            await Browser.WaitElement($"{element}.value;",
+                () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
 
-            await Browser.EvaluateScriptAsync("document.getElementsByClassName('user-info')[0].click();").ContinueWith(x =>
+            await Browser.EvaluateScriptAsync($"{element}.click();").ContinueWith(x =>
             {
                 var response = x.Result;
 
@@ -53,7 +66,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                         nameof(ClickUserInfoPanel),
                         false,
                         $"Can't access element 'user-info'");
-                    RaiseErrorEvent();
+                    RaiseErrorEvent(new ErrorArgs(ErrorType.CannotAccessElement, element));
                 }
             });
         }
@@ -65,10 +78,11 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
 
         private async void GetClockInLabel()
         {
-            await Browser.WaitElement("document.getElementsByClassName('tertiary-info text-center')[0].innerText;",
-                () => RaiseErrorEvent());
+            string element = "document.getElementsByClassName('tertiary-info text-center')[0]";
+            await Browser.WaitElement($"{element}.innerText;",
+                () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
 
-            await Browser.EvaluateScriptAsync("document.getElementsByClassName('tertiary-info text-center')[0].innerText;").ContinueWith(x =>
+            await Browser.EvaluateScriptAsync($"{element}.innerText;").ContinueWith(x =>
             {
                 var response = x.Result;
 
@@ -90,17 +104,18 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                                     nameof(GetClockInLabel),
                                     false,
                                     $"Can Not Get Clock In Label");
-                    RaiseErrorEvent();
+                    RaiseErrorEvent(new ErrorArgs(ErrorType.CannotAccessElement, element));
                 }
             });
         }
 
         private async void GetClockOutLabel(string clockInLabel)
         {
-            await Browser.WaitElement("document.getElementsByClassName('tertiary-info text-center')[1].innerText;",
-                () => RaiseErrorEvent());
+            string element = "document.getElementsByClassName('tertiary-info text-center')[1]";
+            await Browser.WaitElement($"{element}.innerText;",
+                () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
 
-            await Browser.EvaluateScriptAsync("document.getElementsByClassName('tertiary-info text-center')[1].innerText;").ContinueWith(x =>
+            await Browser.EvaluateScriptAsync($"{element}.innerText;").ContinueWith(x =>
             {
                 var response = x.Result;
 
@@ -122,7 +137,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                                     nameof(GetClockOutLabel),
                                     false,
                                     $"Can Not Get Clock Out Label");
-                    RaiseErrorEvent();
+                    RaiseErrorEvent(new ErrorArgs(ErrorType.CannotAccessElement, element));
                 }
             });
         }
@@ -156,10 +171,11 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
 
         private async void CheckClockIn()
         {
-            await Browser.WaitElement("document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0].innerText;",
-                () => RaiseErrorEvent());
+            string element = "document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0]";
+            await Browser.WaitElement($"{element}.innerText;",
+                () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
 
-            await Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0].innerText;").ContinueWith(x =>
+            await Browser.EvaluateScriptAsync($"{element}.innerText;").ContinueWith(x =>
             {
                 var response = x.Result;
                 if (response.Success && !string.IsNullOrEmpty(response.Result.ToString()))
@@ -175,10 +191,11 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
 
         private async void ClockIn()
         {
-            await Browser.WaitElement("document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0].value;",
-                () => RaiseErrorEvent());
+            string element = "document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0]";
+            await Browser.WaitElement($"{element}.value;",
+                () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
 
-            await Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0].click();").ContinueWith(x =>
+            await Browser.EvaluateScriptAsync($"{element}.click();").ContinueWith(x =>
             {
                 var response = x.Result;
                 if (response.Success)
@@ -195,16 +212,17 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                                     nameof(ClockIn),
                                     false,
                                     $"Can not access element to Clock In");
-                    RaiseErrorEvent();
+                    RaiseErrorEvent(new ErrorArgs(ErrorType.CannotAccessElement, element));
                 }
             });
         }
         private async void CheckClockOut()
         {
-            await Browser.WaitElement("document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0].innerText;",
-                () => RaiseErrorEvent());
+            string element = "document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0]";
+            await Browser.WaitElement($"{element}.innerText;",
+                () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
 
-            await Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0].innerText;").ContinueWith(x =>
+            await Browser.EvaluateScriptAsync($"{element}.innerText;").ContinueWith(x =>
             {
                 var response = x.Result;
                 if (response.Success && !string.IsNullOrEmpty(response.Result.ToString()))
@@ -215,10 +233,11 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
         }
         private async void ClockOut()
         {
-            await Browser.WaitElement("document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0].value;",
-                () => RaiseErrorEvent());
+            string element = "document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0]";
+            await Browser.WaitElement($"{element}.value;",
+                () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
 
-            await Browser.EvaluateScriptAsync("document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0].click();").ContinueWith(x =>
+            await Browser.EvaluateScriptAsync($"{element}.click();").ContinueWith(x =>
             {
                 var response = x.Result;
                 if (response.Success)
@@ -235,7 +254,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                                     nameof(ClockIn),
                                     false,
                                     $"Can not access element to Clock Out");
-                    RaiseErrorEvent();
+                    RaiseErrorEvent(new ErrorArgs(ErrorType.CannotAccessElement, element));
                 }
             });
         }

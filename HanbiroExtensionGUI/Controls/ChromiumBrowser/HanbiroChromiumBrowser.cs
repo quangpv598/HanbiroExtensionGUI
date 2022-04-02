@@ -1,6 +1,7 @@
 ﻿using CefSharp;
 using CefSharp.OffScreen;
 using HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps;
+using HanbiroExtensionGUI.Enums;
 using HanbiroExtensionGUI.Extensions;
 using HanbiroExtensionGUI.Models;
 using HanbiroExtensionGUI.Resources;
@@ -22,10 +23,11 @@ namespace HanbiroExtensionGUI.Controls
     {
         #region Fields
         int countLoaded = 0, countFrameLoaded = 0;
-        private UserSettings userSettings;
+        private User currentUser;
         private readonly LoginUserAction loginAction;
         private readonly ClockInOutAction clockInOutAction;
-        public event EventHandler Disposed;
+        public event EventHandler OnClockInOutSuccess;
+        public event EventHandler OnClockInOutError;
         public event EventHandler FrameLoaded;
         private bool isStartWork = false;
         private bool isBusy = false;
@@ -33,7 +35,8 @@ namespace HanbiroExtensionGUI.Controls
 
         #region Properties
         public bool IsCheckHealth { get; set; }
-        public UserSettings UserSettings => userSettings;
+        public bool IsCheckAccountValid { get; set; }
+        public User CurrentUser => currentUser;
         public StringBuilder CheckHealthResult { get; protected set; }
         public bool IsBusy => isBusy;
         #endregion
@@ -46,8 +49,8 @@ namespace HanbiroExtensionGUI.Controls
             this.CheckHealthResult = new StringBuilder();
 
             #region Init Events
-            //this.loginAction.OnSuccessEvent += LoginAction_OnSuccessEvent;
-            //this.loginAction.OnErrorEvent += LoginAction_OnErrorEvent;
+            this.loginAction.OnSuccessEvent += LoginAction_OnSuccessEvent;
+            this.loginAction.OnErrorEvent += LoginAction_OnErrorEvent;
 
             this.clockInOutAction.OnSuccessEvent += LoginAction_OnSuccessEvent;
             this.clockInOutAction.OnErrorEvent += LoginAction_OnErrorEvent;
@@ -56,17 +59,18 @@ namespace HanbiroExtensionGUI.Controls
             #endregion
         }
 
-        private void LoginAction_OnErrorEvent(object sender)
+        private void LoginAction_OnErrorEvent(object sender, ErrorArgs errorCoce)
         {
             this.CheckHealthResult.AppendLine("Error!!!");
-            Disposed?.Invoke(this, new EventArgs());
+            OnClockInOutError?.Invoke(this, new BrowserEventArgs(this, errorCoce));
+
             isBusy = false;
         }
 
         private void LoginAction_OnSuccessEvent(object sender)
         {
             this.CheckHealthResult.AppendLine("Success!!!");
-            Disposed?.Invoke(this, new EventArgs());
+            OnClockInOutSuccess?.Invoke(this, new BrowserEventArgs(this));
             isBusy = false;
         }
         #endregion
@@ -106,10 +110,10 @@ namespace HanbiroExtensionGUI.Controls
 
         #region Methods
 
-        public async void DoWork(UserSettings userSettings)
+        public async void DoWork(User user)
         {
             isBusy = true;
-            this.userSettings = userSettings;
+            this.currentUser = user;
             countLoaded = 0;
             isStartWork = true;
             await this.GetCookieManager().DeleteCookiesAsync(string.Empty, string.Empty);

@@ -1,4 +1,5 @@
-﻿using HanbiroExtensionGUI.Models;
+﻿using HanbiroExtensionGUI.Enums;
+using HanbiroExtensionGUI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +11,16 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
     public abstract class AbstractAction
     {
         // Declare the delegate (if using non-generic pattern).
-        public delegate void SuccessErrorEventHandler(object sender);
+        public delegate void ErrorEventHandler(object sender, ErrorArgs errorArgs);
+        public delegate void SuccessEventHandler(object sender);
 
         // Declare the event.
-        public event SuccessErrorEventHandler OnSuccessEvent;
-        public event SuccessErrorEventHandler OnErrorEvent;
+        public event SuccessEventHandler OnSuccessEvent;
+        public event ErrorEventHandler OnErrorEvent;
 
         private readonly HanbiroChromiumBrowser hanbiroChromiumBrowser;
         public HanbiroChromiumBrowser Browser => hanbiroChromiumBrowser;
-        public UserSettings UserSettings => hanbiroChromiumBrowser.UserSettings;
+        public User CurrentUser => hanbiroChromiumBrowser.CurrentUser;
         public AbstractAction(HanbiroChromiumBrowser hanbiroChromiumBrowser)
         {
             this.hanbiroChromiumBrowser = hanbiroChromiumBrowser;
@@ -34,10 +36,10 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
             OnSuccessEvent?.Invoke(this);
         }
 
-        protected virtual void RaiseErrorEvent()
+        protected virtual void RaiseErrorEvent(ErrorArgs errorArgs)
         {
             // Raise the event in a thread-safe manner using the ?. operator.
-            OnErrorEvent?.Invoke(this);
+            OnErrorEvent?.Invoke(this, errorArgs);
         }
     }
 }

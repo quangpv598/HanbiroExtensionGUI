@@ -1,4 +1,5 @@
-﻿using HanbiroExtensionGUI.Resources;
+﻿using HanbiroExtensionGUI.Models;
+using HanbiroExtensionGUI.Resources;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
@@ -18,11 +19,11 @@ namespace HanbiroExtensionGUI.Services
         Task Send(string from, string to, string subject, string message, string imagePath);
     }
 
-    public class EmailService : IEmailService
+    public class EmailService : ServicesBase, IEmailService
     {
-        public EmailService()
+        public EmailService(CurrentUserSettings userSettings) : base(userSettings)
         {
-            
+
         }
 
         public async Task Send(string from, string to, string subject, string message, string imagePath)

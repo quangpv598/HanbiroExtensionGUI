@@ -24,10 +24,8 @@ namespace HanbiroExtensionGUI
     public partial class frmMain : Form
     {
         #region Fields
-        private IScheduler scheduler;
-        public static UserSettings CurrentUserSettings = null;
+        public static Models.CurrentUserSettings CurrentUserSettings = new Models.CurrentUserSettings();
         private string uesrSettingsPath = @"UserSettings.json";
-        private HanbiroChromiumBrowser hanbiroChromiumBrowser, hanbiroChromiumBrowser2;
         #endregion
 
         #region Properties
@@ -39,19 +37,7 @@ namespace HanbiroExtensionGUI
         {
             InitializeComponent();
             LoadUserSettings();
-            InitCefSharp();
-
-            hanbiroChromiumBrowser = new HanbiroChromiumBrowser("http://infoplusvn.hanbiro.net/");
-            hanbiroChromiumBrowser.IsCheckHealth = true;
-            hanbiroChromiumBrowser.Disposed += HanbiroChromiumBrowser_Disposed;
-            hanbiroChromiumBrowser.FrameLoaded += HanbiroChromiumBrowser_FrameLoaded;
-
-            hanbiroChromiumBrowser2 = new HanbiroChromiumBrowser("http://infoplusvn.hanbiro.net/");
-            hanbiroChromiumBrowser2.IsCheckHealth = true;
-            hanbiroChromiumBrowser2.Disposed += HanbiroChromiumBrowser_Disposed;
-            hanbiroChromiumBrowser2.FrameLoaded += HanbiroChromiumBrowser_FrameLoaded;
         }
-
         #endregion
 
         #region Events
@@ -62,60 +48,11 @@ namespace HanbiroExtensionGUI
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            if (CurrentUserSettings == null
-                || string.IsNullOrEmpty(CurrentUserSettings?.UserName)
-                || string.IsNullOrEmpty(CurrentUserSettings?.Password))
-            {
-                MessageBox.Show("Please fill your username and password!!!", "Notification");
-                return;
-            }
-
             SaveUserSettings();
-            //EnableControl(true);
+            EnableControl(true);
 
             //ShutdownScheduler();
             //InitSchedulerAsync();
-
-            DoWork(hanbiroChromiumBrowser);
-            //DoWork(hanbiroChromiumBrowser2);
-        }
-
-        StringBuilder Logs = new StringBuilder();
-
-        private async void DoWork(HanbiroChromiumBrowser hanbiroChromiumBrowser)
-        {
-            for (int i = 0; i < 1000; i++)
-            {
-                hanbiroChromiumBrowser.DoWork(CurrentUserSettings);
-                try
-                {
-                    await TaskWaiter.WaitUntil(() => Task.FromResult(!hanbiroChromiumBrowser.IsBusy), 1000, 300000);
-                }
-                catch (Exception ex)
-                {
-                    Logs.AppendLine(DateTime.Now.ToString() + " - " + ex.ToString());
-                    File.WriteAllText("log.txt", Logs.ToString());
-                }
-            }
-        }
-
-        int countFrameLoaded = 0;
-        private void HanbiroChromiumBrowser_FrameLoaded(object sender, EventArgs e)
-        {
-            countFrameLoaded++;
-            if (countFrameLoaded == 2)
-            {
-                btnStart.Invoke(new Action(() =>
-                {
-                    btnStart.Enabled = true;
-                }));
-            }
-        }
-
-        private void HanbiroChromiumBrowser_Disposed(object sender, EventArgs e)
-        {
-            File.WriteAllText($"Logs/{Guid.NewGuid().ToString()}.txt",
-                (sender as HanbiroChromiumBrowser).CheckHealthResult.ToString());
         }
 
         private void btnSaveSettings_ClickAsync(object sender, EventArgs e)
@@ -127,97 +64,44 @@ namespace HanbiroExtensionGUI
         private void btnStop_ClickAsync(object sender, EventArgs e)
         {
             EnableControl(false);
-            ShutdownScheduler();
+            //ShutdownScheduler();
         }
         #endregion
 
         #region Methods
-
-        private void InitCefSharp()
-        {
-            var settings = new CefSettings();
-            settings.DisableGpuAcceleration();
-            settings.SetOffScreenRenderingBestPerformanceArgs();
-            Cef.Initialize(settings);
-        }
-
         private void EnableControl(bool b)
         {
-            panelInput.Enabled = !b;
+            groupBoxTimeManagement.Enabled = !b;
             btnStart.Enabled = !b;
             btnStop.Enabled = b;
             btnSaveSettings.Enabled = !b;
         }
 
-        private async Task ShutdownScheduler()
-        {
-            if (scheduler != null)
-                await scheduler.Shutdown();
-        }
-        private async Task InitSchedulerAsync()
-        {
-            //Grab the Scheduler instance from the Factory
-            StdSchedulerFactory factory = new StdSchedulerFactory();
-            scheduler = await factory.GetScheduler();
-
-            // and start it off
-            await scheduler.Start();
-
-            IJobDetail job = JobBuilder.Create<CheckInCheckOutJob>()
-                .WithIdentity("job1", "group1")
-                .Build();
-
-            string cronExpressionEndTime = GetExpressionForEndTime();
-            string cronExpressionStartTime = GetExpressionForStartTime();
-
-            ITrigger trigger = TriggerBuilder.Create()
-                .WithIdentity("trigger1", "group1")
-                .StartNow()
-                .WithCronSchedule(cronExpressionStartTime)
-                .Build();
-
-            ITrigger trigger2 = TriggerBuilder.Create()
-                .WithIdentity("trigger2", "group1")
-                .StartNow()
-                .WithCronSchedule(cronExpressionEndTime)
-                .Build();
-
-            var triggerSet = new HashSet<ITrigger>();
-            triggerSet.Add(trigger);
-            triggerSet.Add(trigger2);
-            await scheduler.ScheduleJob(job, triggerSet, true);
-        }
-
+      
         private void LoadUserSettings()
         {
             if (File.Exists(uesrSettingsPath))
             {
                 var json = File.ReadAllText(uesrSettingsPath);
-                CurrentUserSettings = JsonSerializer.Deserialize<UserSettings>(json);
+                CurrentUserSettings = JsonSerializer.Deserialize<Models.CurrentUserSettings>(json);
 
-                txtUsername.Text = CurrentUserSettings.UserName;
-                txtPassword.Text = CurrentUserSettings.Password;
-                dtpStartTime.Value = CurrentUserSettings.StartTime;
-                dtpEndTime.Value = CurrentUserSettings.EndTime;
-                chkReciveEmailNotifications.Checked = CurrentUserSettings.IsSendResultToEmail;
-                txtEmail.Text = CurrentUserSettings.Email;
-                chkMon.Checked = CurrentUserSettings.DaysOfWeek[DayOfWeek.Monday];
-                chkTue.Checked = CurrentUserSettings.DaysOfWeek[DayOfWeek.Tuesday];
-                chkWed.Checked = CurrentUserSettings.DaysOfWeek[DayOfWeek.Wednesday];
-                chkThu.Checked = CurrentUserSettings.DaysOfWeek[DayOfWeek.Thursday];
-                chkFri.Checked = CurrentUserSettings.DaysOfWeek[DayOfWeek.Friday];
-                chkSat.Checked = CurrentUserSettings.DaysOfWeek[DayOfWeek.Saturday];
-                chkSun.Checked = CurrentUserSettings.DaysOfWeek[DayOfWeek.Sunday];
+                dtpStartTime.Value = CurrentUserSettings.TimeWork.StartTime;
+                dtpEndTime.Value = CurrentUserSettings.TimeWork.EndTime;
+                chkMon.Checked = CurrentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Monday];
+                chkTue.Checked = CurrentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Tuesday];
+                chkWed.Checked = CurrentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Wednesday];
+                chkThu.Checked = CurrentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Thursday];
+                chkFri.Checked = CurrentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Friday];
+                chkSat.Checked = CurrentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Saturday];
+                chkSun.Checked = CurrentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Sunday];
             }
         }
         private void SaveUserSettings()
         {
-            CurrentUserSettings = new UserSettings()
+            CurrentUserSettings = new Models.CurrentUserSettings();
+
+            CurrentUserSettings.TimeWork = new TimeWork()
             {
-                UserName = txtUsername.Text,
-                Password = txtPassword.Text,
-                Email = txtEmail.Text,
-                IsSendResultToEmail = chkReciveEmailNotifications.Checked,
                 StartTime = dtpStartTime.Value,
                 EndTime = dtpEndTime.Value,
                 DaysOfWeek = new Dictionary<DayOfWeek, bool>()
@@ -232,26 +116,18 @@ namespace HanbiroExtensionGUI
                 }
             };
 
+            CurrentUserSettings.Users.Add(new User {
+                UserName = txtUsername.Text,
+                Password = txtPassword.Text,
+                Email = txtEmail.Text,
+                IsSendResultToEmail = chkReciveEmailNotifications.Checked,
+            });
+
             string json = JsonSerializer.Serialize(CurrentUserSettings);
             File.WriteAllText(uesrSettingsPath, json);
         }
 
-        private string GetExpressionForDayMonthYear()
-        {
-            return "? * " + string.Join(",", CurrentUserSettings.DaysOfWeek.Where(d => d.Value == true)
-                .Select(d => d.Key.ToString().Substring(0, 3).ToUpper()));
-        }
-
-        private string GetExpressionForStartTime()
-        {
-            return $"0 {CurrentUserSettings.StartTime.Minute} {CurrentUserSettings.StartTime.Hour} {GetExpressionForDayMonthYear()}";
-        }
-
-        private string GetExpressionForEndTime()
-        {
-            return $"0 {CurrentUserSettings.EndTime.Minute} {CurrentUserSettings.EndTime.Hour} {GetExpressionForDayMonthYear()}";
-        }
-
+        
         #endregion
     }
 }
