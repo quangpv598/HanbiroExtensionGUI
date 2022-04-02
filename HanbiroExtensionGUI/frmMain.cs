@@ -1,6 +1,7 @@
 ﻿using CefSharp;
 using CefSharp.OffScreen;
 using HanbiroExtensionGUI.Controls;
+using HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils;
 using HanbiroExtensionGUI.Models;
 using HanbiroExtensionGUI.Services;
 using Quartz;
@@ -14,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -25,6 +27,7 @@ namespace HanbiroExtensionGUI
         private IScheduler scheduler;
         public static UserSettings CurrentUserSettings = null;
         private string uesrSettingsPath = @"UserSettings.json";
+        private HanbiroChromiumBrowser hanbiroChromiumBrowser, hanbiroChromiumBrowser2;
         #endregion
 
         #region Properties
@@ -36,12 +39,19 @@ namespace HanbiroExtensionGUI
         {
             InitializeComponent();
             LoadUserSettings();
+            InitCefSharp();
 
-            var settings = new CefSettings();
-            settings.DisableGpuAcceleration();
-            settings.SetOffScreenRenderingBestPerformanceArgs();
-            Cef.Initialize(settings);
+            hanbiroChromiumBrowser = new HanbiroChromiumBrowser("http://infoplusvn.hanbiro.net/");
+            hanbiroChromiumBrowser.IsCheckHealth = true;
+            hanbiroChromiumBrowser.Disposed += HanbiroChromiumBrowser_Disposed;
+            hanbiroChromiumBrowser.FrameLoaded += HanbiroChromiumBrowser_FrameLoaded;
+
+            hanbiroChromiumBrowser2 = new HanbiroChromiumBrowser("http://infoplusvn.hanbiro.net/");
+            hanbiroChromiumBrowser2.IsCheckHealth = true;
+            hanbiroChromiumBrowser2.Disposed += HanbiroChromiumBrowser_Disposed;
+            hanbiroChromiumBrowser2.FrameLoaded += HanbiroChromiumBrowser_FrameLoaded;
         }
+
         #endregion
 
         #region Events
@@ -65,18 +75,47 @@ namespace HanbiroExtensionGUI
 
             //ShutdownScheduler();
             //InitSchedulerAsync();
-            HanbiroChromiumBrowser hanbiroChromiumBrowser = new HanbiroChromiumBrowser("http://infoplusvn.hanbiro.net/", CurrentUserSettings);
-            hanbiroChromiumBrowser.IsCheckHealth = true;
-            hanbiroChromiumBrowser.Disposed += HanbiroChromiumBrowser_Disposed;
+
+            DoWork(hanbiroChromiumBrowser);
+            //DoWork(hanbiroChromiumBrowser2);
+        }
+
+        StringBuilder Logs = new StringBuilder();
+
+        private async void DoWork(HanbiroChromiumBrowser hanbiroChromiumBrowser)
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                hanbiroChromiumBrowser.DoWork(CurrentUserSettings);
+                try
+                {
+                    await TaskWaiter.WaitUntil(() => Task.FromResult(!hanbiroChromiumBrowser.IsBusy), 1000, 300000);
+                }
+                catch (Exception ex)
+                {
+                    Logs.AppendLine(DateTime.Now.ToString() + " - " + ex.ToString());
+                    File.WriteAllText("log.txt", Logs.ToString());
+                }
+            }
+        }
+
+        int countFrameLoaded = 0;
+        private void HanbiroChromiumBrowser_FrameLoaded(object sender, EventArgs e)
+        {
+            countFrameLoaded++;
+            if (countFrameLoaded == 2)
+            {
+                btnStart.Invoke(new Action(() =>
+                {
+                    btnStart.Enabled = true;
+                }));
+            }
         }
 
         private void HanbiroChromiumBrowser_Disposed(object sender, EventArgs e)
         {
-            MessageBox.Show((sender as HanbiroChromiumBrowser).CheckHealthResult.ToString());
-            //hanbiroChromiumBrowser.Dispose();
-            //hanbiroChromiumBrowser = null;
-            ////CefSharp.Cef.Shutdown();
-            //GC.Collect();
+            File.WriteAllText($"Logs/{Guid.NewGuid().ToString()}.txt",
+                (sender as HanbiroChromiumBrowser).CheckHealthResult.ToString());
         }
 
         private void btnSaveSettings_ClickAsync(object sender, EventArgs e)
@@ -93,6 +132,14 @@ namespace HanbiroExtensionGUI
         #endregion
 
         #region Methods
+
+        private void InitCefSharp()
+        {
+            var settings = new CefSettings();
+            settings.DisableGpuAcceleration();
+            settings.SetOffScreenRenderingBestPerformanceArgs();
+            Cef.Initialize(settings);
+        }
 
         private void EnableControl(bool b)
         {

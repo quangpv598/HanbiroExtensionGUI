@@ -17,7 +17,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
             string element,
             Action timeOutAction, 
             int sequence = 1000,
-            int timeout = 120000)
+            int timeout = 10000)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
             string element,
             Action timeOutAction,
             int sequence = 1000,
-            int timeout = 120000)
+            int timeout = 10000)
         {
             try
             {

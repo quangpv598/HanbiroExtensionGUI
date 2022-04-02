@@ -129,19 +129,25 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
 
         private void ClockInClockOut(string clockInLabel,string clockOutLabel)
         {
-            if (Browser.IsCheckHealth)
-            {
-                CheckClockIn();
-                CheckClockOut();
-            }
-            else
-            {
-                if ((string.IsNullOrEmpty(clockInLabel) && !string.IsNullOrEmpty(clockOutLabel))
+            if ((string.IsNullOrEmpty(clockInLabel) && !string.IsNullOrEmpty(clockOutLabel))
                    || (string.IsNullOrEmpty(clockInLabel) && string.IsNullOrEmpty(clockOutLabel)))
+            {
+                if (Browser.IsCheckHealth)
+                {
+                    CheckClockIn();
+                }
+                else
                 {
                     ClockIn();
                 }
-                else if (!string.IsNullOrEmpty(clockInLabel) && string.IsNullOrEmpty(clockOutLabel))
+            }
+            else if (!string.IsNullOrEmpty(clockInLabel) && string.IsNullOrEmpty(clockOutLabel))
+            {
+                if (Browser.IsCheckHealth)
+                {
+                    CheckClockOut();
+                }
+                else
                 {
                     ClockOut();
                 }

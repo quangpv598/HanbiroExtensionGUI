@@ -21,23 +21,26 @@ namespace HanbiroExtensionGUI.Controls
     public class HanbiroChromiumBrowser : ChromiumWebBrowser
     {
         #region Fields
-        int countLoaded = 0;
+        int countLoaded = 0, countFrameLoaded = 0;
         private UserSettings userSettings;
         private readonly LoginUserAction loginAction;
         private readonly ClockInOutAction clockInOutAction;
         public event EventHandler Disposed;
+        public event EventHandler FrameLoaded;
+        private bool isStartWork = false;
+        private bool isBusy = false;
         #endregion
 
         #region Properties
         public bool IsCheckHealth { get; set; }
         public UserSettings UserSettings => userSettings;
         public StringBuilder CheckHealthResult { get; protected set; }
+        public bool IsBusy => isBusy;
         #endregion
 
         #region Constructors
-        public HanbiroChromiumBrowser(string address, UserSettings userSettings) : base(address)
+        public HanbiroChromiumBrowser(string address) : base(address)
         {
-            this.userSettings = userSettings;
             this.loginAction = new LoginUserAction(this);
             this.clockInOutAction = new ClockInOutAction(this);
             this.CheckHealthResult = new StringBuilder();
@@ -57,12 +60,14 @@ namespace HanbiroExtensionGUI.Controls
         {
             this.CheckHealthResult.AppendLine("Error!!!");
             Disposed?.Invoke(this, new EventArgs());
+            isBusy = false;
         }
 
         private void LoginAction_OnSuccessEvent(object sender)
         {
             this.CheckHealthResult.AppendLine("Success!!!");
             Disposed?.Invoke(this, new EventArgs());
+            isBusy = false;
         }
         #endregion
 
@@ -70,24 +75,47 @@ namespace HanbiroExtensionGUI.Controls
 
         private void HanbiroChromiumBrowser_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
         {
-            CheckHealthResult.AppendLineWithShortTime(
-                nameof(HanbiroChromiumBrowser_FrameLoadEnd), 
+            if (isStartWork)
+            {
+                CheckHealthResult.AppendLineWithShortTime(
+                nameof(HanbiroChromiumBrowser_FrameLoadEnd),
                 true,
                 $"Frame Loaded With Count = {countLoaded}");
-            if (countLoaded == 2)
-            {
-                CheckHealthResult.Clear();
-                loginAction.DoWork();
-            }
-            if (countLoaded == 3)
-            {
-                clockInOutAction.DoWork();
-            }
+                if (countLoaded == 1)
+                {
+                    CheckHealthResult.Clear();
+                    loginAction.DoWork();
+                }
+                if (countLoaded == 2)
+                {
+                    clockInOutAction.DoWork();
+                }
 
-            countLoaded++;
+                countLoaded++;
+            }
+            else
+            {
+                if (countFrameLoaded == 2)
+                {
+                    FrameLoaded?.Invoke(this, new EventArgs());
+                }
+                countFrameLoaded++;
+            }
         }
         #endregion
 
+        #region Methods
 
+        public async void DoWork(UserSettings userSettings)
+        {
+            isBusy = true;
+            this.userSettings = userSettings;
+            countLoaded = 0;
+            isStartWork = true;
+            await this.GetCookieManager().DeleteCookiesAsync(string.Empty, string.Empty);
+            this.Reload();
+        }
+
+        #endregion
     }
 }
