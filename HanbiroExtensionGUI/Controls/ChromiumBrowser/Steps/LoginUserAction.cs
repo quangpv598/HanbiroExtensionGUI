@@ -15,6 +15,9 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
 {
     public class LoginUserAction : AbstractAction
     {
+        private const int TRY_TIMES = 3;
+        private int TRY_FILL_USER_TIMES = 0;
+        private int TRY_FILL_PASSWORD_TIMES = 0;
         public LoginUserAction(HanbiroChromiumBrowser hanbiroChromiumBrowser) : base(hanbiroChromiumBrowser)
         {
 
@@ -34,12 +37,12 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
             string element = "document.getElementById('log-userid')";
             await Browser.WaitElement($"{element}.value;",
                 () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
-            
-            Thread.Sleep(100);
+
+            Thread.Sleep(500);
 
             Utils.ChromiumBrowserUtils.SendKeys(Browser, CurrentUser.UserName);
 
-            Thread.Sleep(100);
+            Thread.Sleep(500);
 
             await Browser.EvaluateScriptAsync($"{element}.value;").ContinueWith(x =>
             {
@@ -58,11 +61,19 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                     }
                     else
                     {
-                        Browser.CheckHealthResult.AppendLineWithShortTime(
+                        if(TRY_FILL_USER_TIMES <= TRY_TIMES)
+                        {
+                            FillUserName();
+                            TRY_FILL_USER_TIMES++;
+                        }
+                        else
+                        {
+                            Browser.CheckHealthResult.AppendLineWithShortTime(
                             nameof(FillUserName),
                             false,
                             $"Username is not match with input");
-                        RaiseErrorEvent(new ErrorArgs(ErrorType.NotMatchWithInput, element));
+                            RaiseErrorEvent(new ErrorArgs(ErrorType.NotMatchWithInput, element));
+                        }
                     }
                 }
                 else
@@ -109,11 +120,20 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                             }
                             else
                             {
-                                Browser.CheckHealthResult.AppendLineWithShortTime(
+                                if (TRY_FILL_PASSWORD_TIMES <= TRY_TIMES)
+                                {
+                                    FillPasswordAsync();
+                                    TRY_FILL_PASSWORD_TIMES++;
+                                }
+                                else
+                                {
+                                    Browser.CheckHealthResult.AppendLineWithShortTime(
                                         nameof(FillPasswordAsync),
                                         false,
                                         $"Password is not match with input");
-                                RaiseErrorEvent(new ErrorArgs(ErrorType.NotMatchWithInput, element));
+                                    RaiseErrorEvent(new ErrorArgs(ErrorType.NotMatchWithInput, element));
+                                }
+                                
                             }
                         }
                     });

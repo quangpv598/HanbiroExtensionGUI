@@ -8,9 +8,11 @@
 
 1.4. Create ClockInClockOutService Class (done)
 
-2. Follow add user : check valid => add to account
+2. Follow add user : check valid => add to account (done)
 
-3. Follow check app health
+3. Follow check app health (done)
+
+4. Build telegram UI
 
 2. Event when error, finish of Chromium Browser
 If finish => send success email to user

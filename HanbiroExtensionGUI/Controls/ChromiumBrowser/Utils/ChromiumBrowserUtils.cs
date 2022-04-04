@@ -112,7 +112,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
 
             foreach (KeyEvent ev in events)
             {
-                Thread.Sleep(200);
+                Thread.Sleep(400);
                 browser.GetBrowser().GetHost().SendKeyEvent(ev);
             }
         }
