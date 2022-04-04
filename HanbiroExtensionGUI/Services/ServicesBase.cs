@@ -14,7 +14,7 @@ namespace HanbiroExtensionGUI.Services
         #endregion
 
         #region Properties
-        public UserSettings CurrentUserSettings => currentUserSettings;
+        public UserSettings CurrentUserSettings { get; set; }
         #endregion
 
         #region Constructors

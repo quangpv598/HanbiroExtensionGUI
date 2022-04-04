@@ -16,13 +16,13 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
         #endregion
 
         #region Properties
-
+        public CheckInCheckOutService CheckInCheckOutService { get; private set; }
         #endregion
 
         #region Constructors
-        public JobSchedulerService(UserSettings userSettings) : base(userSettings)
+        public JobSchedulerService(UserSettings userSettings, CheckInCheckOutService CheckInCheckOutService) : base(userSettings)
         {
-
+            this.CheckInCheckOutService = CheckInCheckOutService;
         }
         #endregion
 
@@ -45,8 +45,12 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             // and start it off
             await scheduler.Start();
 
-            IJobDetail job = JobBuilder.Create<CheckInCheckOutService>()
+            var newJobData = new JobDataMap();
+            newJobData.Add(nameof(CheckInCheckOutService), CheckInCheckOutService);
+
+            IJobDetail job = JobBuilder.Create<HanbiroJob>()
                 .WithIdentity("job1", "group1")
+                .UsingJobData(newJobData)
                 .Build();
 
             string cronExpressionEndTime = GetExpressionForEndTime();
@@ -55,7 +59,10 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity("trigger1", "group1")
                 .StartNow()
-                .WithCronSchedule(cronExpressionStartTime)
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(30)
+                    .RepeatForever())
+                //.WithCronSchedule(cronExpressionStartTime)
                 .Build();
 
             ITrigger trigger2 = TriggerBuilder.Create()

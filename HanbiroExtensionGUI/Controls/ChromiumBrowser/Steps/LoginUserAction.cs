@@ -150,7 +150,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                             true,
                             $"Press Login button successfuly");
 
-                    CheckPassword();
+                    //CheckPassword();
                 }
                 else
                 {
@@ -177,7 +177,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
 
                     CurrentUser.IsLoginSuccess = false;
                     isAccountValid = true;
-                }, 500, 5000);
+                }, 500, 2000);
 
             if (isAccountValid)
             {

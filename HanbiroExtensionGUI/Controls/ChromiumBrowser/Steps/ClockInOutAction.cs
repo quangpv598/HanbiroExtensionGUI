@@ -29,11 +29,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
 
             CurrentUser.IsLoginSuccess = true;
 
-            if (Browser.IsCheckAccountValid)
-            {
-                RaiseSuccessEvent();
-            }
-            else
+            if (!Browser.IsCheckAccountValid)
             {
                 var task = new Task(ClickUserInfoPanel);
                 task.Start();
@@ -79,10 +75,10 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
         private async void GetClockInLabel()
         {
             string element = "document.getElementsByClassName('tertiary-info text-center')[0]";
-            await Browser.WaitElement($"{element}.innerText;",
+            await Browser.WaitElement($"{element}.innerHTML;",
                 () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
 
-            await Browser.EvaluateScriptAsync($"{element}.innerText;").ContinueWith(x =>
+            await Browser.EvaluateScriptAsync("document.getElementsByClassName('tertiary-info text-center')[0].innerHTML;").ContinueWith(x =>
             {
                 var response = x.Result;
 
@@ -153,7 +149,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                 }
                 else
                 {
-                    ClockIn();
+                    //ClockIn();
                 }
             }
             else if (!string.IsNullOrEmpty(clockInLabel) && string.IsNullOrEmpty(clockOutLabel))
@@ -164,7 +160,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                 }
                 else
                 {
-                    ClockOut();
+                    //ClockOut();
                 }
             }
         }

@@ -20,6 +20,7 @@ namespace HanbiroExtensionGUI.Services
         private int countFrameLoaded = 0;
         public event EventHandler OnSuccess;
         public event EventHandler OnError;
+        public event EventHandler OnReadyToUse;
         #endregion
 
         #region Properties
@@ -44,6 +45,7 @@ namespace HanbiroExtensionGUI.Services
             if (countFrameLoaded == 1)
             {
                 readyToUse = true;
+                OnReadyToUse?.Invoke(this, new EventArgs());
             }
         }
 

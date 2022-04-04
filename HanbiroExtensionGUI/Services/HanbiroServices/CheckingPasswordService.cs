@@ -54,13 +54,13 @@ namespace HanbiroExtensionGUI.Services
 
             try
             {
-                await TaskWaiter.WaitUntil(() => Task.FromResult(!Browser.IsBusy), 1000, 300000);
+                await TaskWaiter.WaitUntil(() => Task.FromResult(!Browser.IsBusy), 1000, 5000);
                 return true;
             }
             catch (Exception ex)
             {
                 OnError?.Invoke(this, new BrowserEventArgs(Browser,
-                    new ErrorArgs(ErrorType.WrongUsernameOrPassword, "Wrong User Name or Password!!!")));
+                    new ErrorArgs(ErrorType.TimeOut, "Sorry about this inconvenience. Please try again !!!")));
                 return false;
             }
         }

@@ -37,14 +37,27 @@ namespace HanbiroExtensionGUI
         {
             InitializeComponent();
             app = new App();
+            app.OnReady += App_OnReady;
             if(currentUserSettings is not null)
             {
                 LoadUserSettings();
             }
         }
+
         #endregion
 
         #region Events
+
+        private void App_OnReady(object sender, EventArgs e)
+        {
+            this.Invoke(new Action(()=> {
+
+                this.btnStart.Enabled = true;
+                this.btnAddNewUser.Enabled = true;
+
+                btnStart_Click(null, null);
+            }));
+        }
         private void chkReciveEmailNotifications_CheckedChanged(object sender, EventArgs e)
         {
             txtEmail.Visible = chkReciveEmailNotifications.Checked;
@@ -80,7 +93,9 @@ namespace HanbiroExtensionGUI
                 Email = txtEmail.Text,
                 IsSendResultToEmail = chkReciveEmailNotifications.Checked,
             };
-            app.CheckPassword(user);
+            //app.CheckPassword(user);
+            app.AddNewUser(user);
+            MessageBox.Show("Add User Success!!!");
         }
 
         private void btnUserManagement_Click(object sender, EventArgs e)
@@ -102,21 +117,23 @@ namespace HanbiroExtensionGUI
       
         private void LoadUserSettings()
         {
-            dtpStartTime.Value = currentUserSettings.TimeWork.StartTime;
-            dtpEndTime.Value = currentUserSettings.TimeWork.EndTime;
-            chkMon.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Monday];
-            chkTue.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Tuesday];
-            chkWed.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Wednesday];
-            chkThu.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Thursday];
-            chkFri.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Friday];
-            chkSat.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Saturday];
-            chkSun.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Sunday];
+            if (currentUserSettings is not null)
+            {
+                dtpStartTime.Value = currentUserSettings.TimeWork.StartTime;
+                dtpEndTime.Value = currentUserSettings.TimeWork.EndTime;
+                chkMon.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Monday];
+                chkTue.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Tuesday];
+                chkWed.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Wednesday];
+                chkThu.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Thursday];
+                chkFri.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Friday];
+                chkSat.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Saturday];
+                chkSun.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Sunday];
+            }
+            
         }
         private void SaveUserSettings()
         {
-            var userSettings = new UserSettings();
-
-            userSettings.TimeWork = new TimeWork()
+            var timeWork = new TimeWork()
             {
                 StartTime = dtpStartTime.Value,
                 EndTime = dtpEndTime.Value,
@@ -132,7 +149,7 @@ namespace HanbiroExtensionGUI
                 }
             };
 
-            app.SaveUserSettings(userSettings);
+            app.SaveUserSettings(timeWork);
         }
 
         #endregion

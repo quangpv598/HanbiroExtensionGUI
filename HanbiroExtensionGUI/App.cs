@@ -21,6 +21,10 @@ namespace HanbiroExtensionGUI
         private string uesrSettingsPath = @"UserSettings.json";
         private JobSchedulerService jobScheduler;
         private CheckingPasswordService checkingPasswordService;
+        private CheckHealthService healthService;
+        private CheckInCheckOutService checkInCheckOutService;
+        int countReadyToUse = 0;
+        public event EventHandler OnReady;
         #endregion
 
         #region Properties
@@ -33,11 +37,60 @@ namespace HanbiroExtensionGUI
         {
             LoadUserSettings();
             InitCefSharp();
+            
+            checkingPasswordService = new CheckingPasswordService(currentUserSettings);
+            healthService = new CheckHealthService(currentUserSettings);
+            checkInCheckOutService = new CheckInCheckOutService(currentUserSettings);
+
+            jobScheduler = new JobSchedulerService(currentUserSettings, checkInCheckOutService);
+
+            checkingPasswordService.OnReadyToUse += CheckingPasswordService_OnReadyToUse;
+            healthService.OnReadyToUse += CheckingPasswordService_OnReadyToUse;
+            checkInCheckOutService.OnReadyToUse += CheckingPasswordService_OnReadyToUse;
+
+            checkingPasswordService.OnSuccess += CheckingPasswordService_OnSuccess;
+            checkingPasswordService.OnError += CheckingPasswordService_OnError;
+
+            checkInCheckOutService.OnSuccess += CheckInCheckOutService_OnSuccess;
+            checkInCheckOutService.OnError += CheckInCheckOutService_OnError;
         }
+
         #endregion
 
         #region Events
-        
+        private void CheckingPasswordService_OnReadyToUse(object sender, EventArgs e)
+        {
+            countReadyToUse++;
+            if (countReadyToUse == 3)
+            {
+                OnReady?.Invoke(this, new EventArgs());
+            }
+        }
+
+        private void CheckInCheckOutService_OnError(object sender, EventArgs e)
+        {
+            var service = sender as CheckInCheckOutService;
+            string fileName = string.Format("ERROR_{0}_{1}.txt", service.Browser.CurrentUser.UserName, Guid.NewGuid().ToString());
+            File.WriteAllText($"{Application.StartupPath}/Logs/{fileName}", service.Browser.CheckHealthResult.ToString());
+        }
+
+        private void CheckInCheckOutService_OnSuccess(object sender, EventArgs e)
+        {
+            var service = sender as CheckInCheckOutService;
+            string fileName = string.Format("SUCCESS_{0}_{1}.txt", service.Browser.CurrentUser.UserName, Guid.NewGuid().ToString());
+            File.WriteAllText($"{Application.StartupPath}/Logs/{fileName}", service.Browser.CheckHealthResult.ToString());
+        }
+
+        private void CheckingPasswordService_OnError(object sender, EventArgs e)
+        {
+            MessageBox.Show("Login Fail.");
+        }
+
+        private void CheckingPasswordService_OnSuccess(object sender, EventArgs e)
+        {
+            MessageBox.Show("Login Success.");
+        }
+
         #endregion
 
         #region Methods
@@ -58,28 +111,19 @@ namespace HanbiroExtensionGUI
                 currentUserSettings = JsonSerializer.Deserialize<Models.UserSettings>(json);
             }
         }
-        public void SaveUserSettings(UserSettings settings)
+        public void SaveUserSettings(TimeWork timeWork = null)
         {
-            currentUserSettings = settings;
-            if (jobScheduler == null)
+            if(timeWork is not null)
             {
-                jobScheduler = new JobSchedulerService(currentUserSettings);
-                checkingPasswordService = new CheckingPasswordService(currentUserSettings);
-                checkingPasswordService.OnSuccess += CheckingPasswordService_OnSuccess;
-                checkingPasswordService.OnError += CheckingPasswordService_OnError;
+                currentUserSettings.TimeWork = timeWork;
             }
-            string json = JsonSerializer.Serialize(settings);
+            
+            checkInCheckOutService.CurrentUserSettings = currentUserSettings;
+            healthService.CurrentUserSettings = currentUserSettings;
+            checkingPasswordService.CurrentUserSettings = currentUserSettings;
+            jobScheduler.CurrentUserSettings = currentUserSettings;
+            string json = JsonSerializer.Serialize(currentUserSettings);
             File.WriteAllText(uesrSettingsPath, json);
-        }
-
-        private void CheckingPasswordService_OnError(object sender, EventArgs e)
-        {
-            MessageBox.Show("Login Fail.");
-        }
-
-        private void CheckingPasswordService_OnSuccess(object sender, EventArgs e)
-        {
-            MessageBox.Show("Login Success.");
         }
 
         public async void CheckPassword(User user)
@@ -87,7 +131,11 @@ namespace HanbiroExtensionGUI
             await checkingPasswordService.DoWorkAsync(user);
         }
 
-
+        public async void AddNewUser(User user)
+        {
+            currentUserSettings.Users.Add(user);
+            SaveUserSettings();
+        }
         #endregion
     }
 }

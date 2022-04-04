@@ -50,7 +50,7 @@ namespace HanbiroExtensionGUI.Services
 
         #region Methods
 
-        private async void DoWorkAsync()
+        public async void DoWorkAsync()
         {
             if (CurrentUserSettings == null) return;
 

@@ -43,6 +43,7 @@ namespace HanbiroExtensionGUI
             this.btnUserManagement = new System.Windows.Forms.Button();
             this.btnAddNewUser = new System.Windows.Forms.Button();
             this.groupBoxTimeManagement = new System.Windows.Forms.GroupBox();
+            this.btnSaveSettings = new System.Windows.Forms.Button();
             this.chkFri = new System.Windows.Forms.CheckBox();
             this.dtpEndTime = new System.Windows.Forms.DateTimePicker();
             this.chkSun = new System.Windows.Forms.CheckBox();
@@ -54,7 +55,6 @@ namespace HanbiroExtensionGUI
             this.chkWed = new System.Windows.Forms.CheckBox();
             this.chkTue = new System.Windows.Forms.CheckBox();
             this.chkMon = new System.Windows.Forms.CheckBox();
-            this.btnSaveSettings = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBoxTimeManagement.SuspendLayout();
@@ -194,6 +194,7 @@ namespace HanbiroExtensionGUI
             // btnAddNewUser
             // 
             this.btnAddNewUser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnAddNewUser.Enabled = false;
             this.btnAddNewUser.Location = new System.Drawing.Point(11, 154);
             this.btnAddNewUser.Name = "btnAddNewUser";
             this.btnAddNewUser.Size = new System.Drawing.Size(169, 23);
@@ -224,6 +225,17 @@ namespace HanbiroExtensionGUI
             this.groupBoxTimeManagement.TabIndex = 24;
             this.groupBoxTimeManagement.TabStop = false;
             this.groupBoxTimeManagement.Text = "Time";
+            // 
+            // btnSaveSettings
+            // 
+            this.btnSaveSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnSaveSettings.Location = new System.Drawing.Point(12, 127);
+            this.btnSaveSettings.Name = "btnSaveSettings";
+            this.btnSaveSettings.Size = new System.Drawing.Size(388, 23);
+            this.btnSaveSettings.TabIndex = 18;
+            this.btnSaveSettings.Text = "Save Settings";
+            this.btnSaveSettings.UseVisualStyleBackColor = true;
+            this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_ClickAsync);
             // 
             // chkFri
             // 
@@ -267,6 +279,7 @@ namespace HanbiroExtensionGUI
             this.dtpStartTime.ShowUpDown = true;
             this.dtpStartTime.Size = new System.Drawing.Size(94, 23);
             this.dtpStartTime.TabIndex = 21;
+            this.dtpStartTime.Value = new System.DateTime(2022, 4, 5, 0, 9, 17, 0);
             // 
             // chkSat
             // 
@@ -344,17 +357,6 @@ namespace HanbiroExtensionGUI
             this.chkMon.TabIndex = 26;
             this.chkMon.Text = "Mon";
             this.chkMon.UseVisualStyleBackColor = true;
-            // 
-            // btnSaveSettings
-            // 
-            this.btnSaveSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSaveSettings.Location = new System.Drawing.Point(12, 127);
-            this.btnSaveSettings.Name = "btnSaveSettings";
-            this.btnSaveSettings.Size = new System.Drawing.Size(388, 23);
-            this.btnSaveSettings.TabIndex = 18;
-            this.btnSaveSettings.Text = "Save Settings";
-            this.btnSaveSettings.UseVisualStyleBackColor = true;
-            this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_ClickAsync);
             // 
             // frmMain
             // 
