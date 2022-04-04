@@ -21,7 +21,7 @@ namespace HanbiroExtensionGUI.Services
         #endregion
 
         #region Constructors
-        public CheckHealthService(CurrentUserSettings currentUserSettings) : base(currentUserSettings)
+        public CheckHealthService(UserSettings currentUserSettings) : base(currentUserSettings)
         {
             base.Browser.IsCheckHealth = true;
 

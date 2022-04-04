@@ -21,7 +21,7 @@ namespace HanbiroExtensionGUI.Services
 
     public class EmailService : ServicesBase, IEmailService
     {
-        public EmailService(CurrentUserSettings userSettings) : base(userSettings)
+        public EmailService(UserSettings userSettings) : base(userSettings)
         {
 
         }

@@ -15,13 +15,13 @@ namespace HanbiroExtensionGUI
     public class App
     {
         #region Fields
-        public static CurrentUserSettings CurrentUserSettings = new CurrentUserSettings();
+        private UserSettings currentUserSettings = new UserSettings();
         private string uesrSettingsPath = @"UserSettings.json";
         private readonly JobSchedulerService jobScheduler;
         #endregion
 
         #region Properties
-
+        public UserSettings CurrentUserSettings => currentUserSettings;
         #endregion
 
         #region Constructors
@@ -30,7 +30,7 @@ namespace HanbiroExtensionGUI
             LoadUserSettings();
             InitCefSharp();
 
-            jobScheduler = new JobSchedulerService(CurrentUserSettings);
+            jobScheduler = new JobSchedulerService(currentUserSettings);
         }
         #endregion
 
@@ -53,12 +53,12 @@ namespace HanbiroExtensionGUI
             if (File.Exists(uesrSettingsPath))
             {
                 var json = File.ReadAllText(uesrSettingsPath);
-                CurrentUserSettings = JsonSerializer.Deserialize<Models.CurrentUserSettings>(json);
+                currentUserSettings = JsonSerializer.Deserialize<Models.UserSettings>(json);
             }
         }
-        public void SaveUserSettings()
+        public void SaveUserSettings(UserSettings settings)
         {
-            string json = JsonSerializer.Serialize(CurrentUserSettings);
+            string json = JsonSerializer.Serialize(settings);
             File.WriteAllText(uesrSettingsPath, json);
         }
 

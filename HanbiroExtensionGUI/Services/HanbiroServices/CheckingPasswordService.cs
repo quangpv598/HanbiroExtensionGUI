@@ -21,7 +21,7 @@ namespace HanbiroExtensionGUI.Services
         #endregion
 
         #region Constructors
-        public CheckingPasswordService(CurrentUserSettings currentUserSettings) : base(currentUserSettings)
+        public CheckingPasswordService(UserSettings currentUserSettings) : base(currentUserSettings)
         {
             base.Browser.IsCheckAccountValid = true;
 

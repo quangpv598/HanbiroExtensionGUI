@@ -20,7 +20,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
         #endregion
 
         #region Constructors
-        public JobSchedulerService(CurrentUserSettings userSettings) : base(userSettings)
+        public JobSchedulerService(UserSettings userSettings) : base(userSettings)
         {
 
         }

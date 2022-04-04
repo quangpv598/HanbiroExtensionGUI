@@ -24,7 +24,7 @@ namespace HanbiroExtensionGUI.Services
         #endregion
 
         #region Constructors
-        public CheckInCheckOutService(CurrentUserSettings currentUserSettings) : base(currentUserSettings)
+        public CheckInCheckOutService(UserSettings currentUserSettings) : base(currentUserSettings)
         {
             base.OnSuccess += CheckInCheckOutService_OnSuccess;
             base.OnError += CheckInCheckOutService_OnError;

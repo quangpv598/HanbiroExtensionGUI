@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HanbiroExtensionGUI.Models
 {
-    public class CurrentUserSettings
+    public class UserSettings
     {
         public TimeWork TimeWork { get; set; } = new TimeWork();
         public List<User> Users { get; set; } = new List<User>();

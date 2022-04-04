@@ -24,8 +24,8 @@ namespace HanbiroExtensionGUI
     public partial class frmMain : Form
     {
         #region Fields
-        public static Models.CurrentUserSettings CurrentUserSettings = new Models.CurrentUserSettings();
-        private string uesrSettingsPath = @"UserSettings.json";
+        private readonly App app;
+        private UserSettings currentUserSettings => app.CurrentUserSettings;
         #endregion
 
         #region Properties
@@ -36,7 +36,7 @@ namespace HanbiroExtensionGUI
         public frmMain()
         {
             InitializeComponent();
-            LoadUserSettings();
+            app = new App();
         }
         #endregion
 
@@ -80,27 +80,21 @@ namespace HanbiroExtensionGUI
       
         private void LoadUserSettings()
         {
-            if (File.Exists(uesrSettingsPath))
-            {
-                var json = File.ReadAllText(uesrSettingsPath);
-                CurrentUserSettings = JsonSerializer.Deserialize<Models.CurrentUserSettings>(json);
-
-                dtpStartTime.Value = CurrentUserSettings.TimeWork.StartTime;
-                dtpEndTime.Value = CurrentUserSettings.TimeWork.EndTime;
-                chkMon.Checked = CurrentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Monday];
-                chkTue.Checked = CurrentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Tuesday];
-                chkWed.Checked = CurrentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Wednesday];
-                chkThu.Checked = CurrentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Thursday];
-                chkFri.Checked = CurrentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Friday];
-                chkSat.Checked = CurrentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Saturday];
-                chkSun.Checked = CurrentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Sunday];
-            }
+            dtpStartTime.Value = currentUserSettings.TimeWork.StartTime;
+            dtpEndTime.Value = currentUserSettings.TimeWork.EndTime;
+            chkMon.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Monday];
+            chkTue.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Tuesday];
+            chkWed.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Wednesday];
+            chkThu.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Thursday];
+            chkFri.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Friday];
+            chkSat.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Saturday];
+            chkSun.Checked = currentUserSettings.TimeWork.DaysOfWeek[DayOfWeek.Sunday];
         }
         private void SaveUserSettings()
         {
-            CurrentUserSettings = new Models.CurrentUserSettings();
+            var userSettings = new UserSettings();
 
-            CurrentUserSettings.TimeWork = new TimeWork()
+            userSettings.TimeWork = new TimeWork()
             {
                 StartTime = dtpStartTime.Value,
                 EndTime = dtpEndTime.Value,
@@ -116,15 +110,14 @@ namespace HanbiroExtensionGUI
                 }
             };
 
-            CurrentUserSettings.Users.Add(new User {
+            userSettings.Users.Add(new User {
                 UserName = txtUsername.Text,
                 Password = txtPassword.Text,
                 Email = txtEmail.Text,
                 IsSendResultToEmail = chkReciveEmailNotifications.Checked,
             });
 
-            string json = JsonSerializer.Serialize(CurrentUserSettings);
-            File.WriteAllText(uesrSettingsPath, json);
+            app.SaveUserSettings(userSettings);
         }
 
         

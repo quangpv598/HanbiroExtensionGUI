@@ -10,15 +10,15 @@ namespace HanbiroExtensionGUI.Services
     public class ServicesBase
     {
         #region Fields
-        private readonly CurrentUserSettings currentUserSettings = null;
+        private readonly UserSettings currentUserSettings = null;
         #endregion
 
         #region Properties
-        public CurrentUserSettings CurrentUserSettings => currentUserSettings;
+        public UserSettings CurrentUserSettings => currentUserSettings;
         #endregion
 
         #region Constructors
-        public ServicesBase(CurrentUserSettings currentUserSettings)
+        public ServicesBase(UserSettings currentUserSettings)
         {
             this.currentUserSettings = currentUserSettings;
         }

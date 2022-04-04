@@ -28,7 +28,7 @@ namespace HanbiroExtensionGUI.Services
         #endregion
 
         #region Constructors
-        public HanbiroServiceBase(CurrentUserSettings currentUserSettings) : base(currentUserSettings)
+        public HanbiroServiceBase(UserSettings currentUserSettings) : base(currentUserSettings)
         {
             hanbiroChromiumBrowser = new HanbiroChromiumBrowser(GlobalConstants.BaseUrl);
             hanbiroChromiumBrowser.OnClockInOutSuccess += HanbiroChromiumBrowser_OnClockInOutSuccess;
