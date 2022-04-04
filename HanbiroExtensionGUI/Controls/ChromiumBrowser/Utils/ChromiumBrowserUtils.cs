@@ -69,7 +69,6 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
 
         public static int GetFramesCount(ChromiumWebBrowser browser)
         {
-            var identifiers = browser.GetBrowser().GetFrameIdentifiers();
             return browser.GetBrowser().GetFrameCount();
         }
 
