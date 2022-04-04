@@ -6,6 +6,7 @@ using HanbiroExtensionGUI.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -75,10 +76,10 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
         private async void GetClockInLabel()
         {
             string element = "document.getElementsByClassName('tertiary-info text-center')[0]";
-            await Browser.WaitElement($"{element}.innerHTML;",
+            await Browser.WaitElement($"document.getElementsByClassName('text-center col-md-12')[0].innerText;",
                 () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
 
-            await Browser.EvaluateScriptAsync("document.getElementsByClassName('tertiary-info text-center')[0].innerHTML;").ContinueWith(x =>
+            await Browser.EvaluateScriptAsync($"{element}.innerHTML;").ContinueWith(x =>
             {
                 var response = x.Result;
 
