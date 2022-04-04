@@ -61,7 +61,7 @@ namespace HanbiroExtensionGUI.Services
         public Task Execute(IJobExecutionContext context)
         {
             Debug.WriteLine("Raise on :  " + DateTime.Now.ToString());
-            DoWorkAsync();
+            //DoWorkAsync();
             return null;
         }
 

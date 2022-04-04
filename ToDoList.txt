@@ -6,7 +6,11 @@
 
 1.3. Set user to login and wait for completed (done) - test 1000 user (take 40 minues)
 
-1.4. Create ClockInClockOutService Class
+1.4. Create ClockInClockOutService Class (done)
+
+2. Follow add user : check valid => add to account
+
+3. Follow check app health
 
 2. Event when error, finish of Chromium Browser
 If finish => send success email to user

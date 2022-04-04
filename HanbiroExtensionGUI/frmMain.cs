@@ -37,6 +37,10 @@ namespace HanbiroExtensionGUI
         {
             InitializeComponent();
             app = new App();
+            if(currentUserSettings is not null)
+            {
+                LoadUserSettings();
+            }
         }
         #endregion
 
@@ -51,8 +55,8 @@ namespace HanbiroExtensionGUI
             SaveUserSettings();
             EnableControl(true);
 
-            //ShutdownScheduler();
-            //InitSchedulerAsync();
+            app.JobScheduler.ShutdownScheduler();
+            app.JobScheduler.InitSchedulerAsync();
         }
 
         private void btnSaveSettings_ClickAsync(object sender, EventArgs e)
@@ -64,8 +68,26 @@ namespace HanbiroExtensionGUI
         private void btnStop_ClickAsync(object sender, EventArgs e)
         {
             EnableControl(false);
-            //ShutdownScheduler();
+            app.JobScheduler.ShutdownScheduler();
         }
+
+        private void btnAddNewUser_Click(object sender, EventArgs e)
+        {
+            var user = new User
+            {
+                UserName = txtUsername.Text,
+                Password = txtPassword.Text,
+                Email = txtEmail.Text,
+                IsSendResultToEmail = chkReciveEmailNotifications.Checked,
+            };
+            app.CheckPassword(user);
+        }
+
+        private void btnUserManagement_Click(object sender, EventArgs e)
+        {
+
+        }
+
         #endregion
 
         #region Methods
@@ -110,17 +132,10 @@ namespace HanbiroExtensionGUI
                 }
             };
 
-            userSettings.Users.Add(new User {
-                UserName = txtUsername.Text,
-                Password = txtPassword.Text,
-                Email = txtEmail.Text,
-                IsSendResultToEmail = chkReciveEmailNotifications.Checked,
-            });
-
             app.SaveUserSettings(userSettings);
         }
 
-        
         #endregion
+
     }
 }

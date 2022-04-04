@@ -86,7 +86,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
             await frame.WaitElement($"{element}.value;",
                 () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
 
-            await frame.EvaluateScriptAsync(string.Format($"{element}.value = '{0}';", CurrentUser.Password)).ContinueWith(x =>
+            await frame.EvaluateScriptAsync($"{element}.value = '{CurrentUser.Password}';").ContinueWith(x =>
             {
                 var response = x.Result;
 
@@ -165,7 +165,8 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
 
         private async void CheckPassword()
         {
-            string element = "document.getElementsByClassName('alert alert-warning')";
+            string element = "document.getElementsByClassName('alert alert-warning')[0]";
+            bool isAccountValid = false;
             await Browser.WaitElement($"{element}.length;",
                 () => {
 
@@ -175,10 +176,17 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                             $"Account is not valid.");
 
                     CurrentUser.IsLoginSuccess = false;
-
-                    RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element));
-
+                    isAccountValid = true;
                 }, 500, 5000);
+
+            if (isAccountValid)
+            {
+                RaiseSuccessEvent();
+            }
+            else
+            {
+                RaiseErrorEvent(new ErrorArgs(ErrorType.WrongUsernameOrPassword, "Wrong User Name Or Password"));
+            }
         }
     }
 }

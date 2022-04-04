@@ -26,6 +26,8 @@ namespace HanbiroExtensionGUI.Services
         #region Constructors
         public CheckInCheckOutService(UserSettings currentUserSettings) : base(currentUserSettings)
         {
+            Browser.IsCheckHealth = true;
+
             base.OnSuccess += CheckInCheckOutService_OnSuccess;
             base.OnError += CheckInCheckOutService_OnError;
         }
@@ -71,7 +73,7 @@ namespace HanbiroExtensionGUI.Services
         public Task Execute(IJobExecutionContext context)
         {
             Debug.WriteLine("Raise on :  " + DateTime.Now.ToString());
-            DoWorkAsync();
+            //DoWorkAsync();
             return null;
         }
 

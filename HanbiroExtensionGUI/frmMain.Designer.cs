@@ -35,13 +35,13 @@ namespace HanbiroExtensionGUI
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
-            this.btnSaveSettings = new System.Windows.Forms.Button();
             this.txtEmail = new System.Windows.Forms.TextBox();
             this.chkReciveEmailNotifications = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnUserManagement = new System.Windows.Forms.Button();
+            this.btnAddNewUser = new System.Windows.Forms.Button();
             this.groupBoxTimeManagement = new System.Windows.Forms.GroupBox();
             this.chkFri = new System.Windows.Forms.CheckBox();
             this.dtpEndTime = new System.Windows.Forms.DateTimePicker();
@@ -54,6 +54,7 @@ namespace HanbiroExtensionGUI
             this.chkWed = new System.Windows.Forms.CheckBox();
             this.chkTue = new System.Windows.Forms.CheckBox();
             this.chkMon = new System.Windows.Forms.CheckBox();
+            this.btnSaveSettings = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBoxTimeManagement.SuspendLayout();
@@ -102,7 +103,7 @@ namespace HanbiroExtensionGUI
             this.btnStart.Enabled = false;
             this.btnStart.Location = new System.Drawing.Point(11, 8);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(75, 23);
+            this.btnStart.Size = new System.Drawing.Size(170, 23);
             this.btnStart.TabIndex = 16;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = true;
@@ -112,24 +113,13 @@ namespace HanbiroExtensionGUI
             // 
             this.btnStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnStop.Enabled = false;
-            this.btnStop.Location = new System.Drawing.Point(325, 8);
+            this.btnStop.Location = new System.Drawing.Point(231, 8);
             this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(75, 23);
+            this.btnStop.Size = new System.Drawing.Size(169, 23);
             this.btnStop.TabIndex = 17;
             this.btnStop.Text = "Stop";
             this.btnStop.UseVisualStyleBackColor = true;
             this.btnStop.Click += new System.EventHandler(this.btnStop_ClickAsync);
-            // 
-            // btnSaveSettings
-            // 
-            this.btnSaveSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSaveSettings.Location = new System.Drawing.Point(155, 8);
-            this.btnSaveSettings.Name = "btnSaveSettings";
-            this.btnSaveSettings.Size = new System.Drawing.Size(96, 23);
-            this.btnSaveSettings.TabIndex = 18;
-            this.btnSaveSettings.Text = "Save Settings";
-            this.btnSaveSettings.UseVisualStyleBackColor = true;
-            this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_ClickAsync);
             // 
             // txtEmail
             // 
@@ -164,18 +154,18 @@ namespace HanbiroExtensionGUI
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.btnSaveSettings);
             this.panel1.Controls.Add(this.btnStart);
             this.panel1.Controls.Add(this.btnStop);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 328);
+            this.panel1.Location = new System.Drawing.Point(0, 350);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(413, 40);
             this.panel1.TabIndex = 22;
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.btnUserManagement);
+            this.groupBox1.Controls.Add(this.btnAddNewUser);
             this.groupBox1.Controls.Add(this.txtEmail);
             this.groupBox1.Controls.Add(this.chkReciveEmailNotifications);
             this.groupBox1.Controls.Add(this.label2);
@@ -188,20 +178,33 @@ namespace HanbiroExtensionGUI
             this.groupBox1.Size = new System.Drawing.Size(413, 183);
             this.groupBox1.TabIndex = 23;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Quản lý người dùng";
+            this.groupBox1.Text = "Users";
             // 
-            // button1
+            // btnUserManagement
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button1.Location = new System.Drawing.Point(11, 154);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(169, 23);
-            this.button1.TabIndex = 35;
-            this.button1.Text = "Thêm mới người dùng";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnUserManagement.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnUserManagement.Location = new System.Drawing.Point(231, 152);
+            this.btnUserManagement.Name = "btnUserManagement";
+            this.btnUserManagement.Size = new System.Drawing.Size(169, 23);
+            this.btnUserManagement.TabIndex = 36;
+            this.btnUserManagement.Text = "User management";
+            this.btnUserManagement.UseVisualStyleBackColor = true;
+            this.btnUserManagement.Click += new System.EventHandler(this.btnUserManagement_Click);
+            // 
+            // btnAddNewUser
+            // 
+            this.btnAddNewUser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnAddNewUser.Location = new System.Drawing.Point(11, 154);
+            this.btnAddNewUser.Name = "btnAddNewUser";
+            this.btnAddNewUser.Size = new System.Drawing.Size(169, 23);
+            this.btnAddNewUser.TabIndex = 35;
+            this.btnAddNewUser.Text = "Add new user";
+            this.btnAddNewUser.UseVisualStyleBackColor = true;
+            this.btnAddNewUser.Click += new System.EventHandler(this.btnAddNewUser_Click);
             // 
             // groupBoxTimeManagement
             // 
+            this.groupBoxTimeManagement.Controls.Add(this.btnSaveSettings);
             this.groupBoxTimeManagement.Controls.Add(this.chkFri);
             this.groupBoxTimeManagement.Controls.Add(this.dtpEndTime);
             this.groupBoxTimeManagement.Controls.Add(this.chkSun);
@@ -217,10 +220,10 @@ namespace HanbiroExtensionGUI
             this.groupBoxTimeManagement.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBoxTimeManagement.Location = new System.Drawing.Point(0, 183);
             this.groupBoxTimeManagement.Name = "groupBoxTimeManagement";
-            this.groupBoxTimeManagement.Size = new System.Drawing.Size(413, 133);
+            this.groupBoxTimeManagement.Size = new System.Drawing.Size(413, 152);
             this.groupBoxTimeManagement.TabIndex = 24;
             this.groupBoxTimeManagement.TabStop = false;
-            this.groupBoxTimeManagement.Text = "Quản lý thời gian";
+            this.groupBoxTimeManagement.Text = "Time";
             // 
             // chkFri
             // 
@@ -342,11 +345,22 @@ namespace HanbiroExtensionGUI
             this.chkMon.Text = "Mon";
             this.chkMon.UseVisualStyleBackColor = true;
             // 
+            // btnSaveSettings
+            // 
+            this.btnSaveSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnSaveSettings.Location = new System.Drawing.Point(12, 127);
+            this.btnSaveSettings.Name = "btnSaveSettings";
+            this.btnSaveSettings.Size = new System.Drawing.Size(388, 23);
+            this.btnSaveSettings.TabIndex = 18;
+            this.btnSaveSettings.Text = "Save Settings";
+            this.btnSaveSettings.UseVisualStyleBackColor = true;
+            this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_ClickAsync);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(413, 368);
+            this.ClientSize = new System.Drawing.Size(413, 390);
             this.Controls.Add(this.groupBoxTimeManagement);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.panel1);
@@ -371,7 +385,6 @@ namespace HanbiroExtensionGUI
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnStop;
-        private System.Windows.Forms.Button btnSaveSettings;
         private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.CheckBox chkReciveEmailNotifications;
         private System.Windows.Forms.Label label5;
@@ -389,7 +402,9 @@ namespace HanbiroExtensionGUI
         private System.Windows.Forms.CheckBox chkWed;
         private System.Windows.Forms.CheckBox chkTue;
         private System.Windows.Forms.CheckBox chkMon;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnAddNewUser;
+        private System.Windows.Forms.Button btnUserManagement;
+        private System.Windows.Forms.Button btnSaveSettings;
     }
 }
 
