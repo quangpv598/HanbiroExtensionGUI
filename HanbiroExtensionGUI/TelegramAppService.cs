@@ -165,13 +165,13 @@ namespace HanbiroExtensionGUI
                     text: "You will receive the photo of result.",
                     cancellationToken: cancellationToken);
 
-                var FileUrl = @"Images/sample.jpg";
-                using (var stream = System.IO.File.Open(FileUrl, FileMode.Open))
-                {
-                    await botClient.SendPhotoAsync(chatId,
-                    new InputOnlineFile(stream),
-                    "Like this !!!");
-                }
+                //var FileUrl = @"Images/sample.jpg";
+                //using (var stream = System.IO.File.Open(FileUrl, FileMode.Open))
+                //{
+                //    await botClient.SendPhotoAsync(chatId,
+                //    new InputOnlineFile(stream),
+                //    "Like this !!!");
+                //}
 
                 ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
                 {
@@ -208,6 +208,8 @@ namespace HanbiroExtensionGUI
 
                 currentUser.LastCommand = string.Empty;
                 currentUser.IsActive = false;
+                currentUser.UserName = string.Empty;
+                currentUser.Password = string.Empty;
             }
             else if (messageText == TelegramCommands.Login)
             {
