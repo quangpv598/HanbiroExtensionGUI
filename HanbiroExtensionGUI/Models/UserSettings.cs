@@ -21,11 +21,14 @@ namespace HanbiroExtensionGUI.Models
 
     public class User
     {
+        public long TelegramId { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         public bool IsLoginSuccess { get; set; }
         public bool IsSendResultToEmail { get; set; }
         public string Email { get; set; }
         public bool IsCheckHealthUser { get; set; }
+        public string LastCommand { get; set; }
+        public bool IsActive { get; set; }
     }
 }

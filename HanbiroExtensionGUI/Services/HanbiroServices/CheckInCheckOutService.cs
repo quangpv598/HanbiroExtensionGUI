@@ -15,8 +15,8 @@ namespace HanbiroExtensionGUI.Services
     public class CheckInCheckOutService : HanbiroServiceBase, IJob
     {
         #region Fields 
-        public new event EventHandler OnSuccess;
-        public new event EventHandler OnError;
+        public new event EventHandler<BrowserEventArgs> OnSuccess;
+        public new event EventHandler<BrowserEventArgs> OnError;
         #endregion
 
         #region Properties
@@ -35,13 +35,13 @@ namespace HanbiroExtensionGUI.Services
         #endregion
 
         #region Events
-        private void CheckInCheckOutService_OnError(object sender, EventArgs e)
+        private void CheckInCheckOutService_OnError(object sender, BrowserEventArgs e)
         {
             // send error to admin
             this.OnError?.Invoke(sender, e);
         }
 
-        private void CheckInCheckOutService_OnSuccess(object sender, EventArgs e)
+        private void CheckInCheckOutService_OnSuccess(object sender, BrowserEventArgs e)
         {
             //send success noti to user
             this.OnSuccess?.Invoke(sender, e);
@@ -54,7 +54,9 @@ namespace HanbiroExtensionGUI.Services
         {
             if (CurrentUserSettings == null) return;
 
-            foreach (var user in CurrentUserSettings.Users)
+            foreach (var user in CurrentUserSettings.Users.Where(u => !string.IsNullOrEmpty(u.UserName) 
+            && !string.IsNullOrEmpty(u.Password)
+            && u.IsActive))
             {
                 Browser.DoWork(user);
 

@@ -13,9 +13,9 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
 {
     public static class ChromiumBrowserUtils
     {
-        public async static Task WaitElement(this ChromiumWebBrowser browser, 
+        public async static Task WaitElement(this ChromiumWebBrowser browser,
             string element,
-            Action timeOutAction, 
+            Action timeOutAction,
             int sequence = 1000,
             int timeout = 10000)
         {
@@ -96,25 +96,33 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
 
         public static void SendKeys(ChromiumWebBrowser browser, string userId)
         {
-            List<KeyEvent> events = new List<KeyEvent>();
-            foreach (var c in userId)
+            try
             {
-                var keyEvent = new KeyEvent()
+                List<KeyEvent> events = new List<KeyEvent>();
+                foreach (var c in userId)
                 {
-                    FocusOnEditableField = true,
-                    WindowsKeyCode = GetCharsFromKeys((Keys)c, false, false)[0],
-                    Modifiers = CefEventFlags.None,
-                    Type = KeyEventType.Char,
-                    IsSystemKey = false
-                };
-                events.Add(keyEvent);
-            }
+                    var keyEvent = new KeyEvent()
+                    {
+                        FocusOnEditableField = true,
+                        WindowsKeyCode = GetCharsFromKeys((Keys)c, false, false)[0],
+                        Modifiers = CefEventFlags.None,
+                        Type = KeyEventType.Char,
+                        IsSystemKey = false
+                    };
+                    events.Add(keyEvent);
+                }
 
-            foreach (KeyEvent ev in events)
-            {
-                Thread.Sleep(400);
-                browser.GetBrowser().GetHost().SendKeyEvent(ev);
+                foreach (KeyEvent ev in events)
+                {
+                    Thread.Sleep(400);
+                    browser.GetBrowser().GetHost().SendKeyEvent(ev);
+                }
             }
+            catch (Exception ex)
+            {
+                
+            }
+            
         }
     }
 }

@@ -24,7 +24,7 @@ namespace HanbiroExtensionGUI
     public partial class frmMain : Form
     {
         #region Fields
-        private readonly App app;
+        private readonly TelegramAppService app;
         private UserSettings currentUserSettings => app.CurrentUserSettings;
         #endregion
 
@@ -36,7 +36,8 @@ namespace HanbiroExtensionGUI
         public frmMain()
         {
             InitializeComponent();
-            app = new App();
+            string token = "5204425661:AAExx7egt7qy8XSyBe-HSyzlcSXjlfE3yBY";
+            app = new TelegramAppService(token);
             app.OnReady += App_OnReady;
             if(currentUserSettings is not null)
             {

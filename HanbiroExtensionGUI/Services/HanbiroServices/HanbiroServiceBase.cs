@@ -18,8 +18,8 @@ namespace HanbiroExtensionGUI.Services
         private HanbiroChromiumBrowser hanbiroChromiumBrowser;
         private bool readyToUse = false;
         private int countFrameLoaded = 0;
-        public event EventHandler OnSuccess;
-        public event EventHandler OnError;
+        public event EventHandler<BrowserEventArgs> OnSuccess;
+        public event EventHandler<BrowserEventArgs> OnError;
         public event EventHandler OnReadyToUse;
         #endregion
 
