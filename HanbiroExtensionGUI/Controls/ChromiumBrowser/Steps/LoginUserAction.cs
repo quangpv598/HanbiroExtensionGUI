@@ -16,9 +16,6 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
 {
     public class LoginUserAction : AbstractAction
     {
-        private const int TRY_TIMES = 3;
-        private int TRY_FILL_USER_TIMES = 0;
-        private int TRY_FILL_PASSWORD_TIMES = 0;
         public LoginUserAction(HanbiroChromiumBrowser hanbiroChromiumBrowser) : base(hanbiroChromiumBrowser)
         {
 
@@ -71,18 +68,14 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                     ChromiumBrowserUtils.MouseLeftDown(Browser, int.Parse(coordx) + 20, int.Parse(coordy) + 20);
                     ChromiumBrowserUtils.MouseLeftUp(Browser, int.Parse(coordx) + 20, int.Parse(coordy) + 20);
 
-                    while (FillUserName().Result)
-                    {
-
-                    }
+                    Task task = new Task(FillUserName);
+                    task.Start();
                 }
             });
         }
 
-        private async Task<bool> FillUserName()
+        private async void FillUserName()
         {
-            bool isTryAgain = false;
-
             string element = "document.getElementById('log-userid')";
             await Browser.WaitElement($"{element}.value;",
                 () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
@@ -107,26 +100,14 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                             $"Fill Username Completed");
                         var task = new Task(FillPasswordAsync);
                         task.Start();
-
-                        isTryAgain = false;
                     }
                     else
                     {
-                        if(TRY_FILL_USER_TIMES <= TRY_TIMES)
-                        {
-                            isTryAgain = true;
-                            TRY_FILL_USER_TIMES++;
-                        }
-                        else
-                        {
-                            Browser.CheckHealthResult.AppendLineWithShortTime(
+                        Browser.CheckHealthResult.AppendLineWithShortTime(
                             nameof(FillUserName),
                             false,
                             $"Username is not match with input");
-                            RaiseErrorEvent(new ErrorArgs(ErrorType.NotMatchWithInput, element));
-
-                            isTryAgain = false;
-                        }
+                        RaiseErrorEvent(new ErrorArgs(ErrorType.NotMatchWithInput, element));
                     }
                 }
                 else
@@ -136,12 +117,8 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                         false,
                         $"Can't access element with id 'log-userid'");
                     RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element));
-
-                    isTryAgain = false;
                 }
             });
-
-            return await Task.FromResult(isTryAgain);
         }
 
         private async void FillPasswordAsync()
@@ -177,20 +154,12 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                             }
                             else
                             {
-                                if (TRY_FILL_PASSWORD_TIMES <= TRY_TIMES)
-                                {
-                                    FillPasswordAsync();
-                                    TRY_FILL_PASSWORD_TIMES++;
-                                }
-                                else
-                                {
-                                    Browser.CheckHealthResult.AppendLineWithShortTime(
+                                Browser.CheckHealthResult.AppendLineWithShortTime(
                                         nameof(FillPasswordAsync),
                                         false,
                                         $"Password is not match with input");
-                                    RaiseErrorEvent(new ErrorArgs(ErrorType.NotMatchWithInput, element));
-                                }
-                                
+                                RaiseErrorEvent(new ErrorArgs(ErrorType.NotMatchWithInput, element));
+
                             }
                         }
                     });
