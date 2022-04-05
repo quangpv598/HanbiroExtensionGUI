@@ -77,7 +77,8 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
         {
             string element = "document.getElementsByClassName('tertiary-info text-center')[0]";
             await Browser.WaitElement($"document.getElementsByClassName('text-center col-md-12')[0].innerText;",
-                () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
+                /*() => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element))*/
+                null);
 
             await Browser.EvaluateScriptAsync($"{element}.innerHTML;").ContinueWith(x =>
             {
@@ -110,7 +111,8 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
         {
             string element = "document.getElementsByClassName('tertiary-info text-center')[1]";
             await Browser.WaitElement($"{element}.innerText;",
-                () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
+                /*() => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element))*/
+                null);
 
             await Browser.EvaluateScriptAsync($"{element}.innerText;").ContinueWith(x =>
             {
@@ -170,7 +172,8 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
         {
             string element = "document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0]";
             await Browser.WaitElement($"{element}.innerText;",
-                () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
+                /*() => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element))*/
+                null);
 
             await Browser.EvaluateScriptAsync($"{element}.innerText;").ContinueWith(x =>
             {
@@ -190,7 +193,8 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
         {
             string element = "document.getElementsByClassName('btn btn-primary btn-round no-border width-100 btn-sm')[0]";
             await Browser.WaitElement($"{element}.value;",
-                () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
+                /*() => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element))*/
+                null);
 
             await Browser.EvaluateScriptAsync($"{element}.click();").ContinueWith(x =>
             {
@@ -217,7 +221,8 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
         {
             string element = "document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0]";
             await Browser.WaitElement($"{element}.innerText;",
-                () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
+                /*() => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element))*/
+                null);
 
             await Browser.EvaluateScriptAsync($"{element}.innerText;").ContinueWith(x =>
             {
@@ -232,7 +237,8 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
         {
             string element = "document.getElementsByClassName('btn btn-danger btn-round no-border width-100 btn-sm')[0]";
             await Browser.WaitElement($"{element}.value;",
-                () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
+                /*() => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element))*/
+                null);
 
             await Browser.EvaluateScriptAsync($"{element}.click();").ContinueWith(x =>
             {
