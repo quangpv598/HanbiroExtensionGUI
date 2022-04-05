@@ -13,9 +13,9 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
 {
     public static class ChromiumBrowserUtils
     {
-        public async static Task WaitElement(this ChromiumWebBrowser browser,
+        public async static Task WaitElement(this ChromiumWebBrowser browser, 
             string element,
-            Action timeOutAction,
+            Action timeOutAction, 
             int sequence = 1000,
             int timeout = 10000)
         {
@@ -96,33 +96,67 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
 
         public static void SendKeys(ChromiumWebBrowser browser, string userId)
         {
-            try
+            List<KeyEvent> events = new List<KeyEvent>();
+            foreach (var c in userId)
             {
-                List<KeyEvent> events = new List<KeyEvent>();
-                foreach (var c in userId)
+                var keyEvent = new KeyEvent()
                 {
-                    var keyEvent = new KeyEvent()
-                    {
-                        FocusOnEditableField = true,
-                        WindowsKeyCode = GetCharsFromKeys((Keys)c, false, false)[0],
-                        Modifiers = CefEventFlags.None,
-                        Type = KeyEventType.Char,
-                        IsSystemKey = false
-                    };
-                    events.Add(keyEvent);
-                }
+                    FocusOnEditableField = true,
+                    WindowsKeyCode = GetCharsFromKeys((Keys)c, false, false)[0],
+                    Modifiers = CefEventFlags.None,
+                    Type = KeyEventType.Char,
+                    IsSystemKey = false
+                };
+                events.Add(keyEvent);
+            }
 
-                foreach (KeyEvent ev in events)
-                {
-                    Thread.Sleep(400);
-                    browser.GetBrowser().GetHost().SendKeyEvent(ev);
-                }
-            }
-            catch (Exception ex)
+            foreach (KeyEvent ev in events)
             {
-                
+                Thread.Sleep(400);
+                browser.GetBrowser().GetHost().SendKeyEvent(ev);
             }
-            
         }
+
+        public static void MouseLeftDown(ChromiumWebBrowser browser, int x, int y)
+        {
+            browser.GetBrowser().GetHost()
+                .SendMouseClickEvent(x, y, MouseButtonType.Left, false, 1, CefEventFlags.None);
+            Thread.Sleep(15);
+        }
+
+        public static void MouseLeftUp(ChromiumWebBrowser browser, int x, int y)
+        {
+            browser.GetBrowser().GetHost()
+                .SendMouseClickEvent(x, y, MouseButtonType.Left, true, 1, CefEventFlags.None);
+            Thread.Sleep(15);
+        }
+
+        public static void HitEnter(ChromiumWebBrowser browser, int x, int y)
+        {
+            KeyEvent k = new KeyEvent
+            {
+                WindowsKeyCode = 0x0D, // Enter
+                FocusOnEditableField = true,
+                IsSystemKey = false,
+                Type = KeyEventType.KeyDown
+            };
+
+            browser.GetBrowser().GetHost().SendKeyEvent(k);
+
+            Thread.Sleep(100);
+
+            k = new KeyEvent
+            {
+                WindowsKeyCode = 0x0D, // Enter
+                FocusOnEditableField = true,
+                IsSystemKey = false,
+                Type = KeyEventType.KeyUp
+            };
+
+            browser.GetBrowser().GetHost().SendKeyEvent(k);
+
+            Thread.Sleep(100);
+        }
+
     }
 }

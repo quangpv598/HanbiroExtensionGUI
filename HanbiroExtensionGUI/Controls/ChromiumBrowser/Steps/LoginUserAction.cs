@@ -3,6 +3,7 @@ using HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils;
 using HanbiroExtensionGUI.Enums;
 using HanbiroExtensionGUI.Extensions;
 using HanbiroExtensionGUI.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,12 +29,60 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                 nameof(DoWork),
                 true,
                 $"Enter to Login Action");
-            var task = new Task(FillUserName);
+            var task = new Task(FocusToUserNameTextbox);
             task.Start();
         }
 
-        private async void FillUserName()
+        private async void FocusToUserNameTextbox()
         {
+            await Browser.EvaluateScriptAsync(@"
+                            var play = document.getElementById('log-userid')
+                            function findPos(obj)
+                            {
+                                var curleft = 0;
+                                var curtop = 0;
+
+                                if (obj.offsetParent)
+                                {
+                                    do
+                                    {
+                                        curleft += obj.offsetLeft;
+                                        curtop += obj.offsetTop;
+                                    } while (obj = obj.offsetParent);
+
+                                    return { X: curleft,Y: curtop};
+                                }
+                            }
+                            findPos(play)"
+            )
+            .ContinueWith(x =>
+            {
+                // 2. Continue with finding the coordinates and using MouseClick method 
+                // for pressing left mouse button down and releasing it at desired end position.
+                var responseForMouseClick = x.Result;
+
+                if (responseForMouseClick.Success && responseForMouseClick.Result != null)
+                {
+                    var xy = responseForMouseClick.Result;
+                    var json = JsonConvert.SerializeObject(xy).ToString();
+                    var coordx = json.Substring(json.IndexOf(':') + 1, 3);
+                    var coordy = json.Substring(json.LastIndexOf(':') + 1, 3);
+
+                    ChromiumBrowserUtils.MouseLeftDown(Browser, int.Parse(coordx) + 20, int.Parse(coordy) + 20);
+                    ChromiumBrowserUtils.MouseLeftUp(Browser, int.Parse(coordx) + 20, int.Parse(coordy) + 20);
+
+                    while (FillUserName().Result)
+                    {
+
+                    }
+                }
+            });
+        }
+
+        private async Task<bool> FillUserName()
+        {
+            bool isTryAgain = false;
+
             string element = "document.getElementById('log-userid')";
             await Browser.WaitElement($"{element}.value;",
                 () => RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element)));
@@ -58,12 +107,14 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                             $"Fill Username Completed");
                         var task = new Task(FillPasswordAsync);
                         task.Start();
+
+                        isTryAgain = false;
                     }
                     else
                     {
                         if(TRY_FILL_USER_TIMES <= TRY_TIMES)
                         {
-                            FillUserName();
+                            isTryAgain = true;
                             TRY_FILL_USER_TIMES++;
                         }
                         else
@@ -73,6 +124,8 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                             false,
                             $"Username is not match with input");
                             RaiseErrorEvent(new ErrorArgs(ErrorType.NotMatchWithInput, element));
+
+                            isTryAgain = false;
                         }
                     }
                 }
@@ -83,8 +136,12 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                         false,
                         $"Can't access element with id 'log-userid'");
                     RaiseErrorEvent(new ErrorArgs(ErrorType.CannotFindElement, element));
+
+                    isTryAgain = false;
                 }
             });
+
+            return await Task.FromResult(isTryAgain);
         }
 
         private async void FillPasswordAsync()
