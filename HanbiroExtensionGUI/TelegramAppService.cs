@@ -273,6 +273,8 @@ namespace HanbiroExtensionGUI
 
             service.Browser.CurrentUser.IsActive = false;
 
+            SendSuccessImage(service);
+
             string fileName = string.Format("ERROR_{0}_{1}.txt", service.Browser.CurrentUser.UserName, Guid.NewGuid().ToString());
             System.IO.File.WriteAllText($"{Application.StartupPath}/Logs/{fileName}", service.Browser.CheckHealthResult.ToString());
         }
