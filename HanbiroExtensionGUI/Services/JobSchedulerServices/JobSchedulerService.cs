@@ -60,7 +60,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
                 .WithIdentity("trigger1", "group1")
                 .StartNow()
                 .WithSimpleSchedule(x => x
-                    .WithIntervalInSeconds(15)
+                    .WithIntervalInSeconds(60)
                     .RepeatForever())
                 //.WithCronSchedule(cronExpressionStartTime)
                 .Build();

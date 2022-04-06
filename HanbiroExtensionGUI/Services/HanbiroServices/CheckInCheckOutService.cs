@@ -56,7 +56,8 @@ namespace HanbiroExtensionGUI.Services
 
             foreach (var user in CurrentUserSettings.Users.Where(u => !string.IsNullOrEmpty(u.UserName) 
             && !string.IsNullOrEmpty(u.Password)
-            && u.IsActive))
+            //&& u.IsActive
+            ))
             {
                 Browser.DoWork(user);
 
