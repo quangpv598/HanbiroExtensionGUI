@@ -14,15 +14,14 @@ namespace HanbiroExtensionGUI.Models
         public IFrame Frame { get; set; }
         public IRequest Request { get; set; }
         public IResponse Response { get; set; }
-        public UrlRequestStatus Status { get; set; }
-        public HanbiroRequestHandlerArgs(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response, UrlRequestStatus status)
+        
+        public HanbiroRequestHandlerArgs(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response)
         {
             this.BrowserControl = browserControl;
             this.Browser = browser;
             this.Frame = frame;
             this.Request = request;
             this.Response = response;
-            this.Status = status;
         }
     }
 }
