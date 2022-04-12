@@ -1,5 +1,6 @@
 ﻿using CefSharp;
 using CefSharp.OffScreen;
+using HanbiroExtensionGUI.Controls.ChromiumBrowser.Handlers;
 using HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps;
 using HanbiroExtensionGUI.Enums;
 using HanbiroExtensionGUI.Extensions;
@@ -47,6 +48,12 @@ namespace HanbiroExtensionGUI.Controls
             this.loginAction = new LoginUserAction(this);
             this.clockInOutAction = new ClockInOutAction(this);
             this.CheckHealthResult = new StringBuilder();
+
+            var resourceHandler = new HanbiroResourceHandler();
+
+            var hanbiroRequestHandler = new HanbiroRequestHandler(resourceHandler);
+
+            base.RequestHandler = hanbiroRequestHandler;
 
             #region Init Events
             this.loginAction.OnSuccessEvent += LoginAction_OnSuccessEvent;
