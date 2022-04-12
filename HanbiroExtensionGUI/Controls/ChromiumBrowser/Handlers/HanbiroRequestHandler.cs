@@ -20,7 +20,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Handlers
 
         protected override void OnResourceLoadComplete(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response, UrlRequestStatus status, long receivedContentLength)
         {
-            resourceHandler.OnResourceLoadComplete(browserControl, browser, frame, request, response, status, receivedContentLength);
+            resourceHandler.GetResourceResponseFilter(browserControl, browser, frame, request, response);
         }
     }
 
