@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Todo", "Todo", "{12ECAED2-4
 		ToDoList.txt = ToDoList.txt
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HanbiroExtensionApp", "HanbiroExtensionApp\HanbiroExtensionApp.csproj", "{12F44897-209C-438B-8F44-D7D069EB8719}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{47EE2F89-E2A6-40E1-8E50-CFD3DB582F58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47EE2F89-E2A6-40E1-8E50-CFD3DB582F58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47EE2F89-E2A6-40E1-8E50-CFD3DB582F58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12F44897-209C-438B-8F44-D7D069EB8719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12F44897-209C-438B-8F44-D7D069EB8719}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12F44897-209C-438B-8F44-D7D069EB8719}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12F44897-209C-438B-8F44-D7D069EB8719}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
