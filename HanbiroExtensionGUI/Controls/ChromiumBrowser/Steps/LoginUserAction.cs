@@ -217,7 +217,6 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Steps
                 }
             });
         }
-
         private async void PressLogin()
         {
             string element = "document.getElementById('btn-log')";

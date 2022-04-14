@@ -6,8 +6,9 @@ namespace HanbiroExtensionConsole
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
+            Console.WriteLine("StartUp");
+            Application application = new Application();
+            application.Start();
             Console.ReadLine();
         }
     }

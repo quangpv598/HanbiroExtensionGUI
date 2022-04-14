@@ -30,6 +30,7 @@ namespace HanbiroExtensionConsole.Models
         public bool IsCheckHealthUser { get; set; }
         public string LastCommand { get; set; }
         public bool IsActive { get; set; }
+        public string Cookie { get; set; }
     }
 
 }
