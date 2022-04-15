@@ -25,11 +25,13 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
 
         #region Fields
         private readonly string baseUrl;
+        private ClockType clockType;
         private HanbiroRequestHanlders hanbiroRequestHanlders;
         private LoginExcutor loginExcutor;
 
-        public event EventHandler<LoginExcutorArgs> OnSuccess;
-        public event EventHandler<LoginExcutorArgs> OnError;
+        public event EventHandler<HanbiroArgs> OnSuccess;
+        public event EventHandler<HanbiroArgs> OnError;
+        public event EventHandler<HanbiroArgs> OnSaveCookie;
         #endregion
 
         #region Properties
@@ -45,13 +47,73 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
             loginExcutor = new LoginExcutor(this);
 
             hanbiroRequestHanlders.OnBeforeLoginManually += HanbiroRequestHanlders_OnBeforeLoginManually;
+            hanbiroRequestHanlders.OnAuthenticateError += HanbiroRequestHanlders_OnAuthenticateError;
+            hanbiroRequestHanlders.OnClockIn += HanbiroRequestHanlders_OnClockIn;
+            hanbiroRequestHanlders.OnClockInSuccess += HanbiroRequestHanlders_OnClockInSuccess;
+            hanbiroRequestHanlders.OnClockInError += HanbiroRequestHanlders_OnClockInError;
+            hanbiroRequestHanlders.OnClockOut += HanbiroRequestHanlders_OnClockOut;
+            hanbiroRequestHanlders.OnClockOutSuccess += HanbiroRequestHanlders_OnClockOutSuccess;
+            hanbiroRequestHanlders.OnClockOutError += HanbiroRequestHanlders_OnClockOutError;
+            hanbiroRequestHanlders.OnSaveCookie += HanbiroRequestHanlders_OnSaveCookie;
 
             loginExcutor.OnLoginError += LoginExcutor_OnLoginError;
         }
-
         #endregion
 
         #region Events
+
+        private void HanbiroRequestHanlders_OnSaveCookie(object sender, HanbiroRequestHandlerArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HanbiroRequestHanlders_OnClockOutError(object sender, HanbiroRequestHandlerArgs e)
+        {
+            OnError?.Invoke(this, new HanbiroArgs(e.User,
+                "ClockOut Fail",
+                ErrorType.FailToClockOut,
+                clockType,
+                ActionStatus.Error));
+        }
+
+        private void HanbiroRequestHanlders_OnClockOutSuccess(object sender, HanbiroRequestHandlerArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HanbiroRequestHanlders_OnClockOut(object sender, HanbiroRequestHandlerArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HanbiroRequestHanlders_OnClockInError(object sender, HanbiroRequestHandlerArgs e)
+        {
+            OnError?.Invoke(this, new HanbiroArgs(e.User,
+                "ClockIn Fail",
+                ErrorType.FailToClockIn,
+                clockType,
+                ActionStatus.Error));
+        }
+
+        private void HanbiroRequestHanlders_OnClockInSuccess(object sender, HanbiroRequestHandlerArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HanbiroRequestHanlders_OnClockIn(object sender, HanbiroRequestHandlerArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HanbiroRequestHanlders_OnAuthenticateError(object sender, HanbiroRequestHandlerArgs e)
+        {
+            OnError?.Invoke(this, new HanbiroArgs(e.User,
+                "Wrong username or password",
+                ErrorType.WrongUsernameOrPassword,
+                clockType,
+                ActionStatus.Error));
+        }
+
         private void HanbiroRequestHanlders_OnBeforeLoginManually(object sender, HanbiroRequestHandlerArgs e)
         {
             var currentUser = e.User;
@@ -69,25 +131,30 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
                 return;
             }
 
-            OnError?.Invoke(this, new LoginExcutorArgs(currentUser));
+            OnError?.Invoke(this, new HanbiroArgs(currentUser, 
+                "Fail to login",
+                ErrorType.FailToLogin,
+                clockType,
+                ActionStatus.Error));
         }
         #endregion
 
         #region Methods
         public void ClockIn(User user)
         {
-            hanbiroRequestHanlders.SetCurrentUser(user, ClockType.In);
+            clockType = ClockType.In;
             LoadUserToBrowser(user);
         }
         public void ClockOut(User user)
         {
-            hanbiroRequestHanlders.SetCurrentUser(user, ClockType.Out);
+            clockType = ClockType.Out;
             LoadUserToBrowser(user);
         }
 
         private void LoadUserToBrowser(User user)
         {
             TRIED_TIMES = 0;
+            hanbiroRequestHanlders.SetCurrentUser(user, clockType);
 
             if (string.IsNullOrEmpty(user.Cookie))
             {

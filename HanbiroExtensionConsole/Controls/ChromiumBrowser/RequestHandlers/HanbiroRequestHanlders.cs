@@ -18,7 +18,6 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
         private readonly string baseUrl;
 
         public event EventHandler<HanbiroRequestHandlerArgs> OnBeforeLoginManually;
-        public event EventHandler<HanbiroRequestHandlerArgs> OnLoginSuccess;
         public event EventHandler<HanbiroRequestHandlerArgs> OnAuthenticateError;
         public event EventHandler<HanbiroRequestHandlerArgs> OnSaveCookie;
         public event EventHandler<HanbiroRequestHandlerArgs> OnClockIn;
@@ -54,24 +53,23 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
 
         public void OnResourceLoadComplete(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response, UrlRequestStatus status, long receivedContentLength)
         {
+            var args = new HanbiroRequestHandlerArgs(currentUser, browserControl, browser, frame, request, response);
             if (request.Url == $"{baseUrl}/ngw/app/lib/css/input-password.css")
             {
-                OnBeforeLoginManually?.Invoke(this, new HanbiroRequestHandlerArgs(currentUser, browserControl, browser, frame, request, response));
+                OnBeforeLoginManually?.Invoke(this, args);
             }
             else if (request.Url == $"{baseUrl}/ngw/sign/auth"
                 || request.Url == $"{baseUrl}/ngw/app/template/main/dashboard.html")
             {
                 if (response.StatusCode == 200 && response.StatusText == "OK" && response.ErrorCode == CefErrorCode.None)
                 {
-                    OnLoginSuccess?.Invoke(this, new HanbiroRequestHandlerArgs(currentUser, browserControl, browser, frame, request, response));
-
                     if (clockType == ClockType.In)
                     {
-                        OnClockIn?.Invoke(this, new HanbiroRequestHandlerArgs(currentUser, browserControl, browser, frame, request, response));
+                        OnClockIn?.Invoke(this, args);
                     }
                     else if (clockType == ClockType.Out)
                     {
-                        OnClockOut?.Invoke(this, new HanbiroRequestHandlerArgs(currentUser, browserControl, browser, frame, request, response));
+                        OnClockOut?.Invoke(this, args);
                     }
                     else
                     {
@@ -80,30 +78,34 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
                 }
                 else
                 {
-                    OnAuthenticateError?.Invoke(this, new HanbiroRequestHandlerArgs(currentUser, browserControl, browser, frame, request, response));
+                    OnAuthenticateError?.Invoke(this, args);
                 }
             }
             else if (request.Url == $"{baseUrl}/ngw/timecard/punch_v2/in")
             {
                 if (response.StatusCode == 200 && response.StatusText == "OK" && response.ErrorCode == CefErrorCode.None)
                 {
-                    OnClockInSuccess?.Invoke(this, new HanbiroRequestHandlerArgs(currentUser, browserControl, browser, frame, request, response));
+                    OnClockInSuccess?.Invoke(this, args);
                 }
                 else
                 {
-                    OnClockInError?.Invoke(this, new HanbiroRequestHandlerArgs(currentUser, browserControl, browser, frame, request, response));
+                    OnClockInError?.Invoke(this, args);
                 }
+
+                OnSaveCookie?.Invoke(this, args);
             }
             else if (request.Url == $"{baseUrl}/ngw/timecard/punch_v2/out")
             {
                 if (response.StatusCode == 200 && response.StatusText == "OK" && response.ErrorCode == CefErrorCode.None)
                 {
-                    OnClockOutSuccess?.Invoke(this, new HanbiroRequestHandlerArgs(currentUser, browserControl, browser, frame, request, response));
+                    OnClockOutSuccess?.Invoke(this, args);
                 }
                 else
                 {
-                    OnClockOutError?.Invoke(this, new HanbiroRequestHandlerArgs(currentUser, browserControl, browser, frame, request, response));
+                    OnClockOutError?.Invoke(this, args);
                 }
+
+                OnSaveCookie?.Invoke(this, args);
             }
         }
         #endregion
