@@ -32,6 +32,7 @@ namespace HanbiroExtensionConsole.Models
         public string LastCommand { get; set; }
         public bool IsActive { get; set; }
         public string Cookie { get; set; }
+        public DateTime LoginDate { get; set; } = DateTime.Now;
     }
 
 }

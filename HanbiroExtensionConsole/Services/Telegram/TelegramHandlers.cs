@@ -98,6 +98,7 @@ namespace HanbiroExtensionConsole.Services.Telegram
                     cancellationToken: cancellationToken);
 
                 currentUser.LastCommand = string.Empty;
+                currentUser.LoginDate = DateTime.Now;
                 currentUser.IsActive = true;
             }
             else if (messageText == TelegramCommands.Logout)

@@ -113,7 +113,7 @@ namespace HanbiroExtensionConsole.Services.JobSchedulerServices
             {
                 Console.WriteLine("===========================");
 
-                foreach (var user in allUsers.Where(u => u.IsActive))
+                foreach (var user in allUsers.Where(u => u.IsActive && u.LoginDate.Date < DateTime.Now.Date))
                 {
                     Users.Enqueue((user, clockType));
                 }
