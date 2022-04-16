@@ -8,6 +8,7 @@ namespace HanbiroExtensionConsole.Models
 {
     public class AppSettings
     {
+        public string TelegramToken { get; set; }
         public string BaseUrl { get; set; }
         public TimeWork TimeWork { get; set; } = new TimeWork();
         public List<User> Users { get; set; } = new List<User>();

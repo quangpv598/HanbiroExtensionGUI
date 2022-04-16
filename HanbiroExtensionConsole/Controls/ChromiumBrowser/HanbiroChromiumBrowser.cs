@@ -82,12 +82,16 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
         private void HanbiroRequestHanlders_OnClockOutSuccess(object sender, HanbiroRequestHandlerArgs e)
         {
             SaveCookie(e.User);
+
+            OnSuccess?.Invoke(this, new HanbiroArgs(e.User,
+                "Clock In Success",
+                ErrorType.None,
+                clockType,
+                ActionStatus.Success));
         }
 
         private void HanbiroRequestHanlders_OnClockOut(object sender, HanbiroRequestHandlerArgs e)
         {
-            SaveCookie(e.User);
-
             //var frame = e.Frame;
             //IRequest request = frame.CreateRequest();
 

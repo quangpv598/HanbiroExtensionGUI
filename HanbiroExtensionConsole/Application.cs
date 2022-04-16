@@ -3,6 +3,8 @@ using HanbiroExtensionConsole.Controls.ChromiumBrowser;
 using HanbiroExtensionConsole.Controls.ChromiumBrowser.CookieManagement;
 using HanbiroExtensionConsole.Models;
 using HanbiroExtensionConsole.Services;
+using HanbiroExtensionConsole.Services.JobSchedulerServices;
+using HanbiroExtensionConsole.Services.Telegram;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,13 +22,17 @@ namespace HanbiroExtensionConsole
         private string appSettingsPath = @"AppSettings.json";
         private TelegramService telegramService;
         private HanbiroChromiumBrowser chromiumBrowser;
+        private TelegramHandlers telegramHandlers;
+        private JobSchedulerService jobSchedulerService;
         private AppSettings appSettings;
-        private Queue<User> Users = new Queue<User>();
+        private Queue<(User, string)> MessageQueue = new Queue<(User, string)>();
+        private Timer timer = new Timer();
         #endregion
 
         #region Properties
         public TelegramService TelegramService { get => telegramService; }
-        public HanbiroChromiumBrowser ChromiumBrowser { get => chromiumBrowser;}
+        public HanbiroChromiumBrowser ChromiumBrowser { get => chromiumBrowser; }
+        private List<User> allUsers => appSettings.Users;
         #endregion
 
         #region Constructors
@@ -38,83 +44,102 @@ namespace HanbiroExtensionConsole
         #endregion
 
         #region Events
-        private void TelegramService_OnAddingUser(object sender, User e)
-        {
-            SaveAppSettings();
-        }
-        private void TelegramService_OnEditingUser(object sender, User e)
-        {
-            SaveAppSettings();
-        }
-
         private void ChromiumBrowser_OnSavedCookie(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
             SaveAppSettings();
-            //Console.WriteLine(DateTime.Now.ToString() + $"-Stop-{e.User.UserName}");
-
-            ClockOut();
+            //Console.WriteLine(DateTime.Now.ToString() + $"-Stop-{e.User.UserName}"); 
         }
 
         private void ChromiumBrowser_OnSuccess(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
-            
+            StringBuilder message = new StringBuilder();
+            string clockTypeString = string.Empty;
+            switch (e.ClockType)
+            {
+                case Enums.ClockType.In:
+                    clockTypeString = "Clock In";
+                    break;
+                case Enums.ClockType.Out:
+                    clockTypeString = "Clock Out";
+                    break;
+            }
+            message.AppendLine($"{clockTypeString} at {DateTime.Now.ToString()}");
+            MessageQueue.Enqueue((e.User, message.ToString()));
+
+            jobSchedulerService.ClockInOut();
         }
 
         private void ChromiumBrowser_OnError(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
-            
+            StringBuilder message = new StringBuilder();
+            message.AppendLine("Some thing went wrong!!!");
+            message.AppendLine("Please contact me at https://t.me/quangpv598");
+            message.AppendLine("You need Check In/Out yourself.");
+            message.AppendLine($"Visit {appSettings.BaseUrl}");
+            message.AppendLine($"[Message : {e.Message}]");
+            MessageQueue.Enqueue((e.User, message.ToString()));
+            e.User.IsActive = false;
+            SaveAppSettings();
+
+            jobSchedulerService.ClockInOut();
         }
         private void ChromiumBrowser_OnBrowserReady(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
-            DoWork();
+            //DoWork();
 
-            Timer timer = new Timer();
-            timer.Interval = 900000; // 15m
-            timer.Elapsed += (s, e) => {
+            //Timer timer = new Timer();
+            //timer.Interval = 15000; // s
+            //timer.Elapsed += (s, e) => {
 
-                DoWork();
-            };
-            timer.Start();
+            //    DoWork();
+            //};
+            //timer.Start();
+        }
+
+        private void TelegramHandlers_OnUpdatingUser(object sender, User e)
+        {
+            SaveAppSettings();
+        }
+
+        private void TelegramHandlers_OnAddingUser(object sender, User e)
+        {
+            appSettings.Users.Add(e);
+            SaveAppSettings();
         }
 
         #endregion
 
         #region Methods
 
-        private void DoWork()
-        {
-            Console.WriteLine("===========================");
-            foreach (var user in appSettings.Users)
-            {
-                Users.Enqueue(user);
-            }
 
-            ClockOut();
-        }
-
-        private void ClockOut()
-        {
-            if (Users.Count == 0) return;
-            var firstUser = Users.Dequeue();
-            Console.Write(appSettings.Users.IndexOf(firstUser) + "  ");
-            chromiumBrowser.ClockOut(firstUser);
-        }
 
         private void InitVariables()
         {
             appSettings = LoadAppSettings();
-            telegramService = new TelegramService();
+            telegramHandlers = new TelegramHandlers(allUsers);
+            telegramService = new TelegramService(appSettings.TelegramToken, telegramHandlers);
             chromiumBrowser = new HanbiroChromiumBrowser(appSettings.BaseUrl);
+            jobSchedulerService = new JobSchedulerService(appSettings.TimeWork, appSettings.Users, chromiumBrowser);
+
+            timer.Interval = 10000;
+            timer.Elapsed += (s, e) =>
+            {
+                while (MessageQueue.Count > 0)
+                {
+                    var message = MessageQueue.Dequeue();
+                    telegramService.SendMessageToUser(message.Item1, message.Item2);
+                }
+            };
         }
         private void InitEvents()
         {
-            telegramService.OnAddingUser += TelegramService_OnAddingUser;
-            telegramService.OnEditingUser += TelegramService_OnEditingUser;
-
             chromiumBrowser.OnSuccess += ChromiumBrowser_OnSuccess;
             chromiumBrowser.OnError += ChromiumBrowser_OnError;
             chromiumBrowser.OnSavedCookie += ChromiumBrowser_OnSavedCookie;
             chromiumBrowser.OnBrowserReady += ChromiumBrowser_OnBrowserReady;
+
+            telegramHandlers.OnAddingUser += TelegramHandlers_OnAddingUser;
+            telegramHandlers.OnUpdatingUser += TelegramHandlers_OnUpdatingUser;
         }
 
         public AppSettings LoadAppSettings()
@@ -143,7 +168,7 @@ namespace HanbiroExtensionConsole
         {
 
         }
-        
+
         #endregion
     }
 }

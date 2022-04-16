@@ -10,6 +10,9 @@
   <ItemGroup>
     <PackageReference Include="CefSharp.OffScreen.NETCore" Version="100.0.140" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Quartz" Version="3.4.0" />
+    <PackageReference Include="Telegram.Bot" Version="17.0.0" />
+    <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="1.0.2" />
   </ItemGroup>
 
 </Project>
