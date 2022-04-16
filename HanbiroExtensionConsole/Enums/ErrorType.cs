@@ -12,6 +12,7 @@ namespace HanbiroExtensionConsole.Enums
         FailToLogin,
         FailToClockIn,
         FailToClockOut,
-        TimeOut
+        TimeOut,
+        None
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CefSharp;
+using HanbiroExtensionConsole.Constants;
 using HanbiroExtensionConsole.Controls.ChromiumBrowser.EventsArgs;
 using HanbiroExtensionConsole.Enums;
 using HanbiroExtensionConsole.Models;
@@ -54,15 +55,17 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
         public void OnResourceLoadComplete(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response, UrlRequestStatus status, long receivedContentLength)
         {
             var args = new HanbiroRequestHandlerArgs(currentUser, browserControl, browser, frame, request, response);
-            if (request.Url == $"{baseUrl}/ngw/app/lib/css/input-password.css")
+            if (request.Url == $"{baseUrl}{ApiResources.LoginSignal}")
             {
                 OnBeforeLoginManually?.Invoke(this, args);
             }
-            else if (request.Url == $"{baseUrl}/ngw/sign/auth"
-                || request.Url == $"{baseUrl}/ngw/app/template/main/dashboard.html")
+            else if (request.Url == $"{baseUrl}{ApiResources.Auth}"
+                || request.Url == $"{baseUrl}{ApiResources.AuthSuccessSignal}")
             {
                 if (response.StatusCode == 200 && response.StatusText == "OK" && response.ErrorCode == CefErrorCode.None)
                 {
+                    OnSaveCookie?.Invoke(this, args);
+
                     if (clockType == ClockType.In)
                     {
                         OnClockIn?.Invoke(this, args);
@@ -81,7 +84,7 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
                     OnAuthenticateError?.Invoke(this, args);
                 }
             }
-            else if (request.Url == $"{baseUrl}/ngw/timecard/punch_v2/in")
+            else if (request.Url == $"{baseUrl}{ApiResources.ClockIn}")
             {
                 if (response.StatusCode == 200 && response.StatusText == "OK" && response.ErrorCode == CefErrorCode.None)
                 {
@@ -91,10 +94,8 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
                 {
                     OnClockInError?.Invoke(this, args);
                 }
-
-                OnSaveCookie?.Invoke(this, args);
             }
-            else if (request.Url == $"{baseUrl}/ngw/timecard/punch_v2/out")
+            else if (request.Url == $"{baseUrl}{ApiResources.ClockOut}")
             {
                 if (response.StatusCode == 200 && response.StatusText == "OK" && response.ErrorCode == CefErrorCode.None)
                 {
@@ -104,8 +105,6 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
                 {
                     OnClockOutError?.Invoke(this, args);
                 }
-
-                OnSaveCookie?.Invoke(this, args);
             }
         }
         #endregion

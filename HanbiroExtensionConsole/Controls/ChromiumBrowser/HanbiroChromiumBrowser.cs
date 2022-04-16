@@ -1,5 +1,6 @@
 ﻿using CefSharp;
 using CefSharp.OffScreen;
+using HanbiroExtensionConsole.Constants;
 using HanbiroExtensionConsole.Controls.ChromiumBrowser.CookieManagement;
 using HanbiroExtensionConsole.Controls.ChromiumBrowser.EventsArgs;
 using HanbiroExtensionConsole.Controls.ChromiumBrowser.Utils;
@@ -29,9 +30,9 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
         private HanbiroRequestHanlders hanbiroRequestHanlders;
         private LoginExcutor loginExcutor;
 
-        public event EventHandler<HanbiroArgs> OnSuccess;
         public event EventHandler<HanbiroArgs> OnError;
-        public event EventHandler<HanbiroArgs> OnSaveCookie;
+        public event EventHandler<HanbiroArgs> OnSuccess;
+        public event EventHandler<HanbiroArgs> OnSavedCookie;
         #endregion
 
         #region Properties
@@ -64,7 +65,12 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
 
         private void HanbiroRequestHanlders_OnSaveCookie(object sender, HanbiroRequestHandlerArgs e)
         {
-            throw new NotImplementedException();
+            SaveCookie(e.User);
+            OnSavedCookie?.Invoke(this, new HanbiroArgs(e.User,
+                "Cookie saved",
+                ErrorType.None,
+                clockType,
+                ActionStatus.Success));
         }
 
         private void HanbiroRequestHanlders_OnClockOutError(object sender, HanbiroRequestHandlerArgs e)
@@ -78,12 +84,27 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
 
         private void HanbiroRequestHanlders_OnClockOutSuccess(object sender, HanbiroRequestHandlerArgs e)
         {
-            throw new NotImplementedException();
+            OnSuccess?.Invoke(this, new HanbiroArgs(e.User,
+                "Clock In Success",
+                ErrorType.None,
+                clockType,
+                ActionStatus.Success));
         }
 
         private void HanbiroRequestHanlders_OnClockOut(object sender, HanbiroRequestHandlerArgs e)
         {
-            throw new NotImplementedException();
+            var frame = e.Frame;
+            IRequest request = frame.CreateRequest();
+
+            request.Url = $"{baseUrl}{ApiResources.ClockOut}";
+            request.Method = "POST";
+
+            request.InitializePostData();
+            var element = request.PostData.CreatePostDataElement();
+            element.Bytes = Encoding.UTF8.GetBytes(ApiResources.ClockInOutPostPayload);
+            request.PostData.AddElement(element);
+
+            frame.LoadRequest(request);
         }
 
         private void HanbiroRequestHanlders_OnClockInError(object sender, HanbiroRequestHandlerArgs e)
@@ -97,12 +118,27 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
 
         private void HanbiroRequestHanlders_OnClockInSuccess(object sender, HanbiroRequestHandlerArgs e)
         {
-            throw new NotImplementedException();
+            OnSuccess?.Invoke(this, new HanbiroArgs(e.User,
+                "Clock Out Success",
+                ErrorType.None,
+                clockType,
+                ActionStatus.Success));
         }
 
         private void HanbiroRequestHanlders_OnClockIn(object sender, HanbiroRequestHandlerArgs e)
         {
-            throw new NotImplementedException();
+            var frame = e.Frame;
+            IRequest request = frame.CreateRequest();
+
+            request.Url = $"{baseUrl}{ApiResources.ClockIn}";
+            request.Method = "POST";
+
+            request.InitializePostData();
+            var element = request.PostData.CreatePostDataElement();
+            element.Bytes = Encoding.UTF8.GetBytes(ApiResources.ClockInOutPostPayload);
+            request.PostData.AddElement(element);
+
+            frame.LoadRequest(request);
         }
 
         private void HanbiroRequestHanlders_OnAuthenticateError(object sender, HanbiroRequestHandlerArgs e)
