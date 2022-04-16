@@ -92,18 +92,18 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
 
         private void HanbiroRequestHanlders_OnClockOut(object sender, HanbiroRequestHandlerArgs e)
         {
-            //var frame = e.Frame;
-            //IRequest request = frame.CreateRequest();
+            var frame = e.Frame;
+            IRequest request = frame.CreateRequest();
 
-            //request.Url = $"{baseUrl}{ApiResources.ClockOut}";
-            //request.Method = "POST";
+            request.Url = $"{baseUrl}{ApiResources.ClockOut}";
+            request.Method = "POST";
 
-            //request.InitializePostData();
-            //var element = request.PostData.CreatePostDataElement();
-            //element.Bytes = Encoding.UTF8.GetBytes(ApiResources.ClockInOutPostPayload);
-            //request.PostData.AddElement(element);
+            request.InitializePostData();
+            var element = request.PostData.CreatePostDataElement();
+            element.Bytes = Encoding.UTF8.GetBytes(ApiResources.ClockInOutPostPayload);
+            request.PostData.AddElement(element);
 
-            //frame.LoadRequest(request);
+            frame.LoadRequest(request);
         }
 
         private void HanbiroRequestHanlders_OnClockInError(object sender, HanbiroRequestHandlerArgs e)
@@ -128,18 +128,18 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
 
         private void HanbiroRequestHanlders_OnClockIn(object sender, HanbiroRequestHandlerArgs e)
         {
-            //var frame = e.Frame;
-            //IRequest request = frame.CreateRequest();
+            var frame = e.Frame;
+            IRequest request = frame.CreateRequest();
 
-            //request.Url = $"{baseUrl}{ApiResources.ClockIn}";
-            //request.Method = "POST";
+            request.Url = $"{baseUrl}{ApiResources.ClockIn}";
+            request.Method = "POST";
 
-            //request.InitializePostData();
-            //var element = request.PostData.CreatePostDataElement();
-            //element.Bytes = Encoding.UTF8.GetBytes(ApiResources.ClockInOutPostPayload);
-            //request.PostData.AddElement(element);
+            request.InitializePostData();
+            var element = request.PostData.CreatePostDataElement();
+            element.Bytes = Encoding.UTF8.GetBytes(ApiResources.ClockInOutPostPayload);
+            request.PostData.AddElement(element);
 
-            //frame.LoadRequest(request);
+            frame.LoadRequest(request);
         }
 
         private void HanbiroRequestHanlders_OnAuthenticateError(object sender, HanbiroRequestHandlerArgs e)
