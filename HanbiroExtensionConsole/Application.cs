@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace HanbiroExtensionConsole
 {
@@ -20,6 +21,7 @@ namespace HanbiroExtensionConsole
         private TelegramService telegramService;
         private HanbiroChromiumBrowser chromiumBrowser;
         private AppSettings appSettings;
+        private Queue<User> Users = new Queue<User>();
         #endregion
 
         #region Properties
@@ -48,6 +50,9 @@ namespace HanbiroExtensionConsole
         private void ChromiumBrowser_OnSavedCookie(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
             SaveAppSettings();
+            //Console.WriteLine(DateTime.Now.ToString() + $"-Stop-{e.User.UserName}");
+
+            ClockOut();
         }
 
         private void ChromiumBrowser_OnSuccess(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
@@ -61,13 +66,40 @@ namespace HanbiroExtensionConsole
         }
         private void ChromiumBrowser_OnBrowserReady(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
-            //chromiumBrowser.ClockIn(appSettings.Users.FirstOrDefault());
-            chromiumBrowser.ClockOut(appSettings.Users.FirstOrDefault());
+            DoWork();
+
+            Timer timer = new Timer();
+            timer.Interval = 900000; // 15m
+            timer.Elapsed += (s, e) => {
+
+                DoWork();
+            };
+            timer.Start();
         }
 
         #endregion
 
         #region Methods
+
+        private void DoWork()
+        {
+            Console.WriteLine("===========================");
+            foreach (var user in appSettings.Users)
+            {
+                Users.Enqueue(user);
+            }
+
+            ClockOut();
+        }
+
+        private void ClockOut()
+        {
+            if (Users.Count == 0) return;
+            var firstUser = Users.Dequeue();
+            Console.Write(appSettings.Users.IndexOf(firstUser) + "  ");
+            chromiumBrowser.ClockOut(firstUser);
+        }
+
         private void InitVariables()
         {
             appSettings = LoadAppSettings();
