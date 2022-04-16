@@ -1,4 +1,5 @@
-﻿using HanbiroExtensionConsole.Models;
+﻿using HanbiroExtensionConsole.Constants;
+using HanbiroExtensionConsole.Models;
 using HanbiroExtensionConsole.Services.Telegram;
 using System;
 using System.Collections.Generic;
@@ -85,6 +86,27 @@ namespace HanbiroExtensionConsole.Services
             await telegramBotClient.SendTextMessageAsync(
                 chatId: user.TelegramId,
                 text: message);
+        }
+
+        public async void LogoutUser(Models.User user, string message)
+        {
+            ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
+                {
+                    new KeyboardButton[] {  TelegramCommands.Login},
+                })
+            {
+                ResizeKeyboard = true
+            };
+
+            Message sentMessage = await telegramBotClient.SendTextMessageAsync(
+                chatId: user.TelegramId,
+                text: message,
+                replyMarkup: replyKeyboardMarkup);
+
+            user.LastCommand = string.Empty;
+            user.IsActive = false;
+            user.UserName = string.Empty;
+            user.Password = string.Empty;
         }
         #endregion
     }

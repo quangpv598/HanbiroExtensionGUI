@@ -57,8 +57,23 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
             hanbiroRequestHanlders.OnClockOutSuccess += HanbiroRequestHanlders_OnClockOutSuccess;
             hanbiroRequestHanlders.OnClockOutError += HanbiroRequestHanlders_OnClockOutError;
             hanbiroRequestHanlders.OnBrowserReady += HanbiroRequestHanlders_OnBrowserReady;
+            hanbiroRequestHanlders.OnCallApiError += HanbiroRequestHanlders_OnCallApiError;
 
             loginExcutor.OnLoginError += LoginExcutor_OnLoginError;
+        }
+
+
+        #endregion
+
+        #region Events
+
+        private void HanbiroRequestHanlders_OnCallApiError(object sender, HanbiroRequestHandlerArgs e)
+        {
+            OnError?.Invoke(this, new HanbiroArgs(e.User,
+                e.ErrorMessage,
+                ErrorType.CallApi,
+                clockType,
+                ActionStatus.Error));
         }
 
         private void HanbiroRequestHanlders_OnBrowserReady(object sender, HanbiroRequestHandlerArgs e)
@@ -66,14 +81,11 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
             hanbiroRequestHanlders.HasInit = true;
             OnBrowserReady?.Invoke(this, null);
         }
-        #endregion
-
-        #region Events
 
         private void HanbiroRequestHanlders_OnClockOutError(object sender, HanbiroRequestHandlerArgs e)
         {
             OnError?.Invoke(this, new HanbiroArgs(e.User,
-                "ClockOut Fail",
+                e.ErrorMessage,
                 ErrorType.FailToClockOut,
                 clockType,
                 ActionStatus.Error));
@@ -109,7 +121,7 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
         private void HanbiroRequestHanlders_OnClockInError(object sender, HanbiroRequestHandlerArgs e)
         {
             OnError?.Invoke(this, new HanbiroArgs(e.User,
-                "ClockIn Fail",
+                e.ErrorMessage,
                 ErrorType.FailToClockIn,
                 clockType,
                 ActionStatus.Error));
@@ -145,7 +157,7 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
         private void HanbiroRequestHanlders_OnAuthenticateError(object sender, HanbiroRequestHandlerArgs e)
         {
             OnError?.Invoke(this, new HanbiroArgs(e.User,
-                "Wrong username or password",
+                e.ErrorMessage,
                 ErrorType.WrongUsernameOrPassword,
                 clockType,
                 ActionStatus.Error));

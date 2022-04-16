@@ -1,6 +1,7 @@
 ﻿using CefSharp;
 using HanbiroExtensionConsole.Controls.ChromiumBrowser;
 using HanbiroExtensionConsole.Controls.ChromiumBrowser.CookieManagement;
+using HanbiroExtensionConsole.Enums;
 using HanbiroExtensionConsole.Models;
 using HanbiroExtensionConsole.Services;
 using HanbiroExtensionConsole.Services.JobSchedulerServices;
@@ -25,7 +26,7 @@ namespace HanbiroExtensionConsole
         private TelegramHandlers telegramHandlers;
         private JobSchedulerService jobSchedulerService;
         private AppSettings appSettings;
-        private Queue<(User, string)> MessageQueue = new Queue<(User, string)>();
+        private Queue<(User, string, ActionStatus)> MessageQueue = new Queue<(User, string, ActionStatus)>();
         private Timer timer = new Timer();
         #endregion
 
@@ -64,7 +65,7 @@ namespace HanbiroExtensionConsole
                     break;
             }
             message.AppendLine($"{clockTypeString} at {DateTime.Now.ToString()}");
-            MessageQueue.Enqueue((e.User, message.ToString()));
+            MessageQueue.Enqueue((e.User, message.ToString(), ActionStatus.Success));
 
             jobSchedulerService.ClockInOut();
         }
@@ -77,7 +78,7 @@ namespace HanbiroExtensionConsole
             message.AppendLine("You need Check In/Out yourself.");
             message.AppendLine($"Visit {appSettings.BaseUrl}");
             message.AppendLine($"[Message : {e.Message}]");
-            MessageQueue.Enqueue((e.User, message.ToString()));
+            MessageQueue.Enqueue((e.User, message.ToString(), ActionStatus.Error));
             e.User.IsActive = false;
             SaveAppSettings();
 
@@ -103,8 +104,6 @@ namespace HanbiroExtensionConsole
 
         #region Methods
 
-
-
         private void InitVariables()
         {
             appSettings = LoadAppSettings();
@@ -119,7 +118,16 @@ namespace HanbiroExtensionConsole
                 while (MessageQueue.Count > 0)
                 {
                     var message = MessageQueue.Dequeue();
-                    telegramService.SendMessageToUser(message.Item1, message.Item2);
+                    
+                    if(message.Item3 == ActionStatus.Error)
+                    {
+                        telegramService.LogoutUser(message.Item1, message.Item2);
+                    }
+                    else
+                    {
+                        telegramService.SendMessageToUser(message.Item1, message.Item2);
+                        SaveAppSettings();
+                    }
                 }
             };
             timer.Start();

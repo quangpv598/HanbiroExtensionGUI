@@ -17,6 +17,11 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
             this.hanbiroRequestHanlders = hanbiroRequestHanlders;
         }
 
+        protected override IResponseFilter GetResourceResponseFilter(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, IResponse response)
+        {
+            return hanbiroRequestHanlders.GetResourceResponseFilter(chromiumWebBrowser, browser, frame, request, response);
+        }
+
         protected override void OnResourceLoadComplete(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response, UrlRequestStatus status, long receivedContentLength)
         {
             hanbiroRequestHanlders.OnResourceLoadComplete(browserControl, browser, frame, request, response, status, receivedContentLength);

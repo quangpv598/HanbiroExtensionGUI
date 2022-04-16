@@ -67,14 +67,20 @@ namespace HanbiroExtensionConsole.Services.JobSchedulerServices
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity("trigger1", "group1")
                 .StartNow()
-                .WithCronSchedule(cronExpressionStartTime)
+                 .WithCronSchedule(cronExpressionStartTime)
+                 //.WithSimpleSchedule(x => x
+                 //   .WithIntervalInSeconds(1)
+                 //   .WithRepeatCount(0))
                 .UsingJobData(nameof(ClockType), nameof(ClockType.In))
                 .Build();
 
             ITrigger trigger2 = TriggerBuilder.Create()
                 .WithIdentity("trigger2", "group1")
                 .StartNow()
-                .WithCronSchedule(cronExpressionEndTime)
+                //.WithCronSchedule(cronExpressionEndTime)
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(1)
+                    .WithRepeatCount(0))
                 .UsingJobData(nameof(ClockType), nameof(ClockType.Out))
                 .Build();
 
