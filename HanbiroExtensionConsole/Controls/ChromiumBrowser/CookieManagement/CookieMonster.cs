@@ -48,33 +48,8 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser.CookieManagement
             }
         }
 
-        /// <summary>
-        /// Set a cookie for the browser
-        /// </summary>
-        /// <returns></returns>
-        private async Task<bool> setCookie(string domainStr, string nameStr, string valueStr, bool ishttps)
-        {
-            string httpStr = "http";
-            if (ishttps)
-            {
-                httpStr = "https";
-            }
-            var cookieManager = CefSharp.Cef.GetGlobalCookieManager();
-            var bol = await cookieManager.SetCookieAsync(httpStr + "://" + domainStr, new CefSharp.Cookie()
-            {
-                Domain = domainStr,
-                Name = nameStr,
-                Value = valueStr,
-                Path = "/",
-                HttpOnly = true,
-                Expires = DateTime.Now.AddMinutes(1)
-            });
-            return bol;
-        }
-
         public bool Visit(CefSharp.Cookie cookie, int count, int total, ref bool deleteCookie)
         {
-
             cookies.Add(cookie);
             if (count == total - 1)
                 gotAllCookies.Set();

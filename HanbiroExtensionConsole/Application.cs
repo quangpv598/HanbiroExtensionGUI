@@ -1,4 +1,6 @@
-﻿using HanbiroExtensionConsole.Controls.ChromiumBrowser;
+﻿using CefSharp;
+using HanbiroExtensionConsole.Controls.ChromiumBrowser;
+using HanbiroExtensionConsole.Controls.ChromiumBrowser.CookieManagement;
 using HanbiroExtensionConsole.Models;
 using HanbiroExtensionConsole.Services;
 using System;
@@ -108,8 +110,9 @@ namespace HanbiroExtensionConsole
 
         public void Start()
         {
-            
+
         }
+        
         #endregion
     }
 }
