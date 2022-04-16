@@ -1,6 +1,7 @@
 ﻿using HanbiroExtensionConsole.Constants;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace HanbiroExtensionConsole.Services.Telegram
@@ -81,6 +83,8 @@ namespace HanbiroExtensionConsole.Services.Telegram
 
                 ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
                 {
+                    new KeyboardButton[] {  TelegramCommands.Donate},
+                    new KeyboardButton[] {  TelegramCommands.Contact},
                     new KeyboardButton[] {  TelegramCommands.Logout},
                 })
                 {
@@ -108,7 +112,7 @@ namespace HanbiroExtensionConsole.Services.Telegram
 
                 Message sentMessage = await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "Logout Successfully!!!",
+                    text: "Logout Success!!!",
                     replyMarkup: replyKeyboardMarkup,
                     cancellationToken: cancellationToken);
 
@@ -117,6 +121,37 @@ namespace HanbiroExtensionConsole.Services.Telegram
                 currentUser.UserName = string.Empty;
                 currentUser.Password = string.Empty;
             }
+            else if (messageText == TelegramCommands.Donate)
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.AppendLine("Hãy ủng hộ cho em để em có thêm nhiều cảm hứng và nỗ lực tạo ra các công cụ giúp ích cho mọi người nhé.");
+                FileStream file = new FileStream($"{AppContext.BaseDirectory}/images/tpbank_qrcode.jpg", FileMode.Open);
+                await botClient.SendPhotoAsync(
+                    chatId: chatId,
+                    photo: new InputOnlineFile(file),
+                    caption: stringBuilder.ToString(),
+                    cancellationToken: cancellationToken);
+
+                await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "01870655888",
+                    cancellationToken: cancellationToken);
+            }
+            else if (messageText == TelegramCommands.Contact)
+            {
+                Message message = await botClient.SendContactAsync(
+                chatId: chatId,
+                phoneNumber: "+84327961199",
+                firstName: "Pham Quang",
+                vCard: "BEGIN:VCARD\n" +
+                       "VERSION:3.0\n" +
+                       "N:Pham;Quang\n" +
+                       "ORG:Developer at Hanoi,Vietnam\n" +
+                       "TEL;TYPE=voice,work,pref:+84327961199\n" +
+                       "EMAIL:quangpv598@gmail.com\n" +
+                       "END:VCARD",
+                cancellationToken: cancellationToken);
+                        }
 
             OnUpdatingUser?.Invoke(this, currentUser);
         }
