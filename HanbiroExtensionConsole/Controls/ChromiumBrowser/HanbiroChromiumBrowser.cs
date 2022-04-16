@@ -82,22 +82,12 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
         private void HanbiroRequestHanlders_OnClockOutSuccess(object sender, HanbiroRequestHandlerArgs e)
         {
             SaveCookie(e.User);
-            OnSavedCookie?.Invoke(this, new HanbiroArgs(e.User,
-                "Cookie saved",
-                ErrorType.None,
-                clockType,
-                ActionStatus.Success));
-
-            OnSuccess?.Invoke(this, new HanbiroArgs(e.User,
-                "Clock In Success",
-                ErrorType.None,
-                clockType,
-                ActionStatus.Success));
-
         }
 
         private void HanbiroRequestHanlders_OnClockOut(object sender, HanbiroRequestHandlerArgs e)
         {
+            SaveCookie(e.User);
+
             //var frame = e.Frame;
             //IRequest request = frame.CreateRequest();
 
@@ -124,11 +114,6 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
         private void HanbiroRequestHanlders_OnClockInSuccess(object sender, HanbiroRequestHandlerArgs e)
         {
             SaveCookie(e.User);
-            OnSavedCookie?.Invoke(this, new HanbiroArgs(e.User,
-                "Cookie saved",
-                ErrorType.None,
-                clockType,
-                ActionStatus.Success));
 
             OnSuccess?.Invoke(this, new HanbiroArgs(e.User,
                 "Clock Out Success",
@@ -179,7 +164,7 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
                 return;
             }
 
-            OnError?.Invoke(this, new HanbiroArgs(currentUser, 
+            OnError?.Invoke(this, new HanbiroArgs(currentUser,
                 "Fail to login",
                 ErrorType.FailToLogin,
                 clockType,
@@ -217,27 +202,40 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
         #region Cookies
         private void SaveCookie(User user)
         {
-            CookieMonster visitor = new CookieMonster();
-            visitor.browser = this;
-            var list = visitor.GetCookieList(baseUrl);
-
-            if (list.Count(c => c.Name == "auto_save_id") == 0)
-            {
-                list.Add(new Cookie
+            Task task = new Task(
+                () =>
                 {
-                    Name = "auto_save_id",
-                    Value = user.UserName,
-                    Domain = baseUrl,
-                    Path = "/",
-                    HttpOnly = false,
-                    Secure = false,
-                    Expires = new DateTime(2074, 08, 26, 08, 47, 49)
-                });
-            }
 
-            var json = JsonConvert.SerializeObject(list);
-            string cookieBase64String = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
-            user.Cookie = cookieBase64String;
+                    CookieMonster visitor = new CookieMonster();
+                    visitor.browser = this;
+                    var list = visitor.GetCookieList(baseUrl);
+
+                    if (list.Count(c => c.Name == "auto_save_id") == 0)
+                    {
+                        list.Add(new Cookie
+                        {
+                            Name = "auto_save_id",
+                            Value = user.UserName,
+                            Domain = baseUrl,
+                            Path = "/",
+                            HttpOnly = false,
+                            Secure = false,
+                            Expires = new DateTime(2074, 08, 26, 08, 47, 49)
+                        });
+                    }
+
+                    var json = JsonConvert.SerializeObject(list);
+                    string cookieBase64String = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+                    user.Cookie = cookieBase64String;
+
+                    OnSavedCookie?.Invoke(this, new HanbiroArgs(user,
+                        "Cookie saved",
+                        ErrorType.None,
+                        clockType,
+                        ActionStatus.Success));
+
+                });
+            task.Start();
         }
 
         private void LoadCookie(User user)
@@ -248,16 +246,18 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
             var cookies = this.GetCookieManager();
             foreach (var item in cookieJson["cookies"])
             {
-                cookies.SetCookie(baseUrl, new CefSharp.Cookie()
+                var cookieObject = new CefSharp.Cookie()
                 {
-                    Name = item["name"],
-                    Value = item["value"],
-                    Domain = item["domain"],
-                    Path = item["path"],
-                    HttpOnly = item["httpOnly"],
-                    Secure = item["secure"],
-                    Expires = item["expires"]
-                });
+                    Name = item["Name"],
+                    Value = item["Value"],
+                    Domain = item["Domain"],
+                    Path = item["Path"],
+                    HttpOnly = item["HttpOnly"],
+                    Secure = item["Secure"],
+                    Expires = item["Expires"]
+                };
+
+                cookies.SetCookie(baseUrl, cookieObject);
             }
             this.Load(baseUrl);
         }

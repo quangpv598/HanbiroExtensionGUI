@@ -45,7 +45,6 @@ namespace HanbiroExtensionConsole
             SaveAppSettings();
         }
 
-
         private void ChromiumBrowser_OnSavedCookie(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
             SaveAppSettings();

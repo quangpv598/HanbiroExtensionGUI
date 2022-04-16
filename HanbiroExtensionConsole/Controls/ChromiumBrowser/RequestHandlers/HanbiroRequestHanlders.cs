@@ -69,10 +69,7 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
             {
                 OnBeforeLoginManually?.Invoke(this, args);
             }
-            else if (
-                //request.Url == $"{baseUrl}{ApiResources.Auth}"
-                //|| 
-                request.Url == $"{baseUrl}{ApiResources.AuthSuccessSignal}")
+            else if (request.Url == $"{baseUrl}{ApiResources.AuthSuccessSignal}")
             {
                 if (response.StatusCode == 200 && response.StatusText == "OK" && response.ErrorCode == CefErrorCode.None)
                 {
