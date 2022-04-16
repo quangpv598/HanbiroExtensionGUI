@@ -45,7 +45,8 @@ namespace HanbiroExtensionConsole.Services.Telegram
             var currentUser = users.FirstOrDefault(u => u.TelegramId == chatId);
             if (currentUser == null) return;
 
-            if (messageText == TelegramCommands.StartCommand)
+            if (messageText == TelegramCommands.StartCommand
+                || messageText == TelegramCommands.Login)
             {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine("Welcome to Hanbiro Extension Bot!");
@@ -77,12 +78,6 @@ namespace HanbiroExtensionConsole.Services.Telegram
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine("Register Success!!!");
                 stringBuilder.AppendLine("It will clock in at 6 AM and clock out at 6:15 PM every day.");
-                stringBuilder.AppendLine("You will receive the photo of result.");
-
-                await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: stringBuilder.ToString(),
-                    cancellationToken: cancellationToken);
 
                 ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
                 {
@@ -94,7 +89,7 @@ namespace HanbiroExtensionConsole.Services.Telegram
 
                 Message sentMessage = await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "You can press the menu to see the option.",
+                    text: stringBuilder.ToString(),
                     replyMarkup: replyKeyboardMarkup,
                     cancellationToken: cancellationToken);
 
@@ -113,7 +108,7 @@ namespace HanbiroExtensionConsole.Services.Telegram
 
                 Message sentMessage = await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "Press Login button to use",
+                    text: "Logout Successfully!!!",
                     replyMarkup: replyKeyboardMarkup,
                     cancellationToken: cancellationToken);
 
@@ -121,23 +116,6 @@ namespace HanbiroExtensionConsole.Services.Telegram
                 currentUser.IsActive = false;
                 currentUser.UserName = string.Empty;
                 currentUser.Password = string.Empty;
-            }
-            else if (messageText == TelegramCommands.Login)
-            {
-                Message sentMessage = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "Hello!!! Thank for using me.",
-                    replyMarkup: new ReplyKeyboardRemove(),
-                    cancellationToken: cancellationToken);
-
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("Please enter your username");
-                await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: stringBuilder.ToString(),
-                    cancellationToken: cancellationToken);
-
-                currentUser.LastCommand = TelegramCommands.GetUsernameCommand;
             }
 
             OnUpdatingUser?.Invoke(this, currentUser);

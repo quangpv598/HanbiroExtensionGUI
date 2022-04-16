@@ -14,7 +14,9 @@ namespace HanbiroExtensionConsole.Services.JobSchedulerServices
         public Task Execute(IJobExecutionContext context)
         {
             JobDataMap dataMap = context.JobDetail.JobDataMap;
-            ClockType clockType = (ClockType)dataMap[nameof(ClockType)];
+            ClockType clockType = (ClockType)Enum.Parse(typeof(ClockType), 
+                context.Trigger.JobDataMap[nameof(ClockType)].ToString(), 
+                true);
             JobSchedulerService jobSchedulerService = (JobSchedulerService)dataMap[nameof(JobSchedulerService)];
             jobSchedulerService.Reset(clockType);
             return null;

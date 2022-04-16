@@ -75,11 +75,13 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
                 {
                     if (clockType == ClockType.In)
                     {
-                        OnClockIn?.Invoke(this, args);
+                        //OnClockIn?.Invoke(this, args);
+                        OnClockInSuccess?.Invoke(this, args);
                     }
                     else if (clockType == ClockType.Out)
                     {
-                        OnClockOut?.Invoke(this, args);
+                        //OnClockOut?.Invoke(this, args);
+                        OnClockOutSuccess?.Invoke(this, args);
                     }
                     else
                     {

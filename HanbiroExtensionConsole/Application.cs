@@ -47,7 +47,7 @@ namespace HanbiroExtensionConsole
         private void ChromiumBrowser_OnSavedCookie(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
             SaveAppSettings();
-            //Console.WriteLine(DateTime.Now.ToString() + $"-Stop-{e.User.UserName}"); 
+            Console.WriteLine(DateTime.Now.ToString() + $"-Stop-{e.ClockType}-{e.User.UserName}"); 
         }
 
         private void ChromiumBrowser_OnSuccess(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
@@ -85,15 +85,7 @@ namespace HanbiroExtensionConsole
         }
         private void ChromiumBrowser_OnBrowserReady(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
-            //DoWork();
-
-            //Timer timer = new Timer();
-            //timer.Interval = 15000; // s
-            //timer.Elapsed += (s, e) => {
-
-            //    DoWork();
-            //};
-            //timer.Start();
+            jobSchedulerService.InitSchedulerAsync();
         }
 
         private void TelegramHandlers_OnUpdatingUser(object sender, User e)
@@ -130,6 +122,7 @@ namespace HanbiroExtensionConsole
                     telegramService.SendMessageToUser(message.Item1, message.Item2);
                 }
             };
+            timer.Start();
         }
         private void InitEvents()
         {

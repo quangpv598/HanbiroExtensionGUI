@@ -103,12 +103,16 @@ namespace HanbiroExtensionConsole.Services.JobSchedulerServices
 
         public void Reset(ClockType clockType)
         {
-            Console.WriteLine("===========================");
-            foreach (var user in allUsers)
+            lock (allUsers)
             {
-                Users.Enqueue((user, clockType));
-            }
+                Console.WriteLine("===========================");
 
+                foreach (var user in allUsers.Where(u => u.IsActive))
+                {
+                    Users.Enqueue((user, clockType));
+                }
+            }
+   
             ClockInOut();
         }
         public void ClockInOut()
@@ -117,6 +121,7 @@ namespace HanbiroExtensionConsole.Services.JobSchedulerServices
             var item = Users.Dequeue();
             var user = item.Item1;
             var clockType = item.Item2;
+            Console.WriteLine(DateTime.Now.ToString() + $"-Start-{clockType}-{user.UserName}"); 
             switch (clockType)
             {
                 case ClockType.In:
