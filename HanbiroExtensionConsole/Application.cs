@@ -3,8 +3,10 @@ using HanbiroExtensionConsole.Models;
 using HanbiroExtensionConsole.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace HanbiroExtensionConsole
@@ -12,6 +14,7 @@ namespace HanbiroExtensionConsole
     public class Application : IApplication
     {
         #region Fields
+        private string appSettingsPath = @"AppSettings.json";
         private TelegramService telegramService;
         private HanbiroChromiumBrowser chromiumBrowser;
         private AppSettings appSettings;
@@ -25,8 +28,8 @@ namespace HanbiroExtensionConsole
         #region Constructors
         public Application()
         {
-            InitEvents();
             InitVariables();
+            InitEvents();
         }
         #endregion
 
@@ -39,6 +42,28 @@ namespace HanbiroExtensionConsole
         {
             SaveAppSettings();
         }
+
+
+        private void ChromiumBrowser_OnSavedCookie(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
+        {
+            SaveAppSettings();
+        }
+
+        private void ChromiumBrowser_OnSuccess(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
+        {
+            
+        }
+
+        private void ChromiumBrowser_OnError(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
+        {
+            
+        }
+        private void ChromiumBrowser_OnBrowserReady(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
+        {
+            //chromiumBrowser.ClockIn(appSettings.Users.FirstOrDefault());
+            chromiumBrowser.ClockOut(appSettings.Users.FirstOrDefault());
+        }
+
         #endregion
 
         #region Methods
@@ -52,21 +77,38 @@ namespace HanbiroExtensionConsole
         {
             telegramService.OnAddingUser += TelegramService_OnAddingUser;
             telegramService.OnEditingUser += TelegramService_OnEditingUser;
+
+            chromiumBrowser.OnSuccess += ChromiumBrowser_OnSuccess;
+            chromiumBrowser.OnError += ChromiumBrowser_OnError;
+            chromiumBrowser.OnSavedCookie += ChromiumBrowser_OnSavedCookie;
+            chromiumBrowser.OnBrowserReady += ChromiumBrowser_OnBrowserReady;
         }
 
         public AppSettings LoadAppSettings()
         {
-            throw new NotImplementedException();
+            var appSettings = new AppSettings();
+            if (File.Exists(appSettingsPath))
+            {
+                var json = File.ReadAllText(appSettingsPath);
+                appSettings = JsonSerializer.Deserialize<AppSettings>(json);
+            }
+            return appSettings;
         }
 
         public void SaveAppSettings()
         {
-            throw new NotImplementedException();
+            if (appSettings is null)
+            {
+                appSettings = new AppSettings();
+            }
+
+            string json = JsonSerializer.Serialize(appSettings);
+            File.WriteAllText(appSettingsPath, json);
         }
 
         public void Start()
         {
-            throw new NotImplementedException();
+            
         }
         #endregion
     }

@@ -33,6 +33,7 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
         public event EventHandler<HanbiroArgs> OnError;
         public event EventHandler<HanbiroArgs> OnSuccess;
         public event EventHandler<HanbiroArgs> OnSavedCookie;
+        public event EventHandler<HanbiroArgs> OnBrowserReady;
         #endregion
 
         #region Properties
@@ -40,7 +41,7 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
         #endregion
 
         #region Constructors
-        public HanbiroChromiumBrowser(string baseUrl)
+        public HanbiroChromiumBrowser(string baseUrl) : base(baseUrl)
         {
             this.baseUrl = baseUrl;
             hanbiroRequestHanlders = new HanbiroRequestHanlders(baseUrl);
@@ -55,23 +56,19 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
             hanbiroRequestHanlders.OnClockOut += HanbiroRequestHanlders_OnClockOut;
             hanbiroRequestHanlders.OnClockOutSuccess += HanbiroRequestHanlders_OnClockOutSuccess;
             hanbiroRequestHanlders.OnClockOutError += HanbiroRequestHanlders_OnClockOutError;
-            hanbiroRequestHanlders.OnSaveCookie += HanbiroRequestHanlders_OnSaveCookie;
+            hanbiroRequestHanlders.OnBrowserReady += HanbiroRequestHanlders_OnBrowserReady;
 
             loginExcutor.OnLoginError += LoginExcutor_OnLoginError;
+        }
+
+        private void HanbiroRequestHanlders_OnBrowserReady(object sender, HanbiroRequestHandlerArgs e)
+        {
+            hanbiroRequestHanlders.HasInit = true;
+            OnBrowserReady?.Invoke(this, null);
         }
         #endregion
 
         #region Events
-
-        private void HanbiroRequestHanlders_OnSaveCookie(object sender, HanbiroRequestHandlerArgs e)
-        {
-            SaveCookie(e.User);
-            OnSavedCookie?.Invoke(this, new HanbiroArgs(e.User,
-                "Cookie saved",
-                ErrorType.None,
-                clockType,
-                ActionStatus.Success));
-        }
 
         private void HanbiroRequestHanlders_OnClockOutError(object sender, HanbiroRequestHandlerArgs e)
         {
@@ -84,11 +81,19 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
 
         private void HanbiroRequestHanlders_OnClockOutSuccess(object sender, HanbiroRequestHandlerArgs e)
         {
+            SaveCookie(e.User);
+            OnSavedCookie?.Invoke(this, new HanbiroArgs(e.User,
+                "Cookie saved",
+                ErrorType.None,
+                clockType,
+                ActionStatus.Success));
+
             OnSuccess?.Invoke(this, new HanbiroArgs(e.User,
                 "Clock In Success",
                 ErrorType.None,
                 clockType,
                 ActionStatus.Success));
+
         }
 
         private void HanbiroRequestHanlders_OnClockOut(object sender, HanbiroRequestHandlerArgs e)
@@ -118,6 +123,13 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
 
         private void HanbiroRequestHanlders_OnClockInSuccess(object sender, HanbiroRequestHandlerArgs e)
         {
+            SaveCookie(e.User);
+            OnSavedCookie?.Invoke(this, new HanbiroArgs(e.User,
+                "Cookie saved",
+                ErrorType.None,
+                clockType,
+                ActionStatus.Success));
+
             OnSuccess?.Invoke(this, new HanbiroArgs(e.User,
                 "Clock Out Success",
                 ErrorType.None,

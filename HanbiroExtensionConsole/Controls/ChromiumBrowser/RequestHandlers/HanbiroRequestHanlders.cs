@@ -20,17 +20,17 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
 
         public event EventHandler<HanbiroRequestHandlerArgs> OnBeforeLoginManually;
         public event EventHandler<HanbiroRequestHandlerArgs> OnAuthenticateError;
-        public event EventHandler<HanbiroRequestHandlerArgs> OnSaveCookie;
         public event EventHandler<HanbiroRequestHandlerArgs> OnClockIn;
         public event EventHandler<HanbiroRequestHandlerArgs> OnClockInSuccess;
         public event EventHandler<HanbiroRequestHandlerArgs> OnClockInError;
         public event EventHandler<HanbiroRequestHandlerArgs> OnClockOut;
         public event EventHandler<HanbiroRequestHandlerArgs> OnClockOutSuccess;
         public event EventHandler<HanbiroRequestHandlerArgs> OnClockOutError;
+        public event EventHandler<HanbiroRequestHandlerArgs> OnBrowserReady;
         #endregion
 
         #region Properties
-
+        public bool HasInit { get; set; } = false;
         #endregion
 
         #region Constructors
@@ -55,17 +55,27 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
         public void OnResourceLoadComplete(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response, UrlRequestStatus status, long receivedContentLength)
         {
             var args = new HanbiroRequestHandlerArgs(currentUser, browserControl, browser, frame, request, response);
+
+            if (HasInit is false)
+            {
+                if (request.Url == $"{baseUrl}{ApiResources.LoginSignal}")
+                {
+                    OnBrowserReady?.Invoke(this, args);
+                }
+                return;
+            }
+
             if (request.Url == $"{baseUrl}{ApiResources.LoginSignal}")
             {
                 OnBeforeLoginManually?.Invoke(this, args);
             }
-            else if (request.Url == $"{baseUrl}{ApiResources.Auth}"
-                || request.Url == $"{baseUrl}{ApiResources.AuthSuccessSignal}")
+            else if (
+                //request.Url == $"{baseUrl}{ApiResources.Auth}"
+                //|| 
+                request.Url == $"{baseUrl}{ApiResources.AuthSuccessSignal}")
             {
                 if (response.StatusCode == 200 && response.StatusText == "OK" && response.ErrorCode == CefErrorCode.None)
                 {
-                    OnSaveCookie?.Invoke(this, args);
-
                     if (clockType == ClockType.In)
                     {
                         OnClockIn?.Invoke(this, args);
