@@ -79,7 +79,8 @@ namespace HanbiroExtensionConsole.Services.Telegram
 
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine("Register Success!!!");
-                stringBuilder.AppendLine("It will clock in at 6 AM and clock out at 6:15 PM every day.");
+                stringBuilder.AppendLine("Bot will clock in at 6 AM and clock out at 6:15 PM every day");
+                stringBuilder.AppendLine("Your settings will go into effect from tomorrow!!!");
 
                 ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
                 {
