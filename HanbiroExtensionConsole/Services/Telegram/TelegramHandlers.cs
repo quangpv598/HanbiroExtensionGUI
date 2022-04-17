@@ -84,7 +84,7 @@ namespace HanbiroExtensionConsole.Services.Telegram
 
                 ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
                 {
-                    new KeyboardButton[] {  TelegramCommands.Active},
+                    new KeyboardButton[] {  TelegramCommands.Deactive},
                     new KeyboardButton[] {  TelegramCommands.Donate},
                     new KeyboardButton[] {  TelegramCommands.Contact},
                     new KeyboardButton[] {  TelegramCommands.Logout},
@@ -103,7 +103,23 @@ namespace HanbiroExtensionConsole.Services.Telegram
                 currentUser.LoginDate = DateTime.Now;
                 currentUser.IsActive = true;
             }
-            else if (messageText == TelegramCommands.Logout)
+
+            if(string.IsNullOrEmpty(currentUser.UserName)
+                || string.IsNullOrEmpty(currentUser.Password))
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.AppendLine("You Need to login first to continue");
+                await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: stringBuilder.ToString(),
+                    cancellationToken: cancellationToken);
+
+                currentUser.IsActive = false;
+                OnUpdatingUser?.Invoke(this, currentUser);
+                return;
+            }
+
+            if (messageText == TelegramCommands.Logout)
             {
                 ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
                 {
