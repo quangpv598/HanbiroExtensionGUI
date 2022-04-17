@@ -103,9 +103,8 @@ namespace HanbiroExtensionConsole.Services.Telegram
                 currentUser.LoginDate = DateTime.Now;
                 currentUser.IsActive = true;
             }
-
-            if(string.IsNullOrEmpty(currentUser.UserName)
-                || string.IsNullOrEmpty(currentUser.Password))
+            else if (string.IsNullOrEmpty(currentUser.UserName)
+               || string.IsNullOrEmpty(currentUser.Password))
             {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine("You Need to login first to continue");
@@ -118,8 +117,7 @@ namespace HanbiroExtensionConsole.Services.Telegram
                 OnUpdatingUser?.Invoke(this, currentUser);
                 return;
             }
-
-            if (messageText == TelegramCommands.Logout)
+            else if (messageText == TelegramCommands.Logout)
             {
                 ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
                 {
@@ -140,14 +138,14 @@ namespace HanbiroExtensionConsole.Services.Telegram
                 currentUser.UserName = string.Empty;
                 currentUser.Password = string.Empty;
             }
-            else if (currentUser.LastCommand == TelegramCommands.Active)
+            else if (messageText == TelegramCommands.Active)
             {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine("Bot is actived!!!");
 
                 ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
                 {
-                    new KeyboardButton[] {  TelegramCommands.Active},
+                    new KeyboardButton[] {  TelegramCommands.Deactive},
                     new KeyboardButton[] {  TelegramCommands.Donate},
                     new KeyboardButton[] {  TelegramCommands.Contact},
                     new KeyboardButton[] {  TelegramCommands.Logout},
@@ -171,7 +169,7 @@ namespace HanbiroExtensionConsole.Services.Telegram
 
                 ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
                 {
-                    new KeyboardButton[] {  TelegramCommands.Deactive},
+                    new KeyboardButton[] {  TelegramCommands.Active},
                     new KeyboardButton[] {  TelegramCommands.Donate},
                     new KeyboardButton[] {  TelegramCommands.Contact},
                     new KeyboardButton[] {  TelegramCommands.Logout},
@@ -218,7 +216,7 @@ namespace HanbiroExtensionConsole.Services.Telegram
                        "EMAIL:quangpv598@gmail.com\n" +
                        "END:VCARD",
                 cancellationToken: cancellationToken);
-                        }
+            }
 
             OnUpdatingUser?.Invoke(this, currentUser);
         }
