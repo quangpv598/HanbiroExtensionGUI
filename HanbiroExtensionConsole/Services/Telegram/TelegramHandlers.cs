@@ -84,6 +84,7 @@ namespace HanbiroExtensionConsole.Services.Telegram
 
                 ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
                 {
+                    new KeyboardButton[] {  TelegramCommands.Active},
                     new KeyboardButton[] {  TelegramCommands.Donate},
                     new KeyboardButton[] {  TelegramCommands.Contact},
                     new KeyboardButton[] {  TelegramCommands.Logout},
@@ -122,6 +123,54 @@ namespace HanbiroExtensionConsole.Services.Telegram
                 currentUser.IsActive = false;
                 currentUser.UserName = string.Empty;
                 currentUser.Password = string.Empty;
+            }
+            else if (currentUser.LastCommand == TelegramCommands.Active)
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.AppendLine("Bot is actived!!!");
+
+                ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
+                {
+                    new KeyboardButton[] {  TelegramCommands.Active},
+                    new KeyboardButton[] {  TelegramCommands.Donate},
+                    new KeyboardButton[] {  TelegramCommands.Contact},
+                    new KeyboardButton[] {  TelegramCommands.Logout},
+                })
+                {
+                    ResizeKeyboard = true
+                };
+
+                Message sentMessage = await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: stringBuilder.ToString(),
+                    replyMarkup: replyKeyboardMarkup,
+                    cancellationToken: cancellationToken);
+
+                currentUser.IsActive = true;
+            }
+            else if (messageText == TelegramCommands.Deactive)
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.AppendLine("Bot is deactived!!!");
+
+                ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
+                {
+                    new KeyboardButton[] {  TelegramCommands.Deactive},
+                    new KeyboardButton[] {  TelegramCommands.Donate},
+                    new KeyboardButton[] {  TelegramCommands.Contact},
+                    new KeyboardButton[] {  TelegramCommands.Logout},
+                })
+                {
+                    ResizeKeyboard = true
+                };
+
+                Message sentMessage = await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: stringBuilder.ToString(),
+                    replyMarkup: replyKeyboardMarkup,
+                    cancellationToken: cancellationToken);
+
+                currentUser.IsActive = false;
             }
             else if (messageText == TelegramCommands.Donate)
             {
