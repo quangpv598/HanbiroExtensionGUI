@@ -151,7 +151,7 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
                         string data = encoding.GetString(filter.DataAll.ToArray());
 
                         dynamic d = JsonConvert.DeserializeObject<ExpandoObject>(data, new ExpandoObjectConverter());
-                        if (d.success == true)
+                        if (d.success == true && !string.IsNullOrEmpty(d.rows?.date) && !string.IsNullOrEmpty(d.rows?.time))
                         {
                             OnClockInSuccess?.Invoke(this, args);
                         }
@@ -186,7 +186,7 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
                         string data = encoding.GetString(filter.DataAll.ToArray());
 
                         dynamic d = JsonConvert.DeserializeObject<ExpandoObject>(data, new ExpandoObjectConverter());
-                        if (d.success == true)
+                        if (d.success == true && !string.IsNullOrEmpty(d.date) && !string.IsNullOrEmpty(d.time))
                         {
                             OnClockOutSuccess?.Invoke(this, args);
                         }
