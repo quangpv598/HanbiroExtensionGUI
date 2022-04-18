@@ -78,6 +78,7 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
 
         private void HanbiroRequestHanlders_OnBrowserReady(object sender, HanbiroRequestHandlerArgs e)
         {
+            Console.WriteLine("Browser ready!!!");
             hanbiroRequestHanlders.HasInit = true;
             OnBrowserReady?.Invoke(this, null);
         }

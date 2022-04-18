@@ -67,6 +67,8 @@ namespace HanbiroExtensionConsole
             message.AppendLine($"{clockTypeString} at {DateTime.Now.ToString()}");
             MessageQueue.Enqueue((e.User, message.ToString(), ActionStatus.Success));
 
+            Console.WriteLine($"Success : {e.User.UserName} - {e.Message.ToString()}");
+
             jobSchedulerService.ClockInOut();
         }
 
@@ -81,6 +83,8 @@ namespace HanbiroExtensionConsole
             MessageQueue.Enqueue((e.User, message.ToString(), ActionStatus.Error));
             e.User.IsActive = false;
             SaveAppSettings();
+
+            Console.WriteLine($"Error : {e.User.UserName} {e.Message.ToString()}");
 
             jobSchedulerService.ClockInOut();
         }

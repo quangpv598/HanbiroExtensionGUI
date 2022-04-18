@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace HanbiroExtensionConsole.Services.JobSchedulerServices
 {
-    public class JobSchedulerService 
+    public class JobSchedulerService
     {
         #region Fields
         private IScheduler scheduler;
@@ -93,7 +93,7 @@ namespace HanbiroExtensionConsole.Services.JobSchedulerServices
 
         private string GetExpressionForDayMonthYear()
         {
-            return "? * " + string.Join(",",timeWork.DaysOfWeek.Where(d => d.Value == true)
+            return "? * " + string.Join(",", timeWork.DaysOfWeek.Where(d => d.Value == true)
                 .Select(d => d.Key.ToString().Substring(0, 3).ToUpper()));
         }
 
@@ -113,21 +113,25 @@ namespace HanbiroExtensionConsole.Services.JobSchedulerServices
             {
                 Console.WriteLine("===========================");
 
-                foreach (var user in allUsers.Where(u => u.IsActive && u.LoginDate.Date < DateTime.Now.Date))
+                foreach (var user in allUsers.Where(u => u.IsActive/* && u.LoginDate.Date < DateTime.Now.Date*/))
                 {
                     Users.Enqueue((user, clockType));
                 }
+
+                Console.WriteLine($"Count Queue : {Users.Count}");
             }
-   
+
             ClockInOut();
         }
         public void ClockInOut()
         {
-            if (Users.Count == 0) return;
+            if (Users.Count == 0) { Console.WriteLine("==========================="); return; }
+
             var item = Users.Dequeue();
             var user = item.Item1;
             var clockType = item.Item2;
-            Console.WriteLine(DateTime.Now.ToString() + $"-Start-{clockType}-{user.UserName}"); 
+            Console.WriteLine("====");
+            Console.WriteLine(DateTime.Now.ToString() + $"-Start-{clockType}-{user.UserName}");
             switch (clockType)
             {
                 case ClockType.In:
