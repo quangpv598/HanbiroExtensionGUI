@@ -137,6 +137,7 @@ namespace HanbiroExtensionConsole.Services.Telegram
                 currentUser.IsActive = false;
                 currentUser.UserName = string.Empty;
                 currentUser.Password = string.Empty;
+                currentUser.Cookie = string.Empty;
             }
             else if (messageText == TelegramCommands.Active)
             {

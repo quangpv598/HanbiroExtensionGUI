@@ -85,6 +85,8 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
 
         private void HanbiroRequestHanlders_OnClockOutError(object sender, HanbiroRequestHandlerArgs e)
         {
+            SaveCookie(e.User);
+
             OnError?.Invoke(this, new HanbiroArgs(e.User,
                 e.ErrorMessage,
                 ErrorType.FailToClockOut,
@@ -121,6 +123,8 @@ namespace HanbiroExtensionConsole.Controls.ChromiumBrowser
 
         private void HanbiroRequestHanlders_OnClockInError(object sender, HanbiroRequestHandlerArgs e)
         {
+            SaveCookie(e.User);
+
             OnError?.Invoke(this, new HanbiroArgs(e.User,
                 e.ErrorMessage,
                 ErrorType.FailToClockIn,

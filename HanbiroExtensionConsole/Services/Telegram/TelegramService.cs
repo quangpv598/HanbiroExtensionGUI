@@ -107,6 +107,7 @@ namespace HanbiroExtensionConsole.Services
             user.IsActive = false;
             user.UserName = string.Empty;
             user.Password = string.Empty;
+            user.Cookie = string.Empty;
         }
         #endregion
     }

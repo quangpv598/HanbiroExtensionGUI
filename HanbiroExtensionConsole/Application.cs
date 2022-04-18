@@ -81,7 +81,6 @@ namespace HanbiroExtensionConsole
             message.AppendLine($"Visit {appSettings.BaseUrl}");
             message.AppendLine($"[Message : {e.Message}]");
             MessageQueue.Enqueue((e.User, message.ToString(), ActionStatus.Error));
-            e.User.IsActive = false;
             SaveAppSettings();
 
             Console.WriteLine($"Error : {e.User.UserName} {e.Message.ToString()}");
@@ -125,7 +124,7 @@ namespace HanbiroExtensionConsole
                     
                     if(message.Item3 == ActionStatus.Error)
                     {
-                        telegramService.LogoutUser(message.Item1, message.Item2);
+                        //telegramService.LogoutUser(message.Item1, message.Item2);
                     }
                     else
                     {
