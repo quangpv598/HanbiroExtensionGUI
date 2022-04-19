@@ -261,10 +261,16 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
 
         private void LoadCookie(User user)
         {
+
+            //delete all cookie before
+            var cookies = this.GetCookieManager();
+            cookies.DeleteCookies();
+
+            //load cookie
             string cookieStringJson = Encoding.UTF8.GetString(Convert.FromBase64String(user.Cookie));
             var cookie = "{\"cookies\" " + ":" + "" + cookieStringJson + "}";
             dynamic cookieJson = JObject.Parse(cookie);
-            var cookies = this.GetCookieManager();
+            
             foreach (var item in cookieJson["cookies"])
             {
                 var cookieObject = new CefSharp.Cookie()
