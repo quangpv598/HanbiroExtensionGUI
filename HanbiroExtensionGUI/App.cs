@@ -72,6 +72,7 @@ namespace HanbiroExtensionGUI
             }
             message.AppendLine($"{clockTypeString} at {DateTime.Now.ToString()}");
             MessageQueue.Enqueue((e.User, message.ToString(), ActionStatus.Success, ErrorType.None));
+            telegramService.SendMessageToAdminitrators(e.User,message.ToString());
 
             Console.WriteLine($"Success : {e.User.UserName} - {e.Message.ToString()}");
 
@@ -86,9 +87,12 @@ namespace HanbiroExtensionGUI
             message.AppendLine("You need Check In/Out yourself.");
             message.AppendLine($"Visit {appSettings.BaseUrl}");
             message.AppendLine($"[Message : {e.Message}]");
+            
             MessageQueue.Enqueue((e.User, message.ToString(), ActionStatus.Error, e.Type));
 
             Console.WriteLine($"Error : {e.User.UserName} {e.Message.ToString()}");
+
+            telegramService.SendMessageToAdminitrators(e.User,message.ToString());
 
             jobSchedulerService.ClockInOut();
         }
@@ -193,7 +197,7 @@ namespace HanbiroExtensionGUI
         {
             appSettings = LoadAppSettings();
             telegramHandlers = new TelegramHandlers(allUsers);
-            telegramService = new TelegramService(appSettings.TelegramToken, telegramHandlers);
+            telegramService = new TelegramService(appSettings.TelegramToken, telegramHandlers, appSettings.Adminítrators);
             chromiumBrowser = new HanbiroChromiumBrowser(appSettings.BaseUrl, isGetCookie: false);
             chromiumBrowserCookie = new HanbiroChromiumBrowser(appSettings.BaseUrl, isGetCookie: true);
             jobSchedulerService = new JobSchedulerService(appSettings.TimeWork, appSettings.Users, chromiumBrowser);

@@ -10,6 +10,7 @@ namespace HanbiroExtensionGUI.Models
     {
         public string TelegramToken { get; set; }
         public string BaseUrl { get; set; }
+        public List<long> Adminítrators { get; set; }
         public TimeWork TimeWork { get; set; } = new TimeWork();
         public List<User> Users { get; set; } = new List<User>();
     }
@@ -25,13 +26,17 @@ namespace HanbiroExtensionGUI.Models
         public long TelegramId { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
+        public string FullName { get; set; }
         public bool IsLoginSuccess { get; set; }
         public bool IsSendResultToEmail { get; set; }
         public string Email { get; set; }
+        public string PhoneNumber { get; set; }
         public bool IsCheckHealthUser { get; set; }
         public string LastCommand { get; set; }
         public bool IsActive { get; set; }
         public string Cookie { get; set; }
+        public string ClockInTime { get; set; }
+        public string ClockOutTime { get; set; }
         public DateTime LoginDate { get; set; } = DateTime.Now;
     }
 

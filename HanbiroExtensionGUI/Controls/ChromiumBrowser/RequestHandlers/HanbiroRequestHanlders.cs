@@ -23,6 +23,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         private ClockType clockType;
         private readonly string baseUrl;
         private readonly bool isGetCookie;
+        private bool hasClock;
 
         public event EventHandler<HanbiroRequestHandlerArgs> OnBeforeLoginManually;
         public event EventHandler<HanbiroRequestHandlerArgs> OnAuthenticateError;
@@ -35,6 +36,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         public event EventHandler<HanbiroRequestHandlerArgs> OnClockOutError;
         public event EventHandler<HanbiroRequestHandlerArgs> OnBrowserReady;
         public event EventHandler<HanbiroRequestHandlerArgs> OnGetCookieDone;
+        public event EventHandler<HanbiroRequestHandlerArgs> OnGetTimeCard;
         #endregion
 
         #region Properties
@@ -70,7 +72,9 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         {
             if (request.Url == $"{baseUrl}{ApiResources.Auth}"
                 || request.Url == $"{baseUrl}{ApiResources.ClockIn}"
-                || request.Url == $"{baseUrl}{ApiResources.ClockOut}")
+                || request.Url == $"{baseUrl}{ApiResources.ClockOut}"
+                || request.Url == $"{baseUrl}{ApiResources.GetUserInfoSignal}"
+                || request.Url == $"{baseUrl}{ApiResources.GetTimeCard}")
             {
                 var filter = FilterManager.CreateFilter(request.Identifier.ToString());
                 return filter;
@@ -125,7 +129,38 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                     OnCallApiError?.Invoke(this, args);
                 }
             }
-            else if (request.Url == $"{baseUrl}{ApiResources.AuthSuccessSignal}")
+            else if (request.Url == $"{baseUrl}{ApiResources.GetUserInfoSignal}")
+            {
+                if (response.StatusCode == 200 && response.StatusText == "OK" && response.ErrorCode == CefErrorCode.None)
+                {
+                    var filter = FilterManager.GetFileter(request.Identifier.ToString()) as TestJsonFilter;
+
+                    if (filter != null)
+                    {
+                        ASCIIEncoding encoding = new ASCIIEncoding();
+                        string data = encoding.GetString(filter.DataAll.ToArray());
+
+                        dynamic d = JsonConvert.DeserializeObject<ExpandoObject>(data, new ExpandoObjectConverter());
+                        if (d.success == true)
+                        {
+                            currentUser.FullName = d.rows?.user_config?.user_data?.name;
+                            currentUser.Email = d.rows?.user_config?.user_data?.email;
+                            currentUser.PhoneNumber = d.rows?.user_config?.user_data?.telephone;
+                        }
+                    }
+                    else
+                    {
+                        args.ErrorMessage = $"Call Api Error : {request.Url}";
+                        OnCallApiError?.Invoke(this, args);
+                    }
+                }
+                else
+                {
+                    args.ErrorMessage = $"Call Api Error : {request.Url}";
+                    OnCallApiError?.Invoke(this, args);
+                }
+            }
+            else if (request.Url == $"{baseUrl}{ApiResources.GetTimeCard}")
             {
                 if (response.StatusCode == 200 && response.StatusText == "OK" && response.ErrorCode == CefErrorCode.None)
                 {
@@ -224,6 +259,84 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                     OnCallApiError?.Invoke(this, args);
                 }
             }
+            //else if (request.Url == $"{baseUrl}{ApiResources.GetTimeCard}")
+            //{
+            //    if (response.StatusCode == 200 && response.StatusText == "OK" && response.ErrorCode == CefErrorCode.None)
+            //    {
+            //        var filter = FilterManager.GetFileter(request.Identifier.ToString()) as TestJsonFilter;
+
+            //        if (filter != null)
+            //        {
+            //            ASCIIEncoding encoding = new ASCIIEncoding();
+            //            string data = encoding.GetString(filter.DataAll.ToArray());
+
+            //            dynamic d = JsonConvert.DeserializeObject<ExpandoObject>(data, new ExpandoObjectConverter());
+
+            //            if (d.success == true)
+            //            {
+            //                if (clockType == ClockType.In)
+            //                {
+            //                    string clockInTime = d.rows?.timecard?.start?.time;
+            //                    if (string.IsNullOrEmpty(clockInTime))
+            //                    {
+            //                        args.ErrorMessage = $"Clock In Fail";
+            //                        OnClockInError?.Invoke(this, args);
+            //                    }
+            //                    else
+            //                    {
+            //                        currentUser.ClockInTime = clockInTime;
+            //                        OnClockInSuccess?.Invoke(this, args);
+            //                    }    
+            //                }
+            //                else if (clockType == ClockType.Out)
+            //                {
+            //                    string clockOutTime = d.rows?.timecard?.end;
+            //                    if (string.IsNullOrEmpty(clockOutTime))
+            //                    {
+            //                        args.ErrorMessage = $"Clock Out Fail";
+            //                        OnClockInError?.Invoke(this, args);
+            //                    }
+            //                    else
+            //                    {
+            //                        clockOutTime = d.rows?.timecard?.end?.time;
+            //                        currentUser.ClockOutTime = clockOutTime;
+            //                        OnClockOutSuccess?.Invoke(this, args);
+            //                    }
+            //                }
+            //                else
+            //                {
+            //                    throw new Exception("Dont support ClockType");
+            //                }
+            //            }
+            //            else
+            //            {
+            //                args.ErrorMessage = d.msg;
+            //                if (clockType == ClockType.In)
+            //                {
+            //                    OnClockInError?.Invoke(this, args);
+            //                }
+            //                else if (clockType == ClockType.Out)
+            //                {
+            //                    OnClockOutError?.Invoke(this, args);
+            //                }
+            //                else
+            //                {
+            //                    throw new Exception("Dont support ClockType");
+            //                }
+            //            }
+            //        }
+            //        else
+            //        {
+            //            args.ErrorMessage = $"Call Api Error : {request.Url}";
+            //            OnCallApiError?.Invoke(this, args);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        args.ErrorMessage = $"Call Api Error : {request.Url}";
+            //        OnCallApiError?.Invoke(this, args);
+            //    }
+            //}
         }
         #endregion
     }

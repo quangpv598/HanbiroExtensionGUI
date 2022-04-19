@@ -19,6 +19,7 @@ namespace HanbiroExtensionGUI.Services
     public class TelegramService
     {
         #region Fields
+        private readonly List<long> adminítrators;
         private readonly string telegramToken;
         private readonly TelegramHandlers telegramHandlers;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -30,10 +31,11 @@ namespace HanbiroExtensionGUI.Services
         #endregion
 
         #region Constructors
-        public TelegramService(string telegramToken, TelegramHandlers telegramHandlers)
+        public TelegramService(string telegramToken, TelegramHandlers telegramHandlers, List<long> adminítrators)
         {
             this.telegramToken = telegramToken;
             this.telegramHandlers = telegramHandlers;
+            this.adminítrators = adminítrators;
 
             telegramBotClient = new TelegramBotClient(telegramToken);
 
@@ -81,6 +83,18 @@ namespace HanbiroExtensionGUI.Services
         #endregion
 
         #region Methods
+        public async void SendMessageToAdminitrators(Models.User sender, string message)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine(message);
+            stringBuilder.AppendLine($"[Sender : {sender.UserName}-{sender.Email}-{sender.FullName}]");
+            foreach (long id in adminítrators)
+            {
+                await telegramBotClient.SendTextMessageAsync(
+                chatId: id,
+                text: stringBuilder.ToString());
+            }
+        }
         public async void SendMessageToUser(Models.User user, string message)
         {
             await telegramBotClient.SendTextMessageAsync(
