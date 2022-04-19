@@ -18,9 +18,11 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
     public class HanbiroRequestHanlders
     {
         #region Fields
+
         private User currentUser;
         private ClockType clockType;
         private readonly string baseUrl;
+        private readonly bool isGetCookie;
 
         public event EventHandler<HanbiroRequestHandlerArgs> OnBeforeLoginManually;
         public event EventHandler<HanbiroRequestHandlerArgs> OnAuthenticateError;
@@ -32,6 +34,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         public event EventHandler<HanbiroRequestHandlerArgs> OnClockOutSuccess;
         public event EventHandler<HanbiroRequestHandlerArgs> OnClockOutError;
         public event EventHandler<HanbiroRequestHandlerArgs> OnBrowserReady;
+        public event EventHandler<HanbiroRequestHandlerArgs> OnGetCookieDone;
         #endregion
 
         #region Properties
@@ -39,8 +42,9 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         #endregion
 
         #region Constructors
-        public HanbiroRequestHanlders(string baseUrl)
+        public HanbiroRequestHanlders(string baseUrl, bool isGetCookie)
         {
+            this.isGetCookie = isGetCookie;
             this.baseUrl = baseUrl;
         }
         #endregion
@@ -55,6 +59,11 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         {
             this.currentUser = user;
             this.clockType = clockType;
+        }
+
+        public void GetCookie(User user)
+        {
+            this.currentUser = user;
         }
 
         public IResponseFilter GetResourceResponseFilter(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response)
@@ -120,17 +129,24 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
             {
                 if (response.StatusCode == 200 && response.StatusText == "OK" && response.ErrorCode == CefErrorCode.None)
                 {
-                    if (clockType == ClockType.In)
+                    if (isGetCookie)
                     {
-                        OnClockIn?.Invoke(this, args);
-                    }
-                    else if (clockType == ClockType.Out)
-                    {
-                        OnClockOut?.Invoke(this, args);
+                        OnGetCookieDone?.Invoke(this, args);
                     }
                     else
                     {
-                        throw new Exception("Dont support ClockType");
+                        if (clockType == ClockType.In)
+                        {
+                            OnClockIn?.Invoke(this, args);
+                        }
+                        else if (clockType == ClockType.Out)
+                        {
+                            OnClockOut?.Invoke(this, args);
+                        }
+                        else
+                        {
+                            throw new Exception("Dont support ClockType");
+                        }
                     }
                 }
                 else

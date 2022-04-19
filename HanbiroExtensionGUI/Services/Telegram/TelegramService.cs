@@ -103,6 +103,53 @@ namespace HanbiroExtensionGUI.Services
                 text: message,
                 replyMarkup: replyKeyboardMarkup);
         }
+
+        public async void SendLoginSuccess(Models.User user)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("Register Success!!!");
+            stringBuilder.AppendLine("Bot will clock in at 7:30 AM and clock out at 6:15 PM every day");
+            stringBuilder.AppendLine("Your settings will go into effect from tomorrow!!!");
+
+            ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
+            {
+                    new KeyboardButton[] {  TelegramCommands.Deactive},
+                    new KeyboardButton[] {  TelegramCommands.Donate},
+                    new KeyboardButton[] {  TelegramCommands.Contact},
+                    new KeyboardButton[] {  TelegramCommands.Logout},
+                })
+            {
+                ResizeKeyboard = true
+            };
+
+            Message sentMessage = await telegramBotClient.SendTextMessageAsync(
+                chatId: user.TelegramId,
+                text: stringBuilder.ToString(),
+                replyMarkup: replyKeyboardMarkup);
+
+            user.IsActive = true;
+        }
+
+        public async void SendTryAgain(Models.User user)
+        {
+            StringBuilder message = new StringBuilder();
+            message.AppendLine("Your username or password is incorrect !!!");
+
+            ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
+            {
+                    new KeyboardButton[] {  TelegramCommands.LoginAgain}
+                })
+            {
+                ResizeKeyboard = true
+            };
+
+            Message sentMessage = await telegramBotClient.SendTextMessageAsync(
+                chatId: user.TelegramId,
+                text: message.ToString(),
+                replyMarkup: replyKeyboardMarkup);
+
+            user.IsActive = false;
+        }
         #endregion
     }
 }

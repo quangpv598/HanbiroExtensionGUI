@@ -48,7 +48,8 @@ namespace HanbiroExtensionGUI.Services.Telegram
             if (currentUser == null) return;
 
             if (messageText == TelegramCommands.StartCommand
-                || messageText == TelegramCommands.Login)
+                || messageText == TelegramCommands.Login
+                || messageText == TelegramCommands.LoginAgain)
             {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine("Welcome to Hanbiro Extension Bot!");
@@ -62,6 +63,10 @@ namespace HanbiroExtensionGUI.Services.Telegram
             }
             else if (currentUser.LastCommand == TelegramCommands.GetUsernameCommand)
             {
+                if (currentUser.UserName != messageText)
+                {
+                    currentUser.Cookie = string.Empty;
+                }
                 currentUser.UserName = messageText;
 
                 StringBuilder stringBuilder = new StringBuilder();
@@ -78,25 +83,12 @@ namespace HanbiroExtensionGUI.Services.Telegram
                 currentUser.Password = messageText;
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("Register Success!!!");
-                stringBuilder.AppendLine("Bot will clock in at 6 AM and clock out at 6:15 PM every day");
-                stringBuilder.AppendLine("Your settings will go into effect from tomorrow!!!");
-
-                ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
-                {
-                    new KeyboardButton[] {  TelegramCommands.Deactive},
-                    new KeyboardButton[] {  TelegramCommands.Donate},
-                    new KeyboardButton[] {  TelegramCommands.Contact},
-                    new KeyboardButton[] {  TelegramCommands.Logout},
-                })
-                {
-                    ResizeKeyboard = true
-                };
+                stringBuilder.AppendLine("Checking account....");
+                stringBuilder.AppendLine("Please wait!!!");
 
                 Message sentMessage = await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: stringBuilder.ToString(),
-                    replyMarkup: replyKeyboardMarkup,
                     cancellationToken: cancellationToken);
 
                 currentUser.LastCommand = string.Empty;
@@ -135,9 +127,6 @@ namespace HanbiroExtensionGUI.Services.Telegram
 
                 currentUser.LastCommand = string.Empty;
                 currentUser.IsActive = false;
-                currentUser.UserName = string.Empty;
-                currentUser.Password = string.Empty;
-                currentUser.Cookie = string.Empty;
             }
             else if (messageText == TelegramCommands.Active)
             {

@@ -37,14 +37,14 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         #endregion
 
         #region Properties
-
+        public bool IsFree { get; set; } = true;
         #endregion
 
         #region Constructors
-        public HanbiroChromiumBrowser(string baseUrl) : base(baseUrl)
+        public HanbiroChromiumBrowser(string baseUrl, bool isGetCookie) : base(baseUrl)
         {
             this.baseUrl = baseUrl;
-            hanbiroRequestHanlders = new HanbiroRequestHanlders(baseUrl);
+            hanbiroRequestHanlders = new HanbiroRequestHanlders(baseUrl, isGetCookie);
             this.RequestHandler = new ChromiumRequestHandler(hanbiroRequestHanlders);
             loginExcutor = new LoginExcutor(this);
 
@@ -58,14 +58,19 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
             hanbiroRequestHanlders.OnClockOutError += HanbiroRequestHanlders_OnClockOutError;
             hanbiroRequestHanlders.OnBrowserReady += HanbiroRequestHanlders_OnBrowserReady;
             hanbiroRequestHanlders.OnCallApiError += HanbiroRequestHanlders_OnCallApiError;
+            hanbiroRequestHanlders.OnGetCookieDone += HanbiroRequestHanlders_OnGetCookieDone;
 
             loginExcutor.OnLoginError += LoginExcutor_OnLoginError;
         }
 
-
         #endregion
 
         #region Events
+
+        private void HanbiroRequestHanlders_OnGetCookieDone(object sender, HanbiroRequestHandlerArgs e)
+        {
+            SaveCookie(e.User);
+        }
 
         private void HanbiroRequestHanlders_OnCallApiError(object sender, HanbiroRequestHandlerArgs e)
         {
@@ -194,6 +199,16 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         #endregion
 
         #region Methods
+
+        public void LoadUserCookie(User user)
+        {
+            var cookies = this.GetCookieManager();
+            cookies.DeleteCookies();
+
+            hanbiroRequestHanlders.GetCookie(user);
+            loginExcutor.FillUserNameWithCookie(user);
+        }
+
         public void ClockIn(User user)
         {
             clockType = ClockType.In;
