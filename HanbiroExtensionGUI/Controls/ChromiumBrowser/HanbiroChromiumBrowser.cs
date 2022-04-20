@@ -222,17 +222,21 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
 
         private void LoadUserToBrowser(User user)
         {
-            TRIED_TIMES = 0;
-            hanbiroRequestHanlders.SetCurrentUser(user, clockType);
+            Task task = new Task(() =>
+            {
+                TRIED_TIMES = 0;
+                hanbiroRequestHanlders.SetCurrentUser(user, clockType);
 
-            if (string.IsNullOrEmpty(user.Cookie))
-            {
-                loginExcutor.FillUserNameWithCookie(user);
-            }
-            else
-            {
-                LoadCookie(user);
-            }
+                if (string.IsNullOrEmpty(user.Cookie))
+                {
+                    loginExcutor.FillUserNameWithCookie(user);
+                }
+                else
+                {
+                    LoadCookie(user);
+                }
+            });
+            task.Start();
         }
 
         #region Cookies
@@ -285,7 +289,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
             string cookieStringJson = Encoding.UTF8.GetString(Convert.FromBase64String(user.Cookie));
             var cookie = "{\"cookies\" " + ":" + "" + cookieStringJson + "}";
             dynamic cookieJson = JObject.Parse(cookie);
-            
+
             foreach (var item in cookieJson["cookies"])
             {
                 var cookieObject = new CefSharp.Cookie()

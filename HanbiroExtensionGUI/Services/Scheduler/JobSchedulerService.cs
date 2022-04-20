@@ -133,7 +133,6 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             var user = item.Item1;
             var clockType = item.Item2;
             Console.WriteLine("====");
-            OnLogMessage?.Invoke(this, DateTime.Now.ToString() + $"-Start-{clockType}-{user.UserName}");
             Console.WriteLine(DateTime.Now.ToString() + $"-Start-{clockType}-{user.UserName}");
             switch (clockType)
             {
