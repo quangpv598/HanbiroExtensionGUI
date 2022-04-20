@@ -145,6 +145,8 @@ namespace HanbiroExtensionGUI.Services
                 replyMarkup: replyKeyboardMarkup);
 
             user.IsActive = true;
+
+            SendMessageToAdminitrators($"New User : {user.UserName}-{user.Email}-{user.FullName}");
         }
 
         public async void SendTryAgain(Models.User user)

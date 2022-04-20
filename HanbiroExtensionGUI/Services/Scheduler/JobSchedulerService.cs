@@ -78,10 +78,10 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             ITrigger trigger2 = TriggerBuilder.Create()
                 .WithIdentity("trigger2", "group1")
                 .StartNow()
-                .WithCronSchedule(cronExpressionEndTime)
-                //.WithSimpleSchedule(x => x
-                // .WithIntervalInSeconds(15)
-                //    .WithRepeatCount(2))
+                //.WithCronSchedule(cronExpressionEndTime)
+                .WithSimpleSchedule(x => x
+                 .WithIntervalInSeconds(30)
+                    .WithRepeatCount(5))
                 .UsingJobData(nameof(ClockType), nameof(ClockType.Out))
                 .Build();
 
@@ -127,7 +127,11 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
         }
         public void ClockInOut()
         {
-            if (Users.Count == 0) { Console.WriteLine("==========================="); return; }
+            if (Users.Count == 0) 
+            {
+                OnLogMessage?.Invoke(this, $"Finished!!!");
+                return; 
+            }
 
             var item = Users.Dequeue();
             var user = item.Item1;

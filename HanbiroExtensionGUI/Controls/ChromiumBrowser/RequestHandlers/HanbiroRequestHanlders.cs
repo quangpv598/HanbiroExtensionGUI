@@ -207,8 +207,9 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                         }
                         else
                         {
-                            args.ErrorMessage = d.msg;
-                            OnClockInError?.Invoke(this, args);
+                            //args.ErrorMessage = d.msg;
+                            //OnClockInError?.Invoke(this, args);
+                            OnClockInSuccess?.Invoke(this, args);
                         }
                     }
                     else
@@ -242,8 +243,9 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                         }
                         else
                         {
-                            args.ErrorMessage = d.msg;
-                            OnClockOutError?.Invoke(this, args);
+                            //args.ErrorMessage = d.msg;
+                            //OnClockOutError?.Invoke(this, args);
+                            OnClockOutSuccess?.Invoke(this, args);
                         }
                     }
                     else
