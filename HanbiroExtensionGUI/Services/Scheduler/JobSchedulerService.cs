@@ -20,6 +20,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
         private readonly HanbiroChromiumBrowser chromiumBrowser;
         private List<User> allUsers;
         public event EventHandler<string> OnLogMessage;
+        public event EventHandler<bool> OnClockingStateChanged;
         #endregion
 
         #region Properties
@@ -78,10 +79,10 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             ITrigger trigger2 = TriggerBuilder.Create()
                 .WithIdentity("trigger2", "group1")
                 .StartNow()
-                //.WithCronSchedule(cronExpressionEndTime)
-                .WithSimpleSchedule(x => x
-                 .WithIntervalInSeconds(30)
-                    .WithRepeatCount(5))
+                .WithCronSchedule(cronExpressionEndTime)
+                //.WithSimpleSchedule(x => x
+                // .WithIntervalInSeconds(30)
+                //    .WithRepeatCount(5))
                 .UsingJobData(nameof(ClockType), nameof(ClockType.Out))
                 .Build();
 
@@ -113,7 +114,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             lock (allUsers)
             {
                 Console.WriteLine("===========================");
-
+                OnClockingStateChanged?.Invoke(this, true);
                 foreach (var user in allUsers.Where(u => u.IsActive/* && u.LoginDate.Date < DateTime.Now.Date*/))
                 {
                     Users.Enqueue((user, clockType));
@@ -129,6 +130,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
         {
             if (Users.Count == 0) 
             {
+                OnClockingStateChanged?.Invoke(this, false);
                 OnLogMessage?.Invoke(this, $"Finished!!!");
                 return; 
             }

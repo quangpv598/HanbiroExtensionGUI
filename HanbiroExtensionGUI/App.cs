@@ -25,7 +25,6 @@ namespace HanbiroExtensionGUI
         private string appSettingsPath = @"AppSettings.json";
         private TelegramService telegramService;
         private HanbiroChromiumBrowser chromiumBrowser;
-        private HanbiroChromiumBrowser chromiumBrowserCookie;
         private TelegramHandlers telegramHandlers;
         private JobSchedulerService jobSchedulerService;
         private AppSettings appSettings;
@@ -83,7 +82,7 @@ namespace HanbiroExtensionGUI
         {
             StringBuilder message = new StringBuilder();
             message.AppendLine("Some thing went wrong!!!");
-            message.AppendLine("Please contact me at https://t.me/quangpv598");
+            //message.AppendLine("Please contact me at https://t.me/quangpv598");
             message.AppendLine("You need Check In/Out yourself.");
             message.AppendLine($"Visit {appSettings.BaseUrl}");
             message.AppendLine($"[Message : {e.Message}]");
@@ -114,15 +113,23 @@ namespace HanbiroExtensionGUI
 
         private void ChromiumBrowserCookie_OnSavedCookie(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
-            chromiumBrowserCookie.IsFree = true;
-            telegramService.SendLoginSuccess(e.User);
-            SaveAppSettings();
+            if (e.User.IsGettingCookie)
+            {
+                chromiumBrowser.IsFree = true;
+                telegramService.SendLoginSuccess(e.User);
+                e.User.IsGettingCookie = false;
+                SaveAppSettings();
+            }
         }
         private void ChromiumBrowserCookie_OnError(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
-            chromiumBrowserCookie.IsFree = true;
-            telegramService.SendTryAgain(e.User);
-            SaveAppSettings();
+            if (e.User.IsGettingCookie)
+            {
+                chromiumBrowser.IsFree = true;
+                telegramService.SendTryAgain(e.User);
+                e.User.IsGettingCookie = false;
+                SaveAppSettings();
+            }
         }
 
         private void ChromiumBrowserCookie_OnBrowserReady(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
@@ -151,10 +158,11 @@ namespace HanbiroExtensionGUI
                 if (UsersCookie.Count > 0)
                 {
                     var user = UsersCookie.Dequeue();
-                    if (chromiumBrowserCookie.IsFree)
+                    if (chromiumBrowser.IsFree)
                     {
-                        chromiumBrowserCookie.IsFree = false;
-                        chromiumBrowserCookie.LoadUserCookie(user);
+                        chromiumBrowser.IsFree = false;
+                        user.IsGettingCookie = true;
+                        chromiumBrowser.LoadUserCookie(user);
                     }
                 }
             };
@@ -164,6 +172,11 @@ namespace HanbiroExtensionGUI
         private void JobSchedulerService_OnLogMessage(object sender, string e)
         {
             telegramService.SendMessageToAdminitrators(e);
+        }
+
+        private void JobSchedulerService_OnClockingStateChanged(object sender, bool e)
+        {
+            SaveAppSettings();
         }
 
         #endregion
@@ -176,11 +189,6 @@ namespace HanbiroExtensionGUI
             panel.Dock = DockStyle.Fill;
             panel.Controls.Add(chromiumBrowser);
 
-            chromiumBrowserCookie.Dock = DockStyle.Fill;
-            var panel2 = new Panel();
-            panel2.Dock = DockStyle.Fill;
-            panel2.Controls.Add(chromiumBrowserCookie);
-
             var tabControl = new TabControl();
             tabControl.Dock = DockStyle.Fill;
 
@@ -188,22 +196,16 @@ namespace HanbiroExtensionGUI
             tab1.Text = "Job";
             tab1.Controls.Add(panel);
 
-            var tab2 = new TabPage();
-            tab2.Text = "Cookie";
-            tab2.Controls.Add(panel2);
-
             tabControl.TabPages.Add(tab1);
-            tabControl.TabPages.Add(tab2);
 
             frmMain.Controls.Add(tabControl);
         }
         private void InitVariables()
         {
             appSettings = LoadAppSettings();
-            telegramHandlers = new TelegramHandlers(allUsers);
+            telegramHandlers = new TelegramHandlers(appSettings);
             telegramService = new TelegramService(appSettings.TelegramToken, telegramHandlers, appSettings.Adminitrators);
-            chromiumBrowser = new HanbiroChromiumBrowser(appSettings.BaseUrl, isGetCookie: false);
-            chromiumBrowserCookie = new HanbiroChromiumBrowser(appSettings.BaseUrl, isGetCookie: true);
+            chromiumBrowser = new HanbiroChromiumBrowser(appSettings.BaseUrl);
             jobSchedulerService = new JobSchedulerService(appSettings.TimeWork, appSettings.Users, chromiumBrowser);
 
             timer.Interval = 10000;
@@ -248,14 +250,15 @@ namespace HanbiroExtensionGUI
             chromiumBrowser.OnSavedCookie += ChromiumBrowser_OnSavedCookie;
             chromiumBrowser.OnBrowserReady += ChromiumBrowser_OnBrowserReady;
 
-            chromiumBrowserCookie.OnBrowserReady += ChromiumBrowserCookie_OnBrowserReady;
-            chromiumBrowserCookie.OnSavedCookie += ChromiumBrowserCookie_OnSavedCookie;
-            chromiumBrowserCookie.OnError += ChromiumBrowserCookie_OnError;
+            chromiumBrowser.OnBrowserReady += ChromiumBrowserCookie_OnBrowserReady;
+            chromiumBrowser.OnSavedCookie += ChromiumBrowserCookie_OnSavedCookie;
+            chromiumBrowser.OnError += ChromiumBrowserCookie_OnError;
 
             telegramHandlers.OnAddingUser += TelegramHandlers_OnAddingUser;
             telegramHandlers.OnUpdatingUser += TelegramHandlers_OnUpdatingUser;
 
-            jobSchedulerService.OnLogMessage += JobSchedulerService_OnLogMessage;     
+            jobSchedulerService.OnLogMessage += JobSchedulerService_OnLogMessage;
+            jobSchedulerService.OnClockingStateChanged += JobSchedulerService_OnClockingStateChanged;
         }
 
         public AppSettings LoadAppSettings()

@@ -22,7 +22,6 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         private User currentUser;
         private ClockType clockType;
         private readonly string baseUrl;
-        private readonly bool isGetCookie;
         private bool hasClock;
 
         public event EventHandler<HanbiroRequestHandlerArgs> OnBeforeLoginManually;
@@ -40,12 +39,12 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
 
         #region Properties
         public bool HasInit { get; set; } = false;
+        public bool IsGetCookie { get; set; }
         #endregion
 
         #region Constructors
-        public HanbiroRequestHanlders(string baseUrl, bool isGetCookie)
+        public HanbiroRequestHanlders(string baseUrl)
         {
-            this.isGetCookie = isGetCookie;
             this.baseUrl = baseUrl;
         }
         #endregion
@@ -58,12 +57,14 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
 
         public void SetCurrentUser(User user, ClockType clockType)
         {
+            IsGetCookie = false;
             this.currentUser = user;
             this.clockType = clockType;
         }
 
         public void GetCookie(User user)
         {
+            IsGetCookie = true;
             this.currentUser = user;
         }
 
@@ -163,7 +164,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
             {
                 if (response.StatusCode == 200 && response.StatusText == "OK" && response.ErrorCode == CefErrorCode.None)
                 {
-                    if (isGetCookie)
+                    if (IsGetCookie)
                     {
                         OnGetCookieDone?.Invoke(this, args);
                     }
@@ -207,9 +208,9 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                         }
                         else
                         {
-                            //args.ErrorMessage = d.msg;
-                            //OnClockInError?.Invoke(this, args);
-                            OnClockInSuccess?.Invoke(this, args);
+                            args.ErrorMessage = d.msg;
+                            OnClockInError?.Invoke(this, args);
+                            //OnClockInSuccess?.Invoke(this, args);
                         }
                     }
                     else
@@ -243,9 +244,9 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                         }
                         else
                         {
-                            //args.ErrorMessage = d.msg;
-                            //OnClockOutError?.Invoke(this, args);
-                            OnClockOutSuccess?.Invoke(this, args);
+                            args.ErrorMessage = d.msg;
+                            OnClockOutError?.Invoke(this, args);
+                            //OnClockOutSuccess?.Invoke(this, args);
                         }
                     }
                     else

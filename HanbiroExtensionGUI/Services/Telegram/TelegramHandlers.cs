@@ -1,4 +1,5 @@
 ﻿using HanbiroExtensionGUI.Constants;
+using HanbiroExtensionGUI.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,12 +17,13 @@ namespace HanbiroExtensionGUI.Services.Telegram
 {
     public class TelegramHandlers
     {
-        private readonly List<Models.User> users;
+        private AppSettings appSettings;
+        private List<Models.User> users => appSettings.Users;
         public event EventHandler<Models.User> OnAddingUser;
         public event EventHandler<Models.User> OnUpdatingUser;
-        public TelegramHandlers(List<Models.User> users)
+        public TelegramHandlers(AppSettings appSettings)
         {
-            this.users = users;
+            this.appSettings = appSettings;
         }
 
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
@@ -85,17 +87,28 @@ namespace HanbiroExtensionGUI.Services.Telegram
                 currentUser.Password = messageText;
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("Checking account....");
-                stringBuilder.AppendLine("Please wait!!!");
+
+                if(appSettings.IsClockingIn || appSettings.IsClockingOut)
+                {
+                    stringBuilder.AppendLine("System Busy!!!");
+                    stringBuilder.AppendLine("Please wait a few minutes before you try again.");
+                    stringBuilder.AppendLine("[After 15 minues]");
+                }
+                else
+                {
+                    stringBuilder.AppendLine("Checking account....");
+                    stringBuilder.AppendLine("Please wait!!!");
+
+                    currentUser.LoginDate = DateTime.Now;
+                    currentUser.IsActive = true;
+                }
 
                 Message sentMessage = await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: stringBuilder.ToString(),
-                    cancellationToken: cancellationToken);
+                        chatId: chatId,
+                        text: stringBuilder.ToString(),
+                        cancellationToken: cancellationToken);
 
                 currentUser.LastCommand = string.Empty;
-                currentUser.LoginDate = DateTime.Now;
-                currentUser.IsActive = true;
             }
             else if (string.IsNullOrEmpty(currentUser.UserName)
                || string.IsNullOrEmpty(currentUser.Password))

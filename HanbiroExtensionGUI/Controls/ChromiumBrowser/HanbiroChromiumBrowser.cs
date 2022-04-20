@@ -41,10 +41,10 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         #endregion
 
         #region Constructors
-        public HanbiroChromiumBrowser(string baseUrl, bool isGetCookie) : base(baseUrl)
+        public HanbiroChromiumBrowser(string baseUrl) : base(baseUrl)
         {
             this.baseUrl = baseUrl;
-            hanbiroRequestHanlders = new HanbiroRequestHanlders(baseUrl, isGetCookie);
+            hanbiroRequestHanlders = new HanbiroRequestHanlders(baseUrl);
             this.RequestHandler = new ChromiumRequestHandler(hanbiroRequestHanlders);
             loginExcutor = new LoginExcutor(this);
 
