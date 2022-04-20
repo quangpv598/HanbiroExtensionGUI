@@ -10,7 +10,7 @@ namespace HanbiroExtensionGUI.Models
     {
         public string TelegramToken { get; set; }
         public string BaseUrl { get; set; }
-        public List<long> Adminítrators { get; set; }
+        public List<long> Adminitrators { get; set; }
         public TimeWork TimeWork { get; set; } = new TimeWork();
         public List<User> Users { get; set; } = new List<User>();
     }

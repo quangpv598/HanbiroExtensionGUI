@@ -202,7 +202,7 @@ namespace HanbiroExtensionGUI
         {
             appSettings = LoadAppSettings();
             telegramHandlers = new TelegramHandlers(allUsers);
-            telegramService = new TelegramService(appSettings.TelegramToken, telegramHandlers, appSettings.Adminítrators);
+            telegramService = new TelegramService(appSettings.TelegramToken, telegramHandlers, appSettings.Adminitrators);
             chromiumBrowser = new HanbiroChromiumBrowser(appSettings.BaseUrl, isGetCookie: false);
             chromiumBrowserCookie = new HanbiroChromiumBrowser(appSettings.BaseUrl, isGetCookie: true);
             jobSchedulerService = new JobSchedulerService(appSettings.TimeWork, appSettings.Users, chromiumBrowser);
@@ -223,7 +223,6 @@ namespace HanbiroExtensionGUI
                             var user = message.Item1;
 
                             user.LastCommand = string.Empty;
-                            user.Cookie = string.Empty;
                             user.IsActive = false;
 
                             SaveAppSettings();
