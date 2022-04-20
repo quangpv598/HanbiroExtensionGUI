@@ -176,6 +176,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         private void HanbiroRequestHanlders_OnBeforeLoginManually(object sender, HanbiroRequestHandlerArgs e)
         {
             var currentUser = e.User;
+            hanbiroRequestHanlders.IsGetCookie = false;
             loginExcutor.Excute(currentUser);
         }
 
@@ -205,6 +206,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
             var cookies = this.GetCookieManager();
             cookies.DeleteCookies();
 
+            hanbiroRequestHanlders.IsGetCookie = true;
             hanbiroRequestHanlders.GetCookie(user);
             loginExcutor.FillUserNameWithCookie(user);
         }
@@ -227,6 +229,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                 Task.Delay(1000);
 
                 TRIED_TIMES = 0;
+                hanbiroRequestHanlders.IsGetCookie = false;
                 hanbiroRequestHanlders.SetCurrentUser(user, clockType);
 
                 if (string.IsNullOrEmpty(user.Cookie))

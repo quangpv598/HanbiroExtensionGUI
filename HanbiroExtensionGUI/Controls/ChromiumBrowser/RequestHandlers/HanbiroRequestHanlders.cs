@@ -57,14 +57,12 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
 
         public void SetCurrentUser(User user, ClockType clockType)
         {
-            IsGetCookie = false;
             this.currentUser = user;
             this.clockType = clockType;
         }
 
         public void GetCookie(User user)
         {
-            IsGetCookie = true;
             this.currentUser = user;
         }
 
