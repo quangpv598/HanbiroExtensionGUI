@@ -114,7 +114,6 @@ namespace HanbiroExtensionGUI
 
         private void ChromiumBrowserCookie_OnSavedCookie(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
-            SaveAppSettings();
             chromiumBrowserCookie.IsFree = true;
             telegramService.SendLoginSuccess(e.User);
             SaveAppSettings();
