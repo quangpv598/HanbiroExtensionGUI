@@ -126,6 +126,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
                     cancellationToken: cancellationToken);
 
                 currentUser.LastCommand = string.Empty;
+                currentUser.Cookie = string.Empty;
                 currentUser.IsActive = false;
             }
             else if (messageText == TelegramCommands.Active)

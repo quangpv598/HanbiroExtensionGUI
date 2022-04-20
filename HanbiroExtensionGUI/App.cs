@@ -223,6 +223,7 @@ namespace HanbiroExtensionGUI
                             var user = message.Item1;
 
                             user.LastCommand = string.Empty;
+                            user.Cookie = string.Empty;
                             user.IsActive = false;
 
                             SaveAppSettings();
