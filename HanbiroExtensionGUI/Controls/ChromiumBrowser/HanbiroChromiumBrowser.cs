@@ -59,7 +59,6 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
             hanbiroRequestHanlders.OnBrowserReady += HanbiroRequestHanlders_OnBrowserReady;
             hanbiroRequestHanlders.OnCallApiError += HanbiroRequestHanlders_OnCallApiError;
             hanbiroRequestHanlders.OnGetCookieDone += HanbiroRequestHanlders_OnGetCookieDone;
-            hanbiroRequestHanlders.OnGetTimeCard += HanbiroRequestHanlders_OnGetTimeCard;
 
             loginExcutor.OnLoginError += LoginExcutor_OnLoginError;
         }
@@ -67,16 +66,6 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         #endregion
 
         #region Events
-        private void HanbiroRequestHanlders_OnGetTimeCard(object sender, HanbiroRequestHandlerArgs e)
-        {
-            var frame = e.Frame;
-            IRequest request = frame.CreateRequest(initializePostData: false);
-
-            request.Url = $"{baseUrl}{ApiResources.GetTimeCard}";
-            request.Method = "GET";
-            frame.LoadRequest(request);
-        }
-
 
         private void HanbiroRequestHanlders_OnGetCookieDone(object sender, HanbiroRequestHandlerArgs e)
         {
