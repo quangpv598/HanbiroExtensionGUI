@@ -83,11 +83,14 @@ namespace HanbiroExtensionGUI.Services
         #endregion
 
         #region Methods
-        public async void SendMessageToAdminitrators(Models.User sender, string message)
+        public async void SendMessageToAdminitrators(string message, Models.User sender = null)
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine(message);
-            stringBuilder.AppendLine($"[Sender : {sender.UserName}-{sender.Email}-{sender.FullName}]");
+            if(sender is not null)
+            {
+                stringBuilder.AppendLine($"[Sender : {sender.UserName}-{sender.Email}-{sender.FullName}]");
+            }
             foreach (long id in adminítrators)
             {
                 await telegramBotClient.SendTextMessageAsync(

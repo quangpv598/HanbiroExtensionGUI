@@ -72,7 +72,7 @@ namespace HanbiroExtensionGUI
             }
             message.AppendLine($"{clockTypeString} at {DateTime.Now.ToString()}");
             MessageQueue.Enqueue((e.User, message.ToString(), ActionStatus.Success, ErrorType.None));
-            telegramService.SendMessageToAdminitrators(e.User,message.ToString());
+            telegramService.SendMessageToAdminitrators(message.ToString(), e.User);
 
             Console.WriteLine($"Success : {e.User.UserName} - {e.Message.ToString()}");
 
@@ -92,7 +92,7 @@ namespace HanbiroExtensionGUI
 
             Console.WriteLine($"Error : {e.User.UserName} {e.Message.ToString()}");
 
-            telegramService.SendMessageToAdminitrators(e.User,message.ToString());
+            telegramService.SendMessageToAdminitrators(message.ToString(), e.User);
 
             jobSchedulerService.ClockInOut();
         }
@@ -160,6 +160,11 @@ namespace HanbiroExtensionGUI
                 }
             };
             timer2.Start();
+        }
+
+        private void JobSchedulerService_OnLogMessage(object sender, string e)
+        {
+            telegramService.SendMessageToAdminitrators(e);
         }
 
         #endregion
@@ -250,9 +255,10 @@ namespace HanbiroExtensionGUI
 
             telegramHandlers.OnAddingUser += TelegramHandlers_OnAddingUser;
             telegramHandlers.OnUpdatingUser += TelegramHandlers_OnUpdatingUser;
+
+            jobSchedulerService.OnLogMessage += JobSchedulerService_OnLogMessage;     
         }
 
-       
         public AppSettings LoadAppSettings()
         {
             var appSettings = new AppSettings();

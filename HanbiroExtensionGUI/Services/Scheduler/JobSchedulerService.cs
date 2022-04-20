@@ -19,6 +19,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
         private Queue<(User, ClockType)> Users = new Queue<(User, ClockType)>();
         private readonly HanbiroChromiumBrowser chromiumBrowser;
         private List<User> allUsers;
+        public event EventHandler<string> OnLogMessage;
         #endregion
 
         #region Properties
@@ -118,6 +119,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
                     Users.Enqueue((user, clockType));
                 }
 
+                OnLogMessage?.Invoke(this, $"Count Queue : {Users.Count}");
                 Console.WriteLine($"Count Queue : {Users.Count}");
             }
 
@@ -131,6 +133,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             var user = item.Item1;
             var clockType = item.Item2;
             Console.WriteLine("====");
+            OnLogMessage?.Invoke(this, DateTime.Now.ToString() + $"-Start-{clockType}-{user.UserName}");
             Console.WriteLine(DateTime.Now.ToString() + $"-Start-{clockType}-{user.UserName}");
             switch (clockType)
             {
