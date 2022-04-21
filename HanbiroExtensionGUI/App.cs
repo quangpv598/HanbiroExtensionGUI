@@ -188,6 +188,7 @@ namespace HanbiroExtensionGUI
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine("****************");
                 stringBuilder.AppendLine($"REPORT AT {DateTime.Now.ToString()}");
+                stringBuilder.AppendLine("****************");
                 foreach (var item in results)
                 {
                     var user = item.Item1;

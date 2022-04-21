@@ -131,7 +131,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             if (Users.Count == 0) 
             {
                 OnClockingStateChanged?.Invoke(this, false);
-                OnLogMessage?.Invoke(this, $"Finished : ");
+                OnLogMessage?.Invoke(this, $"Finished");
                 return; 
             }
 
