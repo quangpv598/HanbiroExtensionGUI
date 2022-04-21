@@ -59,6 +59,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
             hanbiroRequestHanlders.OnBrowserReady += HanbiroRequestHanlders_OnBrowserReady;
             hanbiroRequestHanlders.OnCallApiError += HanbiroRequestHanlders_OnCallApiError;
             hanbiroRequestHanlders.OnGetCookieDone += HanbiroRequestHanlders_OnGetCookieDone;
+            hanbiroRequestHanlders.OnLoginManuallyGetCookie += HanbiroRequestHanlders_OnLoginManuallyGetCookie;
 
             loginExcutor.OnLoginError += LoginExcutor_OnLoginError;
         }
@@ -177,6 +178,13 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         {
             var currentUser = e.User;
             hanbiroRequestHanlders.IsGetCookie = false;
+            loginExcutor.Excute(currentUser);
+        }
+
+        private void HanbiroRequestHanlders_OnLoginManuallyGetCookie(object sender, HanbiroRequestHandlerArgs e)
+        {
+            var currentUser = e.User;
+            hanbiroRequestHanlders.IsGetCookie = true;
             loginExcutor.Excute(currentUser);
         }
 

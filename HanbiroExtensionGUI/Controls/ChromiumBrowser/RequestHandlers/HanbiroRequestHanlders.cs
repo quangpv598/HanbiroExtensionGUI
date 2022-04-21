@@ -35,6 +35,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         public event EventHandler<HanbiroRequestHandlerArgs> OnClockOutError;
         public event EventHandler<HanbiroRequestHandlerArgs> OnBrowserReady;
         public event EventHandler<HanbiroRequestHandlerArgs> OnGetCookieDone;
+        public event EventHandler<HanbiroRequestHandlerArgs> OnLoginManuallyGetCookie;
         #endregion
 
         #region Properties
@@ -95,7 +96,14 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
 
             if (request.Url == $"{baseUrl}{ApiResources.LoginSignal}")
             {
-                OnBeforeLoginManually?.Invoke(this, args);
+                if (IsGetCookie)
+                {
+                    OnLoginManuallyGetCookie?.Invoke(this, args);
+                }
+                else
+                {
+                    OnBeforeLoginManually?.Invoke(this, args);
+                }
             }
             else if (request.Url == $"{baseUrl}{ApiResources.Auth}")
             {
