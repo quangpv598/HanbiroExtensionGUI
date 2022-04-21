@@ -15,7 +15,7 @@ namespace HanbiroExtensionGUI.Models
             get
             {
                 return DateTime.Now.TimeOfDay <= TimeWork.StartTime.TimeOfDay.Add(TimeSpan.FromMinutes(15))
-                    && DateTime.Now.TimeOfDay >= TimeWork.StartTime.TimeOfDay;
+                    && DateTime.Now.TimeOfDay >= TimeWork.StartTime.TimeOfDay.Add(TimeSpan.FromMinutes(-5));
             }
         }
         public bool IsClockingOut
@@ -23,7 +23,7 @@ namespace HanbiroExtensionGUI.Models
             get
             {
                 return DateTime.Now.TimeOfDay <= TimeWork.EndTime.TimeOfDay.Add(TimeSpan.FromMinutes(15))
-                    && DateTime.Now.TimeOfDay >= TimeWork.StartTime.TimeOfDay;
+                    && DateTime.Now.TimeOfDay >= TimeWork.StartTime.TimeOfDay.Add(TimeSpan.FromMinutes(-5));
             }
         }
         public List<long> Adminitrators { get; set; }
