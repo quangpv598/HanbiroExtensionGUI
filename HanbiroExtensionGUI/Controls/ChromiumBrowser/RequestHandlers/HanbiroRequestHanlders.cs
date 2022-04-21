@@ -141,9 +141,17 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                         dynamic d = JsonConvert.DeserializeObject<ExpandoObject>(data, new ExpandoObjectConverter());
                         if (d.success == true)
                         {
-                            currentUser.FullName = d.rows?.user_config?.user_data?.name;
-                            currentUser.Email = d.rows?.user_config?.user_data?.email;
-                            currentUser.PhoneNumber = d.rows?.user_config?.user_data?.telephone;
+                            if(currentUser.UserName == d.rows?.user_config?.user_data?.id)
+                            {
+                                currentUser.FullName = d.rows?.user_config?.user_data?.name;
+                                currentUser.Email = d.rows?.user_config?.user_data?.email;
+                                currentUser.PhoneNumber = d.rows?.user_config?.user_data?.telephone;
+                            }
+                            else
+                            {
+                                args.ErrorMessage = "Username is not match with receive data";
+                                OnAuthenticateError?.Invoke(this, args);
+                            }
                         }
                     }
                     else
