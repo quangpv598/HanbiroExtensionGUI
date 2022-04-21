@@ -29,6 +29,7 @@ namespace HanbiroExtensionGUI
         private JobSchedulerService jobSchedulerService;
         private AppSettings appSettings;
         private Queue<(User, string, ActionStatus, ErrorType)> MessageQueue = new Queue<(User, string, ActionStatus, ErrorType)>();
+        private List<(User, ActionStatus)> results = new List<(User, ActionStatus)>();
         private Queue<User> UsersCookie = new Queue<User>();
         private System.Timers.Timer timer = new System.Timers.Timer();
         private frmMain frmMain;
@@ -37,7 +38,6 @@ namespace HanbiroExtensionGUI
         #region Properties
         public TelegramService TelegramService { get => telegramService; }
         public HanbiroChromiumBrowser ChromiumBrowser { get => chromiumBrowser; }
-        private List<User> allUsers => appSettings.Users;
         #endregion
 
         #region Constructors
@@ -71,7 +71,8 @@ namespace HanbiroExtensionGUI
             }
             message.AppendLine(clockTypeString);
             MessageQueue.Enqueue((e.User, message.ToString(), ActionStatus.Success, ErrorType.None));
-            telegramService.SendMessageToAdminitrators(message.ToString(), e.User);
+            results.Add((e.User, ActionStatus.Success));
+            //telegramService.SendMessageToAdminitrators(message.ToString(), e.User);
 
             Console.WriteLine($"Success : {e.User.UserName} - {e.Message.ToString()}");
 
@@ -88,6 +89,7 @@ namespace HanbiroExtensionGUI
             message.AppendLine($"[Message : {e.Message}]");
             
             MessageQueue.Enqueue((e.User, message.ToString(), ActionStatus.Error, e.Type));
+            results.Add((e.User, ActionStatus.Error));
 
             Console.WriteLine($"Error : {e.User.UserName} {e.Message.ToString()}");
 
@@ -176,6 +178,25 @@ namespace HanbiroExtensionGUI
 
         private void JobSchedulerService_OnClockingStateChanged(object sender, bool e)
         {
+            bool isActive = e;
+            if (isActive)
+            {
+                results.Clear();
+            }
+            else
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.AppendLine("****************");
+                stringBuilder.AppendLine($"REPORT AT {DateTime.Now.ToString()}");
+                foreach (var item in results)
+                {
+                    var user = item.Item1;
+                    var status = item.Item2;
+                    stringBuilder.AppendLine($"[{status}-{user.UserName}-{user.Email}-{user.FullName}]");
+                }
+                stringBuilder.AppendLine("****************");
+                telegramService.SendMessageToAdminitrators(stringBuilder.ToString());
+            }
             SaveAppSettings();
         }
 
