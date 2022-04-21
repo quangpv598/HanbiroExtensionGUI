@@ -55,7 +55,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
             {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine("Welcome to Hanbiro Extension Bot!");
-                stringBuilder.AppendLine("Please enter your username");
+                stringBuilder.AppendLine("Please enter your Hanbiro username");
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: stringBuilder.ToString(),
@@ -74,7 +74,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
                 currentUser.UserName = messageText;
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("Please enter your password");
+                stringBuilder.AppendLine("Please enter your Hanbiro password");
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: stringBuilder.ToString(),
@@ -92,12 +92,12 @@ namespace HanbiroExtensionGUI.Services.Telegram
                 {
                     stringBuilder.AppendLine("System Busy!!!");
                     stringBuilder.AppendLine("Please wait a few minutes before you try again.");
-                    stringBuilder.AppendLine("[After 15 minues]");
+                    stringBuilder.AppendLine("[After 20 minues]");
                 }
                 else
                 {
-                    stringBuilder.AppendLine("Checking account....");
-                    stringBuilder.AppendLine("Please wait!!!");
+                    stringBuilder.AppendLine("You account is verifying...");
+                    stringBuilder.AppendLine("Please wait a few minutes!!!");
 
                     currentUser.LoginDate = DateTime.Now;
                     currentUser.IsActive = true;
@@ -114,7 +114,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
                || string.IsNullOrEmpty(currentUser.Password))
             {
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("You Need to login first to continue");
+                stringBuilder.AppendLine("You need to login first to continue");
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: stringBuilder.ToString(),

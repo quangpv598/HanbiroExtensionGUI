@@ -117,7 +117,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                     }
                     else
                     {
-                        args.ErrorMessage = $"Call Api Error : {request.Url}";
+                        args.ErrorMessage = $"Can not get data from filter : {request.Url}";
                         OnCallApiError?.Invoke(this, args);
                     }
                 }
@@ -156,7 +156,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                     }
                     else
                     {
-                        args.ErrorMessage = $"Call Api Error : {request.Url}";
+                        args.ErrorMessage = $"Can not get data from filter : {request.Url}";
                         OnCallApiError?.Invoke(this, args);
                     }
                 }
@@ -221,7 +221,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                     }
                     else
                     {
-                        args.ErrorMessage = $"Call Api Error : {request.Url}";
+                        args.ErrorMessage = $"Can not get data from filter : {request.Url}";
                         OnCallApiError?.Invoke(this, args);
                     }
                     
@@ -257,7 +257,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                     }
                     else
                     {
-                        args.ErrorMessage = $"Call Api Error : {request.Url}";
+                        args.ErrorMessage = $"Can not get data from filter : {request.Url}";
                         OnCallApiError?.Invoke(this, args);
                     }
                 }
