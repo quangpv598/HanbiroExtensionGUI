@@ -54,7 +54,6 @@ namespace HanbiroExtensionGUI.Services.Telegram
                 || messageText == TelegramCommands.LoginAgain)
             {
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("Hi!");
                 stringBuilder.AppendLine("Please enter your Hanbiro Username");
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,

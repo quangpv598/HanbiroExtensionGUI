@@ -86,6 +86,7 @@ namespace HanbiroExtensionGUI.Services
         public async void SendMessageToAdminitrators(string message, Models.User sender = null)
         {
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("[Admin]");
             stringBuilder.AppendLine(message);
             if(sender is not null)
             {
