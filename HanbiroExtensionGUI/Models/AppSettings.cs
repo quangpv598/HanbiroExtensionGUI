@@ -52,8 +52,8 @@ namespace HanbiroExtensionGUI.Models
         public string LastCommand { get; set; }
         public bool IsActive { get; set; }
         public string Cookie { get; set; }
-        public string ClockInTime { get; set; }
-        public string ClockOutTime { get; set; }
+        public DateTime ClockInTime { get; set; }
+        public DateTime ClockOutTime { get; set; }
         public DateTime LoginDate { get; set; } = DateTime.Now;
     }
 

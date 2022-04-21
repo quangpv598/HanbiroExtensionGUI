@@ -210,6 +210,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                         dynamic d = JsonConvert.DeserializeObject<ExpandoObject>(data, new ExpandoObjectConverter());
                         if (d.success == true && !string.IsNullOrEmpty(d.rows?.date) && !string.IsNullOrEmpty(d.rows?.time))
                         {
+                            currentUser.ClockInTime = DateTime.Now;
                             OnClockInSuccess?.Invoke(this, args);
                         }
                         else
@@ -246,6 +247,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                         dynamic d = JsonConvert.DeserializeObject<ExpandoObject>(data, new ExpandoObjectConverter());
                         if (d.success == true && !string.IsNullOrEmpty(d.rows?.date) && !string.IsNullOrEmpty(d.rows?.time))
                         {
+                            currentUser.ClockOutTime = DateTime.Now;
                             OnClockOutSuccess?.Invoke(this, args);
                         }
                         else

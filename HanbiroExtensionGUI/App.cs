@@ -63,13 +63,13 @@ namespace HanbiroExtensionGUI
             switch (e.ClockType)
             {
                 case Enums.ClockType.In:
-                    clockTypeString = "Clock In";
+                    clockTypeString = $"Clock In at {e.User.ClockInTime.ToString()}";
                     break;
                 case Enums.ClockType.Out:
-                    clockTypeString = "Clock Out";
+                    clockTypeString = $"Clock Out at {e.User.ClockOutTime.ToString()}";
                     break;
             }
-            message.AppendLine($"{clockTypeString} at {DateTime.Now.ToString()}");
+            message.AppendLine(clockTypeString);
             MessageQueue.Enqueue((e.User, message.ToString(), ActionStatus.Success, ErrorType.None));
             telegramService.SendMessageToAdminitrators(message.ToString(), e.User);
 
