@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HanbiroExtensionConsole", "HanbiroExtensionConsole\HanbiroExtensionConsole.csproj", "{9D80CD30-0E90-449B-B296-C1D1D10B6C78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HanbiroExtensionGUI", "HanbiroExtensionGUI\HanbiroExtensionGUI.csproj", "{F1426409-69D0-4E05-8E38-AB7AC09EE7EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HanbiroExtensionGUI", "HanbiroExtensionGUI\HanbiroExtensionGUI.csproj", "{F1426409-69D0-4E05-8E38-AB7AC09EE7EA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ToDo", "ToDo", "{4D2926BC-EEAE-4673-8867-40ECAAEF1492}"
+	ProjectSection(SolutionItems) = preProject
+		ToDo.txt = ToDo.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
