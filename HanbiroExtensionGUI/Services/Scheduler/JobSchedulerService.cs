@@ -101,12 +101,17 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
 
         private string GetExpressionForStartTime()
         {
-            return $"0 {timeWork.StartTime.Minute} {timeWork.StartTime.Hour} {GetExpressionForDayMonthYear()}";
+            //return $"0 {timeWork.StartTime.Minute} {timeWork.StartTime.Hour} {GetExpressionForDayMonthYear()}";
+            Random random = new Random();
+            int minute = random.Next(timeWork.StartTime.Minute, timeWork.StartTime.Minute + 10);
+            return $"0 {minute} {timeWork.StartTime.Hour} {GetExpressionForDayMonthYear()}";
         }
 
         private string GetExpressionForEndTime()
         {
-            return $"0 {timeWork.EndTime.Minute} {timeWork.EndTime.Hour} {GetExpressionForDayMonthYear()}";
+            Random random = new Random();
+            int minute = random.Next(timeWork.EndTime.Minute, timeWork.EndTime.Minute + 5);
+            return $"0 {minute} {timeWork.EndTime.Hour} {GetExpressionForDayMonthYear()}";
         }
 
         public void Reset(ClockType clockType)

@@ -197,6 +197,9 @@ namespace HanbiroExtensionGUI
                 }
                 stringBuilder.AppendLine("****************");
                 telegramService.SendMessageToAdminitrators(stringBuilder.ToString());
+
+                // reset random schedule
+                jobSchedulerService.InitSchedulerAsync();
             }
             SaveAppSettings();
         }
