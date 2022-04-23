@@ -199,6 +199,7 @@ namespace HanbiroExtensionGUI
                 telegramService.SendMessageToAdminitrators(stringBuilder.ToString());
 
                 // reset random schedule
+                jobSchedulerService.UnScheduler();
                 jobSchedulerService.InitSchedulerAsync();
             }
             SaveAppSettings();

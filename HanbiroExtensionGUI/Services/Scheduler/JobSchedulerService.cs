@@ -41,10 +41,12 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
         #endregion
 
         #region Methods
-        public async Task ShutdownScheduler()
+        public async Task UnScheduler()
         {
             if (scheduler != null)
-                await scheduler.Shutdown();
+            {
+                scheduler.UnscheduleJobs(new List<TriggerKey>() { new TriggerKey("trigger1", "group1"), new TriggerKey("trigger2", "group1") });
+            }
         }
         public async Task InitSchedulerAsync()
         {
@@ -70,9 +72,9 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
                 .WithIdentity("trigger1", "group1")
                 .StartNow()
                  .WithCronSchedule(cronExpressionStartTime)
-                 //.WithSimpleSchedule(x => x
-                 //   .WithIntervalInSeconds(1)
-                 //   .WithRepeatCount(0))
+                //.WithSimpleSchedule(x => x
+                //   .WithIntervalInSeconds(1)
+                //   .WithRepeatCount(0))
                 .UsingJobData(nameof(ClockType), nameof(ClockType.In))
                 .Build();
 
@@ -133,11 +135,11 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
         }
         public void ClockInOut()
         {
-            if (Users.Count == 0) 
+            if (Users.Count == 0)
             {
                 OnClockingStateChanged?.Invoke(this, false);
                 OnLogMessage?.Invoke(this, $"Finished");
-                return; 
+                return;
             }
 
             var item = Users.Dequeue();
