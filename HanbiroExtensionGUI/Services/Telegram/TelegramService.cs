@@ -126,7 +126,7 @@ namespace HanbiroExtensionGUI.Services
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("Register Success!!!");
-            stringBuilder.AppendLine("Bot will clock in at 7:30 AM and clock out at 6:15 PM every day");
+            stringBuilder.AppendLine("The system will randomly clock in between 7:30 and 7:40 AM and randomly clock out between 6:03 and 6:08 PM every day");
             stringBuilder.AppendLine("Your settings will go into effect from tomorrow!!!");
 
             ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
