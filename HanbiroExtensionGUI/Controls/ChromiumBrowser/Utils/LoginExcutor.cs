@@ -1,6 +1,7 @@
 ﻿using CefSharp;
 using HanbiroExtensionGUI.Controls.ChromiumBrowser.EventsArgs;
 using HanbiroExtensionGUI.Models;
+using HanbiroExtensionGUI.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,7 +81,9 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
             await frame.WaitElement($"{element}.value;",
                 () => OnLoginError?.Invoke(this, new LoginExcutorArgs(currentUser)));
 
-            await frame.EvaluateScriptAsync($"{element}.value = '{currentUser.Password}';").ContinueWith(x =>
+            string decryptedPassword = EncryptionUtils.Decrypt(currentUser.Password);
+
+            await frame.EvaluateScriptAsync($"{element}.value = '{decryptedPassword}';").ContinueWith(x =>
             {
                 var response = x.Result;
 

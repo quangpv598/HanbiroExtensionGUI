@@ -1,5 +1,6 @@
 ﻿using HanbiroExtensionGUI.Constants;
 using HanbiroExtensionGUI.Models;
+using HanbiroExtensionGUI.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -83,7 +84,8 @@ namespace HanbiroExtensionGUI.Services.Telegram
             }
             else if (currentUser.LastCommand == TelegramCommands.GetPasswordCommand)
             {
-                currentUser.Password = messageText;
+                string encryptedPassword = EncryptionUtils.Encrypt(messageText);
+                currentUser.Password = encryptedPassword;
 
                 StringBuilder stringBuilder = new StringBuilder();
 
