@@ -99,7 +99,7 @@ namespace HanbiroExtensionGUI
         }
         private void ChromiumBrowser_OnBrowserReady(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
-            jobSchedulerService.InitSchedulerAsync();
+            jobSchedulerService.InitSchedulerAsync(ClockType.None);
         }
 
         private void TelegramHandlers_OnUpdatingUser(object sender, User e)
@@ -176,9 +176,9 @@ namespace HanbiroExtensionGUI
             telegramService.SendMessageToAdminitrators(e);
         }
 
-        private void JobSchedulerService_OnClockingStateChanged(object sender, bool e)
+        private void JobSchedulerService_OnClockingStateChanged(object sender, (bool, ClockType) e)
         {
-            bool isActive = e;
+            bool isActive = e.Item1;
             if (isActive)
             {
                 results.Clear();
@@ -199,8 +199,8 @@ namespace HanbiroExtensionGUI
                 telegramService.SendMessageToAdminitrators(stringBuilder.ToString());
 
                 // reset random schedule
-                jobSchedulerService.UnScheduler();
-                jobSchedulerService.InitSchedulerAsync();
+                jobSchedulerService.UnScheduler(e.Item2);
+                jobSchedulerService.InitSchedulerAsync(e.Item2);
             }
             SaveAppSettings();
         }

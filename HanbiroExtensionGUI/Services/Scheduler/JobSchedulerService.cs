@@ -19,8 +19,9 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
         private Queue<(User, ClockType)> Users = new Queue<(User, ClockType)>();
         private readonly HanbiroChromiumBrowser chromiumBrowser;
         private List<User> allUsers;
+        private ClockType clockType = ClockType.None;
         public event EventHandler<string> OnLogMessage;
-        public event EventHandler<bool> OnClockingStateChanged;
+        public event EventHandler<(bool, ClockType)> OnClockingStateChanged;
         #endregion
 
         #region Properties
@@ -41,14 +42,21 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
         #endregion
 
         #region Methods
-        public async Task UnScheduler()
+        public async Task UnScheduler(ClockType clockType)
         {
             if (scheduler != null)
             {
-                scheduler.UnscheduleJobs(new List<TriggerKey>() { new TriggerKey("trigger1", "group1"), new TriggerKey("trigger2", "group1") });
+                if (clockType == ClockType.In)
+                {
+                    scheduler.UnscheduleJobs(new List<TriggerKey>() { new TriggerKey("trigger2", "group1") });
+                }
+                else if (clockType == ClockType.Out)
+                {
+                    scheduler.UnscheduleJobs(new List<TriggerKey>() { new TriggerKey("trigger1", "group1") });
+                }
             }
         }
-        public async Task InitSchedulerAsync()
+        public async Task InitSchedulerAsync(ClockType clockType)
         {
             //Grab the Scheduler instance from the Factory
             StdSchedulerFactory factory = new StdSchedulerFactory();
@@ -89,8 +97,21 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
                 .Build();
 
             var triggerSet = new HashSet<ITrigger>();
-            triggerSet.Add(trigger);
-            triggerSet.Add(trigger2);
+
+            if (clockType == ClockType.None)
+            {
+                triggerSet.Add(trigger);
+                triggerSet.Add(trigger2);
+            }
+            else if (clockType == ClockType.In)
+            {
+                triggerSet.Add(trigger2);
+            }
+            else if (clockType == ClockType.Out)
+            {
+                triggerSet.Add(trigger);
+            }
+            
             await scheduler.ScheduleJob(job, triggerSet, true);
         }
 
@@ -118,10 +139,12 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
 
         public void Reset(ClockType clockType)
         {
+            this.clockType = clockType;
+
             lock (allUsers)
             {
                 Console.WriteLine("===========================");
-                OnClockingStateChanged?.Invoke(this, true);
+                OnClockingStateChanged?.Invoke(this, (true, clockType));
                 foreach (var user in allUsers.Where(u => u.IsActive/* && u.LoginDate.Date < DateTime.Now.Date*/))
                 {
                     Users.Enqueue((user, clockType));
@@ -137,7 +160,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
         {
             if (Users.Count == 0)
             {
-                OnClockingStateChanged?.Invoke(this, false);
+                OnClockingStateChanged?.Invoke(this, (false, this.clockType));
                 OnLogMessage?.Invoke(this, $"Finished");
                 return;
             }
@@ -145,6 +168,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             var item = Users.Dequeue();
             var user = item.Item1;
             var clockType = item.Item2;
+            this.clockType = clockType;
             Console.WriteLine("====");
             Console.WriteLine(DateTime.Now.ToString() + $"-Start-{clockType}-{user.UserName}");
             switch (clockType)

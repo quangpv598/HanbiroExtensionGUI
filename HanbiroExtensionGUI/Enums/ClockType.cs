@@ -9,6 +9,7 @@ namespace HanbiroExtensionGUI.Enums
     public enum ClockType
     {
         In,
-        Out
+        Out,
+        None
     }
 }
