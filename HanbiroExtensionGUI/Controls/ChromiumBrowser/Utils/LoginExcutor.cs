@@ -95,7 +95,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.Utils
 
                         if (response.Success && response.Result != null)
                         {
-                            if (response.Result.ToString() == currentUser.Password)
+                            if (response.Result.ToString() == decryptedPassword)
                             {
                                 var task = new Task(PressLogin);
                                 task.Start();
