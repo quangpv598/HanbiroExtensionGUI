@@ -150,8 +150,8 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
                     Users.Enqueue((user, clockType));
                 }
 
-                OnLogMessage?.Invoke(this, $"===========================\nCount Queue : {Users.Count}");
-                Console.WriteLine($"Count Queue : {Users.Count}");
+                //OnLogMessage?.Invoke(this, $"===========================\nCount Queue : {Users.Count}");
+                //Console.WriteLine($"Count Queue : {Users.Count}");
             }
 
             ClockInOut();
@@ -161,7 +161,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             if (Users.Count == 0)
             {
                 OnClockingStateChanged?.Invoke(this, (false, this.clockType));
-                OnLogMessage?.Invoke(this, $"Finished");
+                //OnLogMessage?.Invoke(this, $"Finished");
                 return;
             }
 

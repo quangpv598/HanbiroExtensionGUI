@@ -187,13 +187,16 @@ namespace HanbiroExtensionGUI
             {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine("****************");
-                stringBuilder.AppendLine($"REPORT AT {DateTime.Now.ToString()}");
+                stringBuilder.AppendLine($"Report at {DateTime.Now.ToString()}");
+                stringBuilder.AppendLine($"Total : {results.Count}");
+                stringBuilder.AppendLine($"Success : {results.Where(r => r.Item2 == ActionStatus.Success).Count()}");
+                stringBuilder.AppendLine($"Error : {results.Where(r => r.Item2 == ActionStatus.Error).Count()}");
                 stringBuilder.AppendLine("****************");
                 foreach (var item in results)
                 {
                     var user = item.Item1;
                     var status = item.Item2;
-                    stringBuilder.AppendLine($"[{status}-{user.UserName}-{user.Email}-{user.FullName}]");
+                    stringBuilder.AppendLine($"*{user.FullName}-{status}");
                 }
                 stringBuilder.AppendLine("****************");
                 telegramService.SendMessageToAdminitrators(stringBuilder.ToString());
