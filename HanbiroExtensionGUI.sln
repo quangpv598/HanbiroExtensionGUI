@@ -3,14 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HanbiroExtensionConsole", "HanbiroExtensionConsole\HanbiroExtensionConsole.csproj", "{9D80CD30-0E90-449B-B296-C1D1D10B6C78}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HanbiroExtensionGUI", "HanbiroExtensionGUI\HanbiroExtensionGUI.csproj", "{F1426409-69D0-4E05-8E38-AB7AC09EE7EA}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ToDo", "ToDo", "{4D2926BC-EEAE-4673-8867-40ECAAEF1492}"
-	ProjectSection(SolutionItems) = preProject
-		ToDo.txt = ToDo.txt
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9D80CD30-0E90-449B-B296-C1D1D10B6C78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D80CD30-0E90-449B-B296-C1D1D10B6C78}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D80CD30-0E90-449B-B296-C1D1D10B6C78}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D80CD30-0E90-449B-B296-C1D1D10B6C78}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F1426409-69D0-4E05-8E38-AB7AC09EE7EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F1426409-69D0-4E05-8E38-AB7AC09EE7EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1426409-69D0-4E05-8E38-AB7AC09EE7EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
