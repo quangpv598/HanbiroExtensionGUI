@@ -117,7 +117,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
 
         private void HanbiroRequestHanlders_OnClockOut(object sender, HanbiroRequestHandlerArgs e)
         {
-            if (DateTime.Now >= timeWork.EndTime)
+            if (DateTime.Now.TimeOfDay >= timeWork.EndTime.TimeOfDay)
             {
                 var frame = e.Frame;
                 IRequest request = frame.CreateRequest();
@@ -164,7 +164,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
 
         private void HanbiroRequestHanlders_OnClockIn(object sender, HanbiroRequestHandlerArgs e)
         {
-            if (DateTime.Now >= timeWork.StartTime)
+            if (DateTime.Now.TimeOfDay >= timeWork.StartTime.TimeOfDay)
             {
                 var frame = e.Frame;
                 IRequest request = frame.CreateRequest();
