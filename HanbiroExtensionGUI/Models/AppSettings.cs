@@ -32,6 +32,7 @@ namespace HanbiroExtensionGUI.Models
     }
     public class TimeWork
     {
+        public DateTime AutoRestartTime { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public Dictionary<DayOfWeek, bool> DaysOfWeek { get; set; } = new Dictionary<DayOfWeek, bool>();

@@ -29,6 +29,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         private ClockType clockType;
         private HanbiroRequestHanlders hanbiroRequestHanlders;
         private LoginExcutor loginExcutor;
+        private readonly TimeWork timeWork;
 
         public event EventHandler<HanbiroArgs> OnError;
         public event EventHandler<HanbiroArgs> OnSuccess;
@@ -41,9 +42,10 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         #endregion
 
         #region Constructors
-        public HanbiroChromiumBrowser(string baseUrl) : base(baseUrl)
+        public HanbiroChromiumBrowser(string baseUrl, TimeWork timeWork) : base(baseUrl)
         {
             this.baseUrl = baseUrl;
+            this.timeWork = timeWork;
             hanbiroRequestHanlders = new HanbiroRequestHanlders(baseUrl);
             this.RequestHandler = new ChromiumRequestHandler(hanbiroRequestHanlders);
             loginExcutor = new LoginExcutor(this);
@@ -92,13 +94,13 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         private void HanbiroRequestHanlders_OnClockOutError(object sender, HanbiroRequestHandlerArgs e)
         {
             SaveCookie(e.User
-                ,() => OnError?.Invoke(this, new HanbiroArgs(e.User,
-                e.ErrorMessage,
-                ErrorType.FailToClockOut,
-                clockType,
-                ActionStatus.Error)));
+                , () => OnError?.Invoke(this, new HanbiroArgs(e.User,
+                 e.ErrorMessage,
+                 ErrorType.FailToClockOut,
+                 clockType,
+                 ActionStatus.Error)));
 
-            
+
         }
 
         private void HanbiroRequestHanlders_OnClockOutSuccess(object sender, HanbiroRequestHandlerArgs e)
@@ -110,23 +112,34 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                 clockType,
                 ActionStatus.Success)));
 
-            
+
         }
 
         private void HanbiroRequestHanlders_OnClockOut(object sender, HanbiroRequestHandlerArgs e)
         {
-            var frame = e.Frame;
-            IRequest request = frame.CreateRequest();
+            if (DateTime.Now >= timeWork.EndTime)
+            {
+                var frame = e.Frame;
+                IRequest request = frame.CreateRequest();
 
-            request.Url = $"{baseUrl}{ApiResources.ClockOut}";
-            request.Method = "POST";
+                request.Url = $"{baseUrl}{ApiResources.ClockOut}";
+                request.Method = "POST";
 
-            request.InitializePostData();
-            var element = request.PostData.CreatePostDataElement();
-            element.Bytes = Encoding.UTF8.GetBytes(ApiResources.ClockInOutPostPayload);
-            request.PostData.AddElement(element);
+                request.InitializePostData();
+                var element = request.PostData.CreatePostDataElement();
+                element.Bytes = Encoding.UTF8.GetBytes(ApiResources.ClockInOutPostPayload);
+                request.PostData.AddElement(element);
 
-            frame.LoadRequest(request);
+                frame.LoadRequest(request);
+            }
+            else
+            {
+                OnError?.Invoke(this, new HanbiroArgs(e.User,
+                "You can not clock out at now.",
+                ErrorType.FailToClockOut,
+                clockType,
+                ActionStatus.Error));
+            }
         }
 
         private void HanbiroRequestHanlders_OnClockInError(object sender, HanbiroRequestHandlerArgs e)
@@ -141,7 +154,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
 
         private void HanbiroRequestHanlders_OnClockInSuccess(object sender, HanbiroRequestHandlerArgs e)
         {
-            SaveCookie(e.User, 
+            SaveCookie(e.User,
                 () => OnSuccess?.Invoke(this, new HanbiroArgs(e.User,
                 "Clock Out Success",
                 ErrorType.None,
@@ -151,18 +164,29 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
 
         private void HanbiroRequestHanlders_OnClockIn(object sender, HanbiroRequestHandlerArgs e)
         {
-            var frame = e.Frame;
-            IRequest request = frame.CreateRequest();
+            if (DateTime.Now >= timeWork.StartTime)
+            {
+                var frame = e.Frame;
+                IRequest request = frame.CreateRequest();
 
-            request.Url = $"{baseUrl}{ApiResources.ClockIn}";
-            request.Method = "POST";
+                request.Url = $"{baseUrl}{ApiResources.ClockIn}";
+                request.Method = "POST";
 
-            request.InitializePostData();
-            var element = request.PostData.CreatePostDataElement();
-            element.Bytes = Encoding.UTF8.GetBytes(ApiResources.ClockInOutPostPayload);
-            request.PostData.AddElement(element);
+                request.InitializePostData();
+                var element = request.PostData.CreatePostDataElement();
+                element.Bytes = Encoding.UTF8.GetBytes(ApiResources.ClockInOutPostPayload);
+                request.PostData.AddElement(element);
 
-            frame.LoadRequest(request);
+                frame.LoadRequest(request);
+            }
+            else
+            {
+                OnError?.Invoke(this, new HanbiroArgs(e.User,
+                "You can not clock in at now.",
+                ErrorType.FailToClockOut,
+                clockType,
+                ActionStatus.Error));
+            }
         }
 
         private void HanbiroRequestHanlders_OnAuthenticateError(object sender, HanbiroRequestHandlerArgs e)

@@ -236,7 +236,7 @@ namespace HanbiroExtensionGUI
             appSettings = LoadAppSettings();
             telegramHandlers = new TelegramHandlers(appSettings);
             telegramService = new TelegramService(appSettings.TelegramToken, telegramHandlers, appSettings.Adminitrators);
-            chromiumBrowser = new HanbiroChromiumBrowser(appSettings.BaseUrl);
+            chromiumBrowser = new HanbiroChromiumBrowser(appSettings.BaseUrl, appSettings.TimeWork);
             jobSchedulerService = new JobSchedulerService(appSettings.TimeWork, appSettings.Users, chromiumBrowser);
 
             timer.Interval = 10000;

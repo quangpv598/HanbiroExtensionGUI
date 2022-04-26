@@ -1,6 +1,7 @@
 ﻿using HanbiroExtensionGUI.Controls.ChromiumBrowser;
 using HanbiroExtensionGUI.Enums;
 using HanbiroExtensionGUI.Models;
+using HanbiroExtensionGUI.Services.Scheduler;
 using Quartz;
 using Quartz.Impl;
 using System;
@@ -73,8 +74,14 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
                 .UsingJobData(newJobData)
                 .Build();
 
+            IJobDetail restartJob = JobBuilder.Create<AutoRestartJob>()
+                .WithIdentity("job2", "group2")
+                .UsingJobData(newJobData)
+                .Build();
+
             string cronExpressionStartTime = GetExpressionForStartTime();
             string cronExpressionEndTime = GetExpressionForEndTime();
+            string cronExpressionAutoRestartTime = GetExpressionForAutoRestartTime();
 
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity("trigger1", "group1")
@@ -96,12 +103,19 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
                 .UsingJobData(nameof(ClockType), nameof(ClockType.Out))
                 .Build();
 
+            ITrigger trigger3 = TriggerBuilder.Create()
+                .WithIdentity("trigger3", "group2")
+                .StartNow()
+                .WithCronSchedule(cronExpressionAutoRestartTime)
+                .Build();
+
             var triggerSet = new HashSet<ITrigger>();
 
             if (clockType == ClockType.None)
             {
                 triggerSet.Add(trigger);
                 triggerSet.Add(trigger2);
+
             }
             else if (clockType == ClockType.In)
             {
@@ -111,10 +125,18 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             {
                 triggerSet.Add(trigger);
             }
-            
-            await scheduler.ScheduleJob(job, triggerSet, true);
+
+            await scheduler.ScheduleJobs(new Dictionary<IJobDetail, IReadOnlyCollection<ITrigger>>()
+            {
+                {job, triggerSet.ToList() },
+                {restartJob, new List<ITrigger>(){ trigger3} }
+            }, replace: true);
         }
 
+        private string GetExpressionForAutoRestartTime()
+        {
+            return $"0 {timeWork.AutoRestartTime.Minute} {timeWork.AutoRestartTime.Hour} {GetExpressionForDayMonthYear()}";
+        }
 
         private string GetExpressionForDayMonthYear()
         {
