@@ -89,7 +89,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
 
                 StringBuilder stringBuilder = new StringBuilder();
 
-                if(appSettings.IsClockingIn || appSettings.IsClockingOut)
+                if (appSettings.IsClockingIn || appSettings.IsClockingOut || appSettings.IsAutoRestartTime)
                 {
                     stringBuilder.AppendLine("System Busy!!!");
                     stringBuilder.AppendLine("Please wait a few minutes before you try again.");

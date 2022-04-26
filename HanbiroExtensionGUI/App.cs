@@ -198,7 +198,7 @@ namespace HanbiroExtensionGUI
                 {
                     var user = item.Item1;
                     var status = item.Item2;
-                    stringBuilder.AppendLine($"*{user.FullName}-{status}");
+                    stringBuilder.AppendLine($"*[{status}]-{user.FullName}");
                 }
                 stringBuilder.AppendLine("****************");
                 telegramService.SendMessageToAdminitrators(stringBuilder.ToString());

@@ -26,6 +26,14 @@ namespace HanbiroExtensionGUI.Models
                     && DateTime.Now.TimeOfDay >= TimeWork.EndTime.TimeOfDay.Add(TimeSpan.FromMinutes(-15));
             }
         }
+        public bool IsAutoRestartTime
+        {
+            get
+            {
+                return DateTime.Now.TimeOfDay <= TimeWork.AutoRestartTime.TimeOfDay.Add(TimeSpan.FromMinutes(1))
+                    && DateTime.Now.TimeOfDay >= TimeWork.AutoRestartTime.TimeOfDay.Add(TimeSpan.FromMinutes(-5));
+            }
+        }
         public List<long> Adminitrators { get; set; }
         public TimeWork TimeWork { get; set; } = new TimeWork();
         public List<User> Users { get; set; } = new List<User>();
