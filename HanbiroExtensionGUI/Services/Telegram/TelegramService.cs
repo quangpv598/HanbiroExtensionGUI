@@ -125,7 +125,7 @@ namespace HanbiroExtensionGUI.Services
         public async void SendLoginSuccess(Models.User user)
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("Register Success!!!");
+            stringBuilder.AppendLine($"Hi {user.FullName}!!!");
             stringBuilder.AppendLine("The system will randomly clock in between 7:30 and 7:40 AM and randomly clock out between 6:03 and 6:08 PM every day");
 
             ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
@@ -146,7 +146,7 @@ namespace HanbiroExtensionGUI.Services
 
             user.IsActive = true;
 
-            SendMessageToAdminitrators($"New User : {user.UserName}-{user.Email}-{user.FullName}");
+            SendMessageToAdminitrators($"User Register Success : {user.UserName}-{user.Email}-{user.FullName}");
         }
 
         public async void SendTryAgain(Models.User user)

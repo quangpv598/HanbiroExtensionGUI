@@ -99,6 +99,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
                 {
                     stringBuilder.AppendLine("You account is verifying...");
                     stringBuilder.AppendLine("Please wait a few minutes!!!");
+                    stringBuilder.AppendLine("If after 5 minutes it's not finished, please contact me.");
 
                     currentUser.LoginDate = DateTime.Now;
                     currentUser.IsActive = true;
