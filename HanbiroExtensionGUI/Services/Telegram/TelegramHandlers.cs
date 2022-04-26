@@ -22,6 +22,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
         private List<Models.User> users => appSettings.Users;
         public event EventHandler<Models.User> OnAddingUser;
         public event EventHandler<Models.User> OnUpdatingUser;
+        public TelegramService telegramService;
         public TelegramHandlers(AppSettings appSettings)
         {
             this.appSettings = appSettings;
@@ -110,6 +111,8 @@ namespace HanbiroExtensionGUI.Services.Telegram
                         text: stringBuilder.ToString(),
                         cancellationToken: cancellationToken);
 
+                telegramService.SendMessageToAdminitrators($"New User : {currentUser.UserName}");
+
                 currentUser.LastCommand = string.Empty;
             }
             else if (string.IsNullOrEmpty(currentUser.UserName)
@@ -142,6 +145,8 @@ namespace HanbiroExtensionGUI.Services.Telegram
                     replyMarkup: replyKeyboardMarkup,
                     cancellationToken: cancellationToken);
 
+                telegramService.SendMessageToAdminitrators($"User logout : {currentUser.UserName}-{currentUser.FullName}-{currentUser.Email}");
+
                 currentUser.LastCommand = string.Empty;
                 currentUser.IsActive = false;
             }
@@ -167,6 +172,8 @@ namespace HanbiroExtensionGUI.Services.Telegram
                     replyMarkup: replyKeyboardMarkup,
                     cancellationToken: cancellationToken);
 
+                telegramService.SendMessageToAdminitrators($"User active bot : {currentUser.UserName}-{currentUser.FullName}-{currentUser.Email}");
+
                 currentUser.IsActive = true;
             }
             else if (messageText == TelegramCommands.Deactive)
@@ -190,6 +197,8 @@ namespace HanbiroExtensionGUI.Services.Telegram
                     text: stringBuilder.ToString(),
                     replyMarkup: replyKeyboardMarkup,
                     cancellationToken: cancellationToken);
+
+                telegramService.SendMessageToAdminitrators($"User deactive bot : {currentUser.UserName}-{currentUser.FullName}-{currentUser.Email}");
 
                 currentUser.IsActive = false;
             }
