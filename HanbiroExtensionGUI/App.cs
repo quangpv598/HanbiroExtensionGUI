@@ -22,7 +22,7 @@ namespace HanbiroExtensionGUI
     public class App : IApp
     {
         #region Fields
-        private string appSettingsPath = @"AppSettings.json";
+        private string appSettingsPath = $"{Application.StartupPath}/AppSettings.json";
         private TelegramService telegramService;
         private HanbiroChromiumBrowser chromiumBrowser;
         private TelegramHandlers telegramHandlers;
