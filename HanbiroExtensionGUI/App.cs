@@ -149,6 +149,7 @@ namespace HanbiroExtensionGUI
                 {
                     if (!UsersCookie.Contains(user))
                     {
+                        telegramService.SendMessageToAdminitrators($"User added to Queue Cookie : {user.UserName}");
                         UsersCookie.Enqueue(user);
                     }
                 }
@@ -164,6 +165,7 @@ namespace HanbiroExtensionGUI
                     var user = UsersCookie.Dequeue();
                     if (chromiumBrowser.IsFree)
                     {
+                        telegramService.SendMessageToAdminitrators($"Getting cookie : {user.UserName}");
                         chromiumBrowser.IsFree = false;
                         user.IsGettingCookie = true;
                         chromiumBrowser.LoadUserCookie(user);
@@ -210,6 +212,9 @@ namespace HanbiroExtensionGUI
                 }
                 stringBuilder.AppendLine("****************");
                 telegramService.SendMessageToAdminitrators(stringBuilder.ToString());
+
+                // reset is free chromium
+                chromiumBrowser.IsFree = true;
 
                 // reset random schedule
                 jobSchedulerService.UnScheduler(e.Item2);
