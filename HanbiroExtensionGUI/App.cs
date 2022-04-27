@@ -194,6 +194,8 @@ namespace HanbiroExtensionGUI
             if (isActive)
             {
                 results.Clear();
+                // reset is free chromium
+                chromiumBrowser.IsFree = false;
             }
             else
             {
