@@ -174,13 +174,13 @@ namespace HanbiroExtensionGUI
             };
             timer2.Start();
 
-            var timer3 = new System.Timers.Timer();
-            timer3.Interval = 1800000; // every 30m
-            timer3.Elapsed += (s, e) =>
-            {
-                telegramService.SendMessageToAdminitrators("System is actived !!!");
-            };
-            timer3.Start();
+            //var timer3 = new System.Timers.Timer();
+            //timer3.Interval = 1800000; // every 30m
+            //timer3.Elapsed += (s, e) =>
+            //{
+            //    telegramService.SendMessageToAdminitrators("System is actived !!!");
+            //};
+            //timer3.Start();
         }
 
         private void JobSchedulerService_OnLogMessage(object sender, string e)
