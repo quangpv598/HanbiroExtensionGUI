@@ -60,6 +60,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: stringBuilder.ToString(),
+                    replyMarkup: new ReplyKeyboardRemove(),
                     cancellationToken: cancellationToken);
 
                 currentUser.Cookie = string.Empty;
