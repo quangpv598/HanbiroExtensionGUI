@@ -144,7 +144,8 @@ namespace HanbiroExtensionGUI
             {
                 var usersCookie = appSettings.Users.Where(u => u.IsActive
                 && !string.IsNullOrEmpty(u.UserName) && !string.IsNullOrEmpty(u.Password)
-                && string.IsNullOrEmpty(u.Cookie));
+                && string.IsNullOrEmpty(u.Cookie)
+                && u.IsGettingCookie == false);
                 foreach (var user in usersCookie)
                 {
                     if (!UsersCookie.Contains(user))
