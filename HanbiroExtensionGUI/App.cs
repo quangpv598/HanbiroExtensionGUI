@@ -136,7 +136,15 @@ namespace HanbiroExtensionGUI
 
         private void ChromiumBrowserCookie_OnBrowserReady(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
-            telegramService.SendMessageToAdminitrators("System is started!!!");
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("System is started!!!");
+            stringBuilder.AppendLine("*******************");
+            stringBuilder.AppendLine("Days Off :");
+            foreach (var date in appSettings.TimeWork.DaysOff)
+            {
+                stringBuilder.AppendLine($"- {date.ToString("dd/MM/yyyy")}");
+            }
+            telegramService.SendMessageToAdminitrators(stringBuilder.ToString());
 
             var timer = new System.Timers.Timer();
             timer.Interval = 10000;

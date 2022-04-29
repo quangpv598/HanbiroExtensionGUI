@@ -43,6 +43,7 @@ namespace HanbiroExtensionGUI.Models
         public DateTime AutoRestartTime { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+        public List<DateTime> DaysOff { get; set; } = new List<DateTime>();
         public Dictionary<DayOfWeek, bool> DaysOfWeek { get; set; } = new Dictionary<DayOfWeek, bool>();
     }
 

@@ -201,6 +201,12 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
         }
         public void ClockInOut()
         {
+            if (timeWork.DaysOff.Count(d => d.Date == DateTime.Now.Date) > 0)
+            {
+                OnLogMessage?.Invoke(this, $"Day Off : {DateTime.Now}");
+                return;
+            }
+
             if (Users.Count == 0)
             {
                 OnClockingStateChanged?.Invoke(this, (false, this.clockType));
