@@ -18,6 +18,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser.EventsArgs
         public User User { get; set; }
         public string ErrorMessage { get; set; }
         public string Time { get; set; }
+        public string Message { get; set; }
 
         public HanbiroRequestHandlerArgs(User user, IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response)
         {

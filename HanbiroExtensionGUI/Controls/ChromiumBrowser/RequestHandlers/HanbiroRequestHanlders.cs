@@ -36,6 +36,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
         public event EventHandler<HanbiroRequestHandlerArgs> OnBrowserReady;
         public event EventHandler<HanbiroRequestHandlerArgs> OnGetCookieDone;
         public event EventHandler<HanbiroRequestHandlerArgs> OnLoginManuallyGetCookie;
+        public event EventHandler<HanbiroRequestHandlerArgs> OnLogMessage;
         #endregion
 
         #region Properties
@@ -98,6 +99,8 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
             {
                 if (IsGetCookie)
                 {
+                    args.Message = "Start login manually";
+                    OnLogMessage?.Invoke(this, args);
                     OnLoginManuallyGetCookie?.Invoke(this, args);
                 }
                 else
@@ -180,6 +183,8 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                 {
                     if (IsGetCookie)
                     {
+                        args.Message = "Get cookie done";
+                        OnLogMessage?.Invoke(this, args);
                         OnGetCookieDone?.Invoke(this, args);
                     }
                     else
