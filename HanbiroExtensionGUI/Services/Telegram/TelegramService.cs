@@ -125,8 +125,8 @@ namespace HanbiroExtensionGUI.Services
         public async void SendLoginSuccess(Models.User user)
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"Hi {user.FullName}!!!");
-            stringBuilder.AppendLine("The system will randomly clock in between 7:30 and 7:40 AM and randomly clock out between 6:03 and 6:08 PM every day");
+            stringBuilder.AppendLine($"Xin chào {user.FullName}!!!");
+            stringBuilder.AppendLine("Hệ thống sẽ clock in vào khoảng 7 giờ 30 phút sáng và clock out vào khoảng 18 giờ 05 phút chiều.");
 
             ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
             {
@@ -152,7 +152,7 @@ namespace HanbiroExtensionGUI.Services
         public async void SendTryAgain(Models.User user)
         {
             StringBuilder message = new StringBuilder();
-            message.AppendLine("Your username or password is incorrect !!!");
+            message.AppendLine("Tên tài khoản hoặc mật khẩu không chính xác!!!");
 
             ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
             {

@@ -145,7 +145,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
 
                 Message sentMessage = await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "Đăng nhập thành công!!!",
+                    text: "Đăng xuất thành công!!!",
                     replyMarkup: replyKeyboardMarkup,
                     cancellationToken: cancellationToken);
 
@@ -183,7 +183,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
             else if (messageText == TelegramCommands.Deactive)
             {
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("Hệ thống đã bị tắt!!!");
+                stringBuilder.AppendLine("Hệ thống đã huỷ kích hoạt!!!");
 
                 ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
                 {
