@@ -136,15 +136,15 @@ namespace HanbiroExtensionGUI
 
         private void ChromiumBrowserCookie_OnBrowserReady(object sender, Controls.ChromiumBrowser.EventsArgs.HanbiroArgs e)
         {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("System is started!!!");
-            stringBuilder.AppendLine("*******************");
-            stringBuilder.AppendLine("Days Off :");
-            foreach (var date in appSettings.TimeWork.DaysOff)
-            {
-                stringBuilder.AppendLine($"- {date.ToString("dd/MM/yyyy")}");
-            }
-            telegramService.SendMessageToAdminitrators(stringBuilder.ToString());
+            //StringBuilder stringBuilder = new StringBuilder();
+            //stringBuilder.AppendLine("System is started!!!");
+            //stringBuilder.AppendLine("*******************");
+            //stringBuilder.AppendLine("Days Off :");
+            //foreach (var date in appSettings.TimeWork.DaysOff)
+            //{
+            //    stringBuilder.AppendLine($"- {date.ToString("dd/MM/yyyy")}");
+            //}
+            //telegramService.SendMessageToAdminitrators(stringBuilder.ToString());
 
             var timer = new System.Timers.Timer();
             timer.Interval = 10000;
@@ -183,13 +183,18 @@ namespace HanbiroExtensionGUI
             };
             timer2.Start();
 
-            //var timer3 = new System.Timers.Timer();
-            //timer3.Interval = 1800000; // every 30m
-            //timer3.Elapsed += (s, e) =>
-            //{
-            //    telegramService.SendMessageToAdminitrators("System is actived !!!");
-            //};
-            //timer3.Start();
+            var timer3 = new System.Timers.Timer();
+            timer3.Interval = 300000; // every 5m
+            timer3.Elapsed += (s, e) =>
+            {
+                if (appSettings.IsClockingIn || appSettings.IsClockingOut || appSettings.IsAutoRestartTime)
+                {
+                    return;
+                }
+
+                Application.Restart();
+            };
+            timer3.Start();
         }
 
         private void JobSchedulerService_OnLogMessage(object sender, string e)

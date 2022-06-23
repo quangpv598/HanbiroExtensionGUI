@@ -11,12 +11,12 @@ namespace HanbiroExtensionGUI.Constants
         public static readonly string StartCommand = "/start";
         public static readonly string GetUsernameCommand = "/GetUsernameCommand";
         public static readonly string GetPasswordCommand = "/GetPasswordCommand";
-        public static readonly string Logout = "Logout ⬅️";
-        public static readonly string Active = "Active Bot 🍏";
-        public static readonly string Deactive = "Deactive Bot 🍎";
-        public static readonly string Login = "Login ➡️";
-        public static readonly string LoginAgain = "Login again 🔄";
-        public static readonly string Donate = "Donate me 🎁";
-        public static readonly string Contact = "Contact me 💌";
+        public static readonly string Logout = "Đăng xuất ⬅️";
+        public static readonly string Active = "Kích hoạt 🍏";
+        public static readonly string Deactive = "Huỷ kích hoạt 🍎";
+        public static readonly string Login = "Đăng nhập ➡️";
+        public static readonly string LoginAgain = "Thử đăng nhập lại 🔄";
+        public static readonly string Donate = "Ủng hộ 🎁";
+        public static readonly string Contact = "Liên hệ 💌";
     }
 }

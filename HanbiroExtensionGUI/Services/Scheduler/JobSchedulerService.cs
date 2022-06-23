@@ -83,10 +83,10 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             string cronExpressionEndTime = GetExpressionForEndTime();
             string cronExpressionAutoRestartTime = GetExpressionForAutoRestartTime();
 
-            StringBuilder timeMessage = new StringBuilder();
-            timeMessage.AppendLine("Start time : " + cronExpressionStartTime);
-            timeMessage.AppendLine("End time : " + cronExpressionEndTime);
-            OnLogMessage?.Invoke(this, timeMessage.ToString());
+            //StringBuilder timeMessage = new StringBuilder();
+            //timeMessage.AppendLine("Start time : " + cronExpressionStartTime);
+            //timeMessage.AppendLine("End time : " + cronExpressionEndTime);
+            //OnLogMessage?.Invoke(this, timeMessage.ToString());
 
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity("trigger1", "group1")

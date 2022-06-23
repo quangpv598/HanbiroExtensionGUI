@@ -56,7 +56,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
                 || messageText == TelegramCommands.LoginAgain)
             {
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("Please enter your Hanbiro Username");
+                stringBuilder.AppendLine("Bạn hãy điền tên đăng nhập tài khoản Hanbiro");
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: stringBuilder.ToString(),
@@ -76,7 +76,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
                 currentUser.UserName = messageText;
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("Please enter your Hanbiro password");
+                stringBuilder.AppendLine("Bạn hãy điền mật khẩu đăng nhập");
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: stringBuilder.ToString(),
@@ -93,15 +93,18 @@ namespace HanbiroExtensionGUI.Services.Telegram
 
                 if (appSettings.IsClockingIn || appSettings.IsClockingOut || appSettings.IsAutoRestartTime)
                 {
-                    stringBuilder.AppendLine("System Busy!!!");
-                    stringBuilder.AppendLine("Please wait a few minutes before you try again.");
-                    stringBuilder.AppendLine("[After 20 minues]");
+                    stringBuilder.AppendLine("Hệ thống bận!!!");
+                    stringBuilder.AppendLine("Vui lòng thử lại sau 30 phút.");
                 }
                 else
                 {
-                    stringBuilder.AppendLine("You account is verifying...");
-                    stringBuilder.AppendLine("Please wait a few minutes!!!");
-                    stringBuilder.AppendLine("If after 5 minutes it's not finished, please contact me.");
+                    //stringBuilder.AppendLine("You account is verifying...");
+                    //stringBuilder.AppendLine("Please wait a few minutes!!!");
+                    //stringBuilder.AppendLine("If after 5 minutes it's not finished, please contact me.");
+
+                    stringBuilder.AppendLine("Đăng ký thành công!!!");
+                    stringBuilder.AppendLine("Bạn sẽ nhận được kết quả sau khi hệ thống kiểm tra thông tin tài khoản đăng nhập.");
+                    stringBuilder.AppendLine("Xin cảm ơn!!!");
 
                     currentUser.LoginDate = DateTime.Now;
                     currentUser.IsActive = true;
@@ -120,7 +123,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
                || string.IsNullOrEmpty(currentUser.Password))
             {
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("You need to login first to continue");
+                stringBuilder.AppendLine("Bạn hãy đăng nhập để tiếp tục");
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: stringBuilder.ToString(),
@@ -142,7 +145,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
 
                 Message sentMessage = await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "Logout Success!!!",
+                    text: "Đăng nhập thành công!!!",
                     replyMarkup: replyKeyboardMarkup,
                     cancellationToken: cancellationToken);
 
@@ -154,7 +157,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
             else if (messageText == TelegramCommands.Active)
             {
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("Bot is actived!!!");
+                stringBuilder.AppendLine("Hệ thông đã được kích hoạt!!!");
 
                 ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
                 {
@@ -180,7 +183,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
             else if (messageText == TelegramCommands.Deactive)
             {
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("Bot is deactived!!!");
+                stringBuilder.AppendLine("Hệ thống đã bị tắt!!!");
 
                 ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
                 {
