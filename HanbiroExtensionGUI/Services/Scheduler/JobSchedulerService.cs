@@ -184,6 +184,8 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
         {
             this.clockType = clockType;
 
+            OnLogMessage?.Invoke(this, $"Bắt đầu : {DateTime.Now}");
+
             lock (allUsers)
             {
                 Console.WriteLine("===========================");
@@ -210,7 +212,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             if (Users.Count == 0)
             {
                 OnClockingStateChanged?.Invoke(this, (false, this.clockType));
-                //OnLogMessage?.Invoke(this, $"Finished");
+                OnLogMessage?.Invoke(this, $"Kết thúc");
                 return;
             }
 

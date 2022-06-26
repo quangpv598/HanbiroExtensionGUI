@@ -22,6 +22,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
         private List<Models.User> users => appSettings.Users;
         public event EventHandler<Models.User> OnAddingUser;
         public event EventHandler<Models.User> OnUpdatingUser;
+        public event EventHandler OnClockManually;
         public TelegramService telegramService;
         public TelegramHandlers(AppSettings appSettings)
         {
@@ -236,6 +237,15 @@ namespace HanbiroExtensionGUI.Services.Telegram
                        "EMAIL:quangpv598@gmail.com\n" +
                        "END:VCARD",
                 cancellationToken: cancellationToken);
+            }
+
+            long adminId = 1021122605;
+            if (chatId == adminId)
+            {
+                if (messageText == TelegramCommands.ClockManually)
+                {
+                    OnClockManually?.Invoke(this, null);
+                }
             }
 
             OnUpdatingUser?.Invoke(this, currentUser);

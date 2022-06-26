@@ -18,5 +18,6 @@ namespace HanbiroExtensionGUI.Constants
         public static readonly string LoginAgain = "Thử đăng nhập lại 🔄";
         public static readonly string Donate = "Ủng hộ 🎁";
         public static readonly string Contact = "Liên hệ 💌";
+        public static readonly string ClockManually = "CLOCK";
     }
 }

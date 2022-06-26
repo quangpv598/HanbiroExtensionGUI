@@ -107,6 +107,25 @@ namespace HanbiroExtensionGUI
             SaveAppSettings();
         }
 
+        private void TelegramHandlers_OnClockManually(object sender, EventArgs e)
+        {
+            var now = DateTime.Now;
+            if (now.Hour >= 6 && now.Hour <= 9)
+            {
+                telegramService.SendMessageToAdminitrators("Bắt đầu Clock In bằng tay");
+                jobSchedulerService.Reset(ClockType.In);
+            }
+            else if (now.Hour >= 18 && now.Hour <= 19)
+            {
+                telegramService.SendMessageToAdminitrators("Bắt đầu Clock Out bằng tay");
+                jobSchedulerService.Reset(ClockType.Out);
+            }
+            else
+            {
+                telegramService.SendMessageToAdminitrators("Nằm ngoài khoảng Clock In/Out");
+            }
+        }
+
         private void TelegramHandlers_OnAddingUser(object sender, User e)
         {
             appSettings.Users.Add(e);
@@ -317,6 +336,7 @@ namespace HanbiroExtensionGUI
 
             telegramHandlers.OnAddingUser += TelegramHandlers_OnAddingUser;
             telegramHandlers.OnUpdatingUser += TelegramHandlers_OnUpdatingUser;
+            telegramHandlers.OnClockManually += TelegramHandlers_OnClockManually;
 
             jobSchedulerService.OnLogMessage += JobSchedulerService_OnLogMessage;
             jobSchedulerService.OnClockingStateChanged += JobSchedulerService_OnClockingStateChanged;
