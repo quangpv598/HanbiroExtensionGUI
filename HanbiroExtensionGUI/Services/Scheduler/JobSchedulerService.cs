@@ -83,10 +83,10 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             string cronExpressionEndTime = GetExpressionForEndTime();
             string cronExpressionAutoRestartTime = GetExpressionForAutoRestartTime();
 
-            //StringBuilder timeMessage = new StringBuilder();
-            //timeMessage.AppendLine("Start time : " + cronExpressionStartTime);
-            //timeMessage.AppendLine("End time : " + cronExpressionEndTime);
-            //OnLogMessage?.Invoke(this, timeMessage.ToString());
+            StringBuilder timeMessage = new StringBuilder();
+            timeMessage.AppendLine("Start time : " + cronExpressionStartTime);
+            timeMessage.AppendLine("End time : " + cronExpressionEndTime);
+            OnLogMessage?.Invoke(this, timeMessage.ToString());
 
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity("trigger1", "group1")
@@ -151,33 +151,33 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
 
         private string GetExpressionForStartTime()
         {
-            //return $"0 {timeWork.StartTime.Minute} {timeWork.StartTime.Hour} {GetExpressionForDayMonthYear()}";
-            if (DateTime.Now.TimeOfDay >= timeWork.StartTime.TimeOfDay
-                || (DateTime.Now.TimeOfDay < timeWork.StartTime.TimeOfDay 
-                    && DateTime.Now.TimeOfDay >= timeWork.StartTime.TimeOfDay.Add(TimeSpan.FromMinutes(-2))))
-            {
-                return $"0 {timeWork.StartTime.Minute + 2} {timeWork.StartTime.Hour} {GetExpressionForDayMonthYear()}";
-            }
-            else
-            {
+            ////return $"0 {timeWork.StartTime.Minute} {timeWork.StartTime.Hour} {GetExpressionForDayMonthYear()}";
+            //if (DateTime.Now.TimeOfDay >= timeWork.StartTime.TimeOfDay
+            //    || (DateTime.Now.TimeOfDay < timeWork.StartTime.TimeOfDay 
+            //        && DateTime.Now.TimeOfDay >= timeWork.StartTime.TimeOfDay.Add(TimeSpan.FromMinutes(-2))))
+            //{
+            //    return $"0 {timeWork.StartTime.Minute + 2} {timeWork.StartTime.Hour} {GetExpressionForDayMonthYear()}";
+            //}
+            //else
+            //{
                 Random random = new Random();
                 int minute = random.Next(timeWork.StartTime.Minute, timeWork.StartTime.Minute + 10);
                 return $"0 {minute} {timeWork.StartTime.Hour} {GetExpressionForDayMonthYear()}";
-            }
+            //}
         }
 
         private string GetExpressionForEndTime()
         {
-            if (DateTime.Now.TimeOfDay >= timeWork.EndTime.TimeOfDay 
-                || (DateTime.Now.TimeOfDay < timeWork.EndTime.TimeOfDay
-                    && DateTime.Now.TimeOfDay >= timeWork.EndTime.TimeOfDay.Add(TimeSpan.FromMinutes(-2))))
-            {
-                return $"0 {timeWork.EndTime.Minute + 2} {timeWork.EndTime.Hour} {GetExpressionForDayMonthYear()}";
-            }
-            else
-            {
+            //if (DateTime.Now.TimeOfDay >= timeWork.EndTime.TimeOfDay 
+            //    || (DateTime.Now.TimeOfDay < timeWork.EndTime.TimeOfDay
+            //        && DateTime.Now.TimeOfDay >= timeWork.EndTime.TimeOfDay.Add(TimeSpan.FromMinutes(-2))))
+            //{
+            //    return $"0 {timeWork.EndTime.Minute + 2} {timeWork.EndTime.Hour} {GetExpressionForDayMonthYear()}";
+            //}
+            //else
+            //{
                 return $"0 {timeWork.EndTime.Minute} {timeWork.EndTime.Hour} {GetExpressionForDayMonthYear()}";
-            }
+            //}
         }
 
         public void Reset(ClockType clockType)
