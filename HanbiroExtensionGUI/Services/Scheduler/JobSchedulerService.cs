@@ -103,8 +103,8 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
                 .StartNow()
                 .WithCronSchedule(cronExpressionEndTime)
                 //.WithSimpleSchedule(x => x
-                // .WithIntervalInSeconds(30)
-                //    .WithRepeatCount(5))
+                //   .WithIntervalInSeconds(1)
+                //   .WithRepeatCount(0))
                 .UsingJobData(nameof(ClockType), nameof(ClockType.Out))
                 .Build();
 
@@ -120,7 +120,6 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             {
                 triggerSet.Add(trigger);
                 triggerSet.Add(trigger2);
-
             }
             else if (clockType == ClockType.In)
             {

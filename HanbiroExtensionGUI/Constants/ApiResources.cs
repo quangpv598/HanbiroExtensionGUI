@@ -10,7 +10,7 @@ namespace HanbiroExtensionGUI.Constants
     {
         public static readonly string LoginSignal = "/ngw/app/lib/css/input-password.css";
         public static readonly string Auth = "/ngw/sign/auth";
-        public static readonly string GetUserInfoSignal = "/ngw/common/config/mode/all?im_not_app=1";
+        public static readonly string GetUserInfoSignal = "/ngw/common/config/mode/all";
         public static readonly string AuthSuccessSignal = "/ngw/main/header_link";//"/ngw/app/template/main/dashboard.html";
         public static readonly string ClockIn = "/ngw/timecard/punch_v2/in";
         public static readonly string ClockOut = "/ngw/timecard/punch_v2/out";

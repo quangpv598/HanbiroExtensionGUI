@@ -99,8 +99,6 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                  ErrorType.FailToClockOut,
                  clockType,
                  ActionStatus.Error)));
-
-
         }
 
         private void HanbiroRequestHanlders_OnClockOutSuccess(object sender, HanbiroRequestHandlerArgs e)
