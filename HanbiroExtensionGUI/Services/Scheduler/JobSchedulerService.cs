@@ -22,6 +22,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
         private List<User> allUsers;
         private ClockType clockType = ClockType.None;
         public event EventHandler<string> OnLogMessage;
+        public event EventHandler<string> OnLogMessageToChannel;
         public event EventHandler<(bool, ClockType)> OnClockingStateChanged;
         #endregion
 
@@ -86,7 +87,7 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             StringBuilder timeMessage = new StringBuilder();
             timeMessage.AppendLine("Start time : " + cronExpressionStartTime);
             timeMessage.AppendLine("End time : " + cronExpressionEndTime);
-            OnLogMessage?.Invoke(this, timeMessage.ToString());
+            OnLogMessageToChannel?.Invoke(this, timeMessage.ToString());
 
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity("trigger1", "group1")

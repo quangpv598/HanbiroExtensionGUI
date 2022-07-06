@@ -221,6 +221,11 @@ namespace HanbiroExtensionGUI
             telegramService.SendMessageToAdminitrators(e);
         }
 
+        private void JobSchedulerService_OnLogMessageToChannel(object sender, string e)
+        {
+            telegramService.SendMessageToHealthCheckChannel(e);
+        }
+
         private void JobSchedulerService_OnClockingStateChanged(object sender, (bool, ClockType) e)
         {
             bool isActive = e.Item1;
@@ -283,7 +288,7 @@ namespace HanbiroExtensionGUI
         {
             appSettings = LoadAppSettings();
             telegramHandlers = new TelegramHandlers(appSettings);
-            telegramService = new TelegramService(appSettings.TelegramToken, telegramHandlers, appSettings.Adminitrators);
+            telegramService = new TelegramService(appSettings.TelegramToken, telegramHandlers, appSettings.Adminitrators, appSettings.HealthCheckChannel);
             telegramHandlers.telegramService = telegramService;
             chromiumBrowser = new HanbiroChromiumBrowser(appSettings.BaseUrl, appSettings.TimeWork);
             jobSchedulerService = new JobSchedulerService(appSettings.TimeWork, appSettings.Users, chromiumBrowser);
@@ -339,6 +344,7 @@ namespace HanbiroExtensionGUI
             telegramHandlers.OnClockManually += TelegramHandlers_OnClockManually;
 
             jobSchedulerService.OnLogMessage += JobSchedulerService_OnLogMessage;
+            jobSchedulerService.OnLogMessageToChannel += JobSchedulerService_OnLogMessageToChannel;
             jobSchedulerService.OnClockingStateChanged += JobSchedulerService_OnClockingStateChanged;
         }
 

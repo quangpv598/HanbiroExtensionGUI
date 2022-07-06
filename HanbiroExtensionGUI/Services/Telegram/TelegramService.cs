@@ -19,7 +19,8 @@ namespace HanbiroExtensionGUI.Services
     public class TelegramService
     {
         #region Fields
-        private readonly List<long> adminítrators;
+        private readonly List<long> administrators;
+        private readonly List<long> healthCheckChannel;
         private readonly string telegramToken;
         private readonly TelegramHandlers telegramHandlers;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -31,11 +32,12 @@ namespace HanbiroExtensionGUI.Services
         #endregion
 
         #region Constructors
-        public TelegramService(string telegramToken, TelegramHandlers telegramHandlers, List<long> adminítrators)
+        public TelegramService(string telegramToken, TelegramHandlers telegramHandlers, List<long> administrators, List<long> channelsId)
         {
             this.telegramToken = telegramToken;
             this.telegramHandlers = telegramHandlers;
-            this.adminítrators = adminítrators;
+            this.administrators = administrators;
+            this.healthCheckChannel = channelsId;
 
             telegramBotClient = new TelegramBotClient(telegramToken);
 
@@ -92,13 +94,25 @@ namespace HanbiroExtensionGUI.Services
             {
                 stringBuilder.AppendLine($"[Sender : {sender.UserName}-{sender.Email}-{sender.FullName}]");
             }
-            foreach (long id in adminítrators)
+            foreach (long id in administrators)
             {
                 await telegramBotClient.SendTextMessageAsync(
                 chatId: id,
                 text: stringBuilder.ToString());
             }
         }
+
+        public async void SendMessageToHealthCheckChannel(string message)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (long id in healthCheckChannel)
+            {
+                await telegramBotClient.SendTextMessageAsync(
+                chatId: id,
+                text: stringBuilder.ToString());
+            }
+        }
+
         public async void SendMessageToUser(Models.User user, string message)
         {
             await telegramBotClient.SendTextMessageAsync(
