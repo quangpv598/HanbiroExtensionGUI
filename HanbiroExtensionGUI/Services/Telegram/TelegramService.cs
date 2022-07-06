@@ -105,6 +105,7 @@ namespace HanbiroExtensionGUI.Services
         public async void SendMessageToHealthCheckChannel(string message)
         {
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine(message);
             foreach (long id in healthCheckChannel)
             {
                 await telegramBotClient.SendTextMessageAsync(
