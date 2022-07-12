@@ -177,7 +177,7 @@ namespace HanbiroExtensionGUI
                 {
                     if (!UsersCookie.Contains(user))
                     {
-                        telegramService.SendMessageToAdminitrators($"User added to Queue Cookie : {user.UserName}");
+                        //telegramService.SendMessageToAdminitrators($"User added to Queue Cookie : {user.UserName}");
                         UsersCookie.Enqueue(user);
                     }
                 }
