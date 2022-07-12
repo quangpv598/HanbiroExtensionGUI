@@ -158,7 +158,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
             else if (messageText == TelegramCommands.Active)
             {
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("Hệ thông đã được kích hoạt!!!");
+                stringBuilder.AppendLine("Hệ thống đã được kích hoạt!!!");
 
                 ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
                 {
