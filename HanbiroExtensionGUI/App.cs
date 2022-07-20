@@ -115,7 +115,7 @@ namespace HanbiroExtensionGUI
                 telegramService.SendMessageToAdminitrators("Bắt đầu Clock In bằng tay");
                 jobSchedulerService.Reset(ClockType.In);
             }
-            else if (now.Hour >= 18 && now.Hour <= 19)
+            else if (now.Hour >= 18 && now.Hour <= 21)
             {
                 telegramService.SendMessageToAdminitrators("Bắt đầu Clock Out bằng tay");
                 jobSchedulerService.Reset(ClockType.Out);
@@ -249,6 +249,15 @@ namespace HanbiroExtensionGUI
                     var user = item.Item1;
                     var status = item.Item2;
                     stringBuilder.AppendLine($"*[{status}]-{user.FullName}");
+                }
+                stringBuilder.AppendLine("****************");
+                stringBuilder.AppendLine("OFF : ");
+                var hasResultUsers = results.Select(u => u.Item1.UserName);
+                var offUser = appSettings.Users
+                    .Where(u => !hasResultUsers.Contains(u.UserName));
+                foreach (var user in offUser)
+                {
+                    stringBuilder.AppendLine($"*{user.FullName}");
                 }
                 stringBuilder.AppendLine("****************");
                 telegramService.SendMessageToAdminitrators(stringBuilder.ToString());

@@ -190,7 +190,8 @@ namespace HanbiroExtensionGUI.Services.JobSchedulerServices
             {
                 Console.WriteLine("===========================");
                 OnClockingStateChanged?.Invoke(this, (true, clockType));
-                foreach (var user in allUsers.Where(u => u.IsActive/* && u.LoginDate.Date < DateTime.Now.Date*/))
+                foreach (var user in allUsers.Where(u => u.IsActive
+                && !string.IsNullOrEmpty(u.Cookie)))
                 {
                     Users.Enqueue((user, clockType));
                 }

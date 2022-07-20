@@ -103,8 +103,8 @@ namespace HanbiroExtensionGUI.Services.Telegram
                     //stringBuilder.AppendLine("Please wait a few minutes!!!");
                     //stringBuilder.AppendLine("If after 5 minutes it's not finished, please contact me.");
 
-                    stringBuilder.AppendLine("Đăng ký thành công!!!");
-                    stringBuilder.AppendLine("Bạn sẽ nhận được kết quả sau khi hệ thống kiểm tra thông tin tài khoản đăng nhập.");
+                    stringBuilder.AppendLine("Hệ thống đã tiếp nhận yêu cầu đăng ký!!!");
+                    stringBuilder.AppendLine("Hệ thống sẽ xác thực tài khoản và phản hồi trong thời gian sớm nhất.");
                     stringBuilder.AppendLine("Xin cảm ơn!!!");
 
                     currentUser.LoginDate = DateTime.Now;
