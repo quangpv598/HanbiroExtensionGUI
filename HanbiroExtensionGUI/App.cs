@@ -240,7 +240,7 @@ namespace HanbiroExtensionGUI
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine("****************");
                 stringBuilder.AppendLine($"Report at {DateTime.Now.ToString()}");
-                stringBuilder.AppendLine($"Total : {results.Count}");
+                stringBuilder.AppendLine($"Total : {appSettings.Users.Count}");
                 stringBuilder.AppendLine($"Success : {results.Where(r => r.Item2 == ActionStatus.Success).Count()}");
                 stringBuilder.AppendLine($"Error : {results.Where(r => r.Item2 == ActionStatus.Error).Count()}");
                 stringBuilder.AppendLine("****************");
@@ -248,7 +248,7 @@ namespace HanbiroExtensionGUI
                 {
                     var user = item.Item1;
                     var status = item.Item2;
-                    stringBuilder.AppendLine($"*[{status}]-{user.FullName}");
+                    stringBuilder.AppendLine($"*[{status}]-{user.UserName}-{user.FullName}");
                 }
                 stringBuilder.AppendLine("****************");
                 stringBuilder.AppendLine("OFF : ");
@@ -257,7 +257,7 @@ namespace HanbiroExtensionGUI
                     .Where(u => !hasResultUsers.Contains(u.UserName));
                 foreach (var user in offUser)
                 {
-                    stringBuilder.AppendLine($"*{user.FullName}");
+                    stringBuilder.AppendLine($"*{user.UserName}-{user.FullName}");
                 }
                 stringBuilder.AppendLine("****************");
                 telegramService.SendMessageToAdminitrators(stringBuilder.ToString());
