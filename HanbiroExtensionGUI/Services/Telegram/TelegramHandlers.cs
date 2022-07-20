@@ -65,7 +65,7 @@ namespace HanbiroExtensionGUI.Services.Telegram
                     cancellationToken: cancellationToken);
 
                 currentUser.Cookie = string.Empty;
-
+                currentUser.IsActive = false;
                 currentUser.LastCommand = TelegramCommands.GetUsernameCommand;
             }
             else if (currentUser.LastCommand == TelegramCommands.GetUsernameCommand)
