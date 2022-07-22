@@ -14,16 +14,16 @@ namespace HanbiroExtensionGUI.Models
         {
             get
             {
-                return DateTime.Now.TimeOfDay <= TimeWork.StartTime.TimeOfDay.Add(TimeSpan.FromMinutes(5))
-                    && DateTime.Now.TimeOfDay >= TimeWork.StartTime.TimeOfDay.Add(TimeSpan.FromMinutes(-5));
+                return DateTime.Now.TimeOfDay <= TimeWork.StartTime.TimeOfDay.Add(TimeSpan.FromMinutes(15))
+                    && DateTime.Now.TimeOfDay >= TimeWork.StartTime.TimeOfDay.Add(TimeSpan.FromMinutes(-15));
             }
         }
         public bool IsClockingOut
         {
             get
             {
-                return DateTime.Now.TimeOfDay <= TimeWork.EndTime.TimeOfDay.Add(TimeSpan.FromMinutes(5))
-                    && DateTime.Now.TimeOfDay >= TimeWork.EndTime.TimeOfDay.Add(TimeSpan.FromMinutes(-5));
+                return DateTime.Now.TimeOfDay <= TimeWork.EndTime.TimeOfDay.Add(TimeSpan.FromMinutes(15))
+                    && DateTime.Now.TimeOfDay >= TimeWork.EndTime.TimeOfDay.Add(TimeSpan.FromMinutes(-15));
             }
         }
         public bool IsAutoRestartTime

@@ -154,7 +154,7 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                         {
                             if (currentUser.UserName == d.rows?.user_config?.user_data?.id)
                             {
-                                currentUser.FullName = d.rows?.user_config?.user_data?.name;
+                                currentUser.FullName = d.rows?.user_config?.config?.NAME;
                                 currentUser.Email = d.rows?.user_config?.user_data?.email;
                                 currentUser.PhoneNumber = d.rows?.user_config?.user_data?.telephone;
                             }
@@ -228,11 +228,11 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                         }
                         else
                         {
-                            string[] clockedOutMessages = new string[] {"이미 퇴근체크를 하셨습니다.",
-                                                                        "You already clocked in.",
-                                                                        "Bạn đã punch-in rồi."};
+                            string[] clockedOutMessages = new string[] {"이미 퇴근체크를 하셨습니다.".ToLower(),
+                                                                        "You already clocked in.".ToLower(),
+                                                                        "Bạn đã punch-in rồi.".ToLower()};
                             string errorMessage = d.msg;
-                            if (clockedOutMessages.Contains(errorMessage))
+                            if (clockedOutMessages.Contains(errorMessage.ToLower()))
                             {
                                 currentUser.ClockInTime = DateTime.Now;
                                 OnClockInSuccess?.Invoke(this, args);
@@ -276,11 +276,11 @@ namespace HanbiroExtensionGUI.Controls.ChromiumBrowser
                         }
                         else
                         {
-                            string[] clockedOutMessages = new string[] {"이미출근체크가 되어 있습니다.",
-                                                                        "You already clocked out.",
-                                                                        "Bạn đã punch-out rồi."};
+                            string[] clockedOutMessages = new string[] {"이미출근체크가 되어 있습니다.".ToLower(),
+                                                                        "You already clocked out.".ToLower(),
+                                                                        "Bạn đã punch-out rồi.".ToLower()};
                             string errorMessage = d.msg;
-                            if (clockedOutMessages.Contains(errorMessage))
+                            if (clockedOutMessages.Contains(errorMessage.ToLower()))
                             {
                                 currentUser.ClockOutTime = DateTime.Now;
                                 OnClockOutSuccess?.Invoke(this, args);
